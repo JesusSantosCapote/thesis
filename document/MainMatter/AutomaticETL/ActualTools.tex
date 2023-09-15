@@ -1,0 +1,62 @@
+\section{Herramientas Actuales} \label{section:actual_tools}
+
+\subsection{Amazon Glue}
+
+AWS Glue es un servicio de ETL automático "serverless" disponible en AWS Cloud. Este servicio simplifica el proceso de 
+extracción, transformación y carga de datos al eliminar la necesidad de configurar y administrar infraestructura de 
+servidor. A continuación, se describen los pasos clave que conforman el funcionamiento de AWS Glue:
+
+Exploración de fuentes de datos: AWS Glue utiliza un componente llamado crawler para explorar las fuentes de datos 
+especificadas por el usuario. El crawler analiza los datos y extrae los metadatos relevantes, como la estructura, el 
+formato y la ubicación de los datos.
+
+Catálogo de Datos: Los metadatos extraídos por el crawler se almacenan en un repositorio central llamado Catálogo de 
+Datos (Data Catalog). Este catálogo actúa como una base de conocimientos sobre los datos disponibles y puede ser 
+consultado por los usuarios para obtener información sobre las fuentes de datos.
+
+Motor ETL: El Motor ETL (ETL Engine) utiliza los metadatos almacenados en el Catálogo de Datos para generar el código 
+necesario para los procesos de ETL. Cuando el usuario especifica una base de datos de destino, el Motor ETL genera el 
+código que integra los datos de las fuentes y los transforma en un formato compatible con el destino especificado.
+
+Schedulers: Los procesos de ETL generados por AWS Glue pueden ser activados manualmente o programados para ejecutarse en 
+una frecuencia específica o cuando se lanze un determinado evento utilizando los Schedulers. Esto permite automatizar el 
+flujo de trabajo de ETL y realizar actualizaciones periódicas de los datos.
+
+
+\subsection{Oracle Data Integrator}
+
+Oracle Data Integrator (ODI) es una herramienta de ELT autom\'atico, aunque también permite el desarrollo de escenarios 
+ETL mediante su integración con Oracle Warehouse Builder, otro software del entorno de Oracle. Esto hace que sea una 
+herramienta flexible y poderosa para el manejo, soluci\'on y despliegue de Almacenes de Datos. Posee una arquitectura 
+cliente-servidor, con una aplicaci\'on de escritorio que se comunica con los sevidores de Oracle. Sus principales 
+componentes son: 
+
+\subsubsection{Repositorios:} 
+Almacena información de configuración sobre la infraestructura de IT, metadatos de todas las aplicaciones, proyectos, 
+escenarios y registros de ejecución. ODI cuenta con dos tipos de repositorios: un Repositorio Maestro (Master Repository) 
+y varios Repositorios de Trabajo (Work Repositories). Los objetos creados mediante las interfaces de usuario son almacenados 
+en ellos. El Repositorio Maestro almacena:
+
+\begin{itemize}
+    \item Información de seguridad, como usuarios y perfiles.
+    \item Información topol\'ogica de los escenarios diseñados por los usuarios como esquemas, definici\'on de sercidores, 
+        contextos y lenguajes.
+    \item Información sobre las versiones de los escenarios desarrollados.
+\end{itemize}
+
+Por otro lado, los repositorios de trabajo son los que realmente 
+contienen los escenarios, incluida: 
+
+\begin{itemize}
+    \item La definición de esquemas, estructuras de las bases de datos involucradas y metadatos, 
+        definiciones de campos y columnas, restricciones de calidad de los datos, referencias cruzadas y linaje de datos.
+    \item Proyectos, incluidas reglas comerciales definidas para cada proyecto, paquetes instalados, procedimientos, 
+        sistema de archivos, módulos de conocimiento, variables de entorno, etc.
+    \item Ejecución de escenarios, incluidos información de programación y registros.
+
+\end{itemize}
+
+
+
+
+\subsection{Google DataFlow}
