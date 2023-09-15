@@ -6,19 +6,23 @@ AWS Glue es un servicio de ETL automático "serverless" disponible en AWS Cloud.
 extracción, transformación y carga de datos al eliminar la necesidad de configurar y administrar infraestructura de 
 servidor. A continuación, se describen los pasos clave que conforman el funcionamiento de AWS Glue:
 
-Exploración de fuentes de datos: AWS Glue utiliza un componente llamado crawler para explorar las fuentes de datos 
+\subsubsection{Exploración de fuentes de datos:}
+AWS Glue utiliza un componente llamado crawler para explorar las fuentes de datos 
 especificadas por el usuario. El crawler analiza los datos y extrae los metadatos relevantes, como la estructura, el 
 formato y la ubicación de los datos.
 
-Catálogo de Datos: Los metadatos extraídos por el crawler se almacenan en un repositorio central llamado Catálogo de 
+\subsubsection{Catálogo de Datos:}
+Los metadatos extraídos por el crawler se almacenan en un repositorio central llamado Catálogo de 
 Datos (Data Catalog). Este catálogo actúa como una base de conocimientos sobre los datos disponibles y puede ser 
 consultado por los usuarios para obtener información sobre las fuentes de datos.
 
-Motor ETL: El Motor ETL (ETL Engine) utiliza los metadatos almacenados en el Catálogo de Datos para generar el código 
+\subsubsection{Motor ETL:}
+El Motor ETL (ETL Engine) utiliza los metadatos almacenados en el Catálogo de Datos para generar el código 
 necesario para los procesos de ETL. Cuando el usuario especifica una base de datos de destino, el Motor ETL genera el 
 código que integra los datos de las fuentes y los transforma en un formato compatible con el destino especificado.
 
-Schedulers: Los procesos de ETL generados por AWS Glue pueden ser activados manualmente o programados para ejecutarse en 
+\subsubsection{Schedulers:}
+Los procesos de ETL generados por AWS Glue pueden ser activados manualmente o programados para ejecutarse en 
 una frecuencia específica o cuando se lanze un determinado evento utilizando los Schedulers. Esto permite automatizar el 
 flujo de trabajo de ETL y realizar actualizaciones periódicas de los datos.
 
@@ -39,24 +43,41 @@ en ellos. El Repositorio Maestro almacena:
 
 \begin{itemize}
     \item Información de seguridad, como usuarios y perfiles.
-    \item Información topol\'ogica de los escenarios diseñados por los usuarios como esquemas, definici\'on de sercidores, 
+    \item Información topol\'ogica de los escenarios diseñados por los usuarios como esquemas, definici\'on de servidores, 
         contextos y lenguajes.
     \item Información sobre las versiones de los escenarios desarrollados.
 \end{itemize}
 
 Por otro lado, los repositorios de trabajo son los que realmente 
-contienen los escenarios, incluida: 
+contienen los escenarios, incluido: 
 
 \begin{itemize}
     \item La definición de esquemas, estructuras de las bases de datos involucradas y metadatos, 
         definiciones de campos y columnas, restricciones de calidad de los datos, referencias cruzadas y linaje de datos.
-    \item Proyectos, incluidas reglas comerciales definidas para cada proyecto, paquetes instalados, procedimientos, 
+    \item Los proyectos con sus reglas comerciales definidas, paquetes instalados, procedimientos, 
         sistema de archivos, módulos de conocimiento, variables de entorno, etc.
-    \item Ejecución de escenarios, incluidos información de programación y registros.
-
+    \item Registros de ejecución de escenarios e información de programación de tareas.
 \end{itemize}
 
+\subsubsection{Interfaces de Usuario:}
 
+ODI Studio es la interfaz de usuario de Oracle Data Integrator que proporciona un entorno completo para trabajar con la 
+herramienta. A través de ODI Studio, los usuarios pueden realizar diversas tareas, como consultar repositorios, desarrollar 
+proyectos, programar tareas, operar y monitorear ejecuciones. La interfaz incluye navegadores que permiten visualizar y 
+modificar los escenarios creados, así como el código generado automáticamente para su ejecución. Con ODI Studio, los 
+usuarios tienen acceso a todas las funcionalidades necesarias para administrar y gestionar eficientemente los procesos de 
+integración de datos. 
 
+\subsubsection{Agente de Ejecución}
+
+El agente de ejecución actúa como motor de ejecución para ODI. Es responsable de ejecutar interfaces de integración, 
+transformaciones y otras tareas definidas en proyectos ODI. Se puede configurar para ejecutar las tareas al capturar 
+cierto evento o programar para que ejecute sus tareas en determinados intervalos de tiempo. Soporta ejecución paralela
+y distribuida as\'i como capacidades para el manejo y reporte de errores.
+
+En el momento de diseño, los desarrolladores generan escenarios a partir de modelos gr\'aficos y reglas de negocio 
+definidas mediante un lenguaje declarativo. Luego, el Agente de Ejecución recupera el código de estos escenarios 
+del repositorio y lo ejecuta.
 
 \subsection{Google DataFlow}
+
