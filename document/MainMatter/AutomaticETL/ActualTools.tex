@@ -27,6 +27,9 @@ una frecuencia específica o cuando se lanze un determinado evento utilizando lo
 flujo de trabajo de ETL y realizar actualizaciones periódicas de los datos.
 
 
+
+
+
 \subsection{Oracle Data Integrator}
 
 Oracle Data Integrator (ODI) es una herramienta de ELT autom\'atico, aunque también permite el desarrollo de escenarios 
@@ -77,7 +80,42 @@ y distribuida as\'i como capacidades para el manejo y reporte de errores.
 
 En el momento de diseño, los desarrolladores generan escenarios a partir de modelos gr\'aficos y reglas de negocio 
 definidas mediante un lenguaje declarativo. Luego, el Agente de Ejecución recupera el código de estos escenarios 
-del repositorio y lo ejecuta.
+del repositorio y lo ejecuta de forma aut\'onoma. 
 
-\subsection{Google DataFlow}
+
+
+
+
+\subsection{Google Dataflow}
+
+Google Dataflow es un servicio "serverless" proporcionado por Google Cloud Platform para ejecutar "pipelines" de Apache Beam. 
+Es capaz de capturar, procesar y analizar datos, en tiempo real o en bloques, provenientes de m\'ultiples fuentes.
+Dataflow elimina la sobrecarga operativa de sus equipos de ingeniería de datos al automatizar el aprovisionamiento de la
+infraestructura destino, ya sea un Almacen de Datos o un modelo de Machine Learning. Estas caracter\'isticas hacen de 
+Dataflow una excelente opci\'on para la ejecución automática de ETL. Una soluci\'on de Google Dataflow consta de los 
+siguientes elementos:
+
+\subsubsection{Pipeline:}
+
+El pipeline es el componente principal del software. Representa el flujo de trabajo de procesamiento de datos y est\'a 
+compuesto por una serie de transformaciones aplicadas a los datos de entrada. Es definido por el usuario utilizando el 
+Apache Beam SDK en Java o Python. Cada vez que una transformación, definida en el pipeline, es aplicada a los datos se crea 
+un "PCollection", un conjunto de datos inmutable, para guardar los datos transformados. PCollection es el acr\'onimo de 
+"Parallel Collection" (Colecci\'on 
+Paralela). El motivo detrás de este nombre es que las PCollection están diseñadas para ser distribuidas en múltiples 
+computadoras. La \'ultima PCollection es cargada en el almacenamiento de destino, pues los datos que contiene ya han pasado 
+por todos los procesos de transformaci\'on. 
+
+\subsubsection{Dataflow Workers:}
+
+Una vez que el usuario ha creado un pipeline, Dataflow se encarga de su ejecución y despliegue, refiriéndose a esta 
+acción como un "Dataflow Job" (Trabajo de Dataflow). Luego Dataflow asigna unas m\'aquinas virtuales llamadas "Workers" 
+(Trabajadores) para ejecutar las transformaciones. El n\'umero de Trabajadores es manejado din\'amicamente por Dataflow 
+y depender\'a de la complejidad del Trabajo. Los Trabajadores realizan todo el procesamiento computacional en la nube 
+de Google.
+
+\subsubsection{Paneles de Visualizaci\'on}
+
+Dataflow provee al usuario de paneles con informaci\'on en tiempo real sobre distintas m\'etricas de los Trabajos as\'i 
+como de alertas para la detecci\'on de fallos.
 
