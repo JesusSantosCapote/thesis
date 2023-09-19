@@ -119,3 +119,40 @@ de Google.
 Dataflow provee al usuario de paneles con informaci\'on en tiempo real sobre distintas m\'etricas de los Trabajos as\'i 
 como de alertas para la detecci\'on de fallos.
 
+
+
+
+
+\subsection{Talend Open Studio}
+
+Talend Open Studio(TOS) es otra herramienta de integración de datos perteneciente a la compañia Talend. A diferencia de las 
+anteriores herramientas, TOS es un software libre y Open Source, lo que permite que pequeñas empresas puedan acceder a 
+las bondades del procesamiento y an\'alisis de datos para mejorar su productividad. 
+
+Su funcionamiento puede separarse en 
+tres bloques: 
+
+\subsubsection{Bloque Studio:}
+
+Aqu\'i es donde los escenarios ETL son diseñados. Este bloque tiene tres subcomponentes: Interfaz de Usuario, Almacenamiento
+y Generaci\'on de C\'odigo. Mediante la Interfaz de Usuario se pueden definir los modelos de negocios con sus escenarios ETL 
+sin tener que escribir c\'odigo, basta con arrastrar y soltar componentes y luego conectarlos para definir una tarea de 
+integración. Los modelos y las tareas creadas son guardadas en formato XML en el Almacenamiento junto con metadatos 
+de las fuentes de datos. El subcomponente de Generaci\'on de C\'odigo se encarga de convertir las tareas en c\'odigo de 
+Java. 
+
+\subsubsection{Bloque de Ejecución:}
+
+El servidor de la aplicaci\'on, llamado Talend Aplication 
+Center (Centro de Aplicaci\'on de Talend), se encarga de desplegar y ejecutar, dentro de s\'i, los escenarios creados 
+en el Bloque Studio, que es la aplicaci\'on cliente. El usuario puede desplegar uno o m\'as Jobs Servers 
+(Servidores de Trabajo) dentro de su proyecto de sistema de informaci\'on para ejecutar las tareas del escenario diseñado 
+siguiendo una programación basada en tiempos o en eventos. 
+
+\subsubsection{Bloque de Repositorios:}
+
+Dentro del Talend Aplication Center existen tres repositorios compartidos. Uno de ellos est\'a basado en un servidor SVN, 
+el cual se encarga de almacenar metadatos de los proyectos, como los escenarios, los modelos de negocios, rutas, etc. 
+El segundo es un servidor de base de datos y almacena metadatos de administraci\'on como cuentas de usuario y derechos de 
+acceso. Los metadatos pueden ser compartidos por multiples usuarios y tareas. El tercer repositorio es un servidor 
+Git para almacenar informaci\'on sobre las versiones de los escenarios diseñados.
