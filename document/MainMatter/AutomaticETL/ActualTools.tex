@@ -156,3 +156,69 @@ el cual se encarga de almacenar metadatos de los proyectos, como los escenarios,
 El segundo es un servidor de base de datos y almacena metadatos de administraci\'on como cuentas de usuario y derechos de 
 acceso. Los metadatos pueden ser compartidos por multiples usuarios y tareas. El tercer repositorio es un servidor 
 Git para almacenar informaci\'on sobre las versiones de los escenarios diseñados.
+
+
+
+
+
+\subsection{Informatica PowerCenter}
+
+Informatica PowerCenter es una herramienta de integración de datos versátil que ha ganado una popularidad significativa 
+en los últimos años en el mundo empresarial. Esta herramienta se destaca por su arquitectura orientada a servicios, 
+la cual se compone de varias aplicaciones cliente que se comunican, mediante TCP/IP, con uno o con varios componentes 
+centrales llamados Dominio (Domain), alojados en los servidores de Informatica. El Dominio actúa como proveedor de los 
+servicios ofrecidos por la aplicación. Sus componentes principales son: 
+
+\subsubsectionn{Nodos:} 
+
+Es una representaci\'on l\'ogica de una computadora dentro de un Dominio. En un Dominio pueden haber m\'as de un Nodo y 
+los diferentes servicios y procesos de Informatica son ejecutados dentro de ellos. Existe un tipo de Nodo especial 
+llamado Gateway (Puerta), el cual se encarga de recibir las solicitudes de las aplicaciones clientes y enrutarlas a sus 
+respectivos servicios y nodos.
+
+\subsubsection{Administrador de Servicios:} 
+
+Es responsable de gestionar operaciones como autorización, autenticación e inicio de sesión. Tambi\'en, se encarga de 
+ejecutar los Servicios de Aplicaci\'on en diferentes Nodos, además de gestionar usuarios y grupos.
+
+\subsubsection{Servicios de Aplicaci\'on:}
+
+Estos son los tipos específicos de servicios bajo un dominio, que incluyen el Servicio de Repositorio, el Servicio de 
+Integración y el Servicio de Informes.
+
+El Servicio de Repositorios es el encargado del mantenimiento de de los metadatos de Informatica. Los metadatos incluyen 
+definiciones de fuentes, destinos, transformaciones y escenarios ETL creados. Son almacenados en una base de datos 
+relacional llamada Repositorio, a la cual solo se tiene acceso a través del Dominio.
+
+El Servicio de Integraci\'on se utiliza como motor de ejecución de ETL. Mueve los datos desde el or\'igen hasta el 
+destino seg\'un el flujo de trabajo definido por el usuario y los metadatos almacenados en el Repositorio.
+
+El Servicio de Informes se encarga generar informes sobre las tareas de integración ejecutadas.
+
+
+PowerCenter consta de cuatro aplicaciones clientes, cada una especializada en un \'area determinada de del 
+desarrollo de ETL:
+
+\subsubsection{PowerCenter Designer:}
+
+Cliente encargado de proveer al usuario de una interfaz gr\'afica para el diseño de los distintos componentes 
+que conforman un escenario ETL. El usuario debe encargarse de crear o importar las definiciones de las fuentes y el 
+destino, definir los mapeos entre atributos y las transformaciones que deben sufrir los datos.
+
+\subsubsection{Workflow Manager:}
+
+Con este cliente el usuario puede definir y ejecutar escenarios ETL juntando y conenctando los componetes creados en el 
+PowerCenter Designer. Adem\'as, puede programar la ejecución de los escenarios cuando se capture un evento o cada 
+cierto tiempo, lo cual permite que las bases de datos de destino tengan datos actualizados en todo momento.
+
+\subsubsection{Workflow Monitor:} 
+
+Este cliente provee al usuario de una interfaz para monitorear las tareas y los flujos de trabajo. Permite ver 
+los registros de las sesiones y los flujos de trabajo además de monitorear estad\'isticas.
+
+\subsubsection{Repository Manager:}
+
+Cliente que le permite al usuario manejar los objetos guardados en el Repositorio, manejar permisos e 
+importar y exportar objetos.
+
+
