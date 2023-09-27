@@ -222,3 +222,52 @@ Cliente que le permite al usuario manejar los objetos guardados en el Repositori
 importar y exportar objetos.
 
 
+
+
+\subsection{Azure Data Factory}
+
+Azure Data Factory (ADF) es un servicio administrado basado en la nube desarrollado por Microsoft para proyectos de 
+automatizaci\'on tanto de ETL como de ELT. Tiene soporte para copia de datos on-premise además de contar con  
+m\'as de 90 conectores nativos hacia las principales fuentes de datos usadas en la industria\cite{azure_intro}. ADF cuenta con una 
+serie de componentes integrales, cada uno con un papel fundamental en el proceso de integración de datos: 
+
+\subsubsection{Data Flows:}
+
+Los Data Flows (Flujos de Datos) representan la l\'ogica de transformaci\'on de los datos. Son diseñados por el usuario 
+mediante una interfaz gr\'afica, en este caso sin escribir c\'odigo, o mediante un SDK. Permite que los ingenieros de 
+datos puedan definir, visualmente, como los datos son transformados. Dichas transformaciones pueden ser filtros, 
+agregaciones, Joins y aplicar transformaciones a columnas. ADF modela los Data Flows como grafos y permite crear 
+librer\'ias de rutinas de transformaci\'on de datos para que puedan ser reusadas en otros proyectos. Los Data Flows 
+son ejecutados como actividades dentro los Pipelines y aprovechan los cl\'usters de Apache Spark para el procesamiento 
+eficiente de grandes vol\'umenes de datos. 
+
+
+\subsubsection{Pipelines:}
+
+Los Pipelines son el mecanismo de orquestación para los procesos de integración de datos. Representa una secuencia 
+lógica que define el flujo y el orden de ejecución de las actividades que conforman un escenario de integración de datos, 
+incluidos los Data Flows. Una Pipeline puede contener múltiples actividades, como movimiento de datos, 
+transformación de datos, procesamiento de datos y actividades de control como son los ciclos y los 
+triggers(disparadores), basados en eventos o en tiempos. En Azure Data Factory un Pipeline puede ser diseñado 
+mediante una interfaz gr\'afica o mediante c\'odigo usando un SDK.
+
+\subsubsection{Datasets:}
+
+Los Datasets (Conjuntos de Datos) son representaciones de la estructura de las fuentes de datos disponibles para 
+alimentar las actividades de un Pipeline. No contienen los datos en sí, sino que hacen referencia a los datos que se 
+desean utilizar como entrada o salida de las actividades, y proporcionan información sobre su estructura.
+
+\subsubsection{Linked Services:}
+
+Los Linked Services (Servicios Vinculados) son cadenas de texto, que definen la información necesaria 
+para que Data Factory establezca conexiones con recursos externos, ya sea una fuente de datos o recursos computacionales 
+que puedan ejecutar actividades de forma remote. De esta forma, un Linked Service define la conexión a una fuente de 
+datos, y un Dataset representa su estructura.
+
+\subsubsection{Integration Runtime:}
+
+Como se expuso anteriormente, en Azure Data Factory, un actividad define una acci\'on a realizar. Un Linked Service define 
+un almacenamiento de datos o un servicio de c\'omputo. El Integration Runtime (Runtime de Integraci\'on) es el 
+puente entre la actividad y los Linked Services. 
+Es referenciado por el Linked Service o la actividad, y funciona como entorno de cómputo donde la actividad es ejecutada 
+o es enviada a quien la va a ejecutar. 
