@@ -1,2 +1,144 @@
 \chapter*{Introducción}\label{chapter:introduction}
 \addcontentsline{toc}{chapter}{Introducción}
+
+Desde finales del siglo XX, el crecimiento acelerado de Internet y la adopci\'on generalizada de computadoras 
+personales ha provocado que una gran variedad de datos sean producidos a un ritmo sin precedentes y en grandes vol\'umenes. 
+Este fen\'omeno, conocido como "Big Data" \cite{beyer2012importance}, ha impactado significativamente en diversas esferas de la actividad humana, 
+facilitando el desarrollo de soluciones adaptables a las necesidades de diferentes campos de la ciencia y organizaciones 
+industriales.
+
+Al procesar estas grandes cantidades de datos, se genera información actualizada y relevante que puede ser empleada 
+para generar nuevas hipótesis o descubrir tendencias, patrones y correlaciones ocultas en los datos. Las técnicas de 
+procesamiento y metodologías asociadas a este procedimiento forman parte de una de las disciplinas más interesantes 
+surgidas con la llegada del Big Data: el Análisis de Datos.
+
+El An\'alisis de Datos act\'ua como el proceso subyacente que energiza a otras tecnolog\'ias y procesos, nutriendolos
+de los conocimientos derivados del an\'alisis. Tal es el 
+caso de la Inteligencia de Negocios (Business Intelligence, BI), la cual es un proceso technology-driven para 
+analizar datos y proporcionar información accionable que ayuda a los ejecutivos, gerentes y otros usuarios corporativos 
+a tomar decisiones comerciales informadas. La BI abarca una amplia gama de herramientas, aplicaciones y metodologías 
+que permiten a las organizaciones recopilar datos de sistemas internos y fuentes externas, prepararlos para análisis, 
+desarrollar y ejecutar consultas contra los datos y crear informes, paneles y visualizaciones de datos\cite{negash2004business}. 
+
+Un elemento esencial de BI es el Procesamiento Analítico en Línea (OLAP), una tecnología que permite a los usuarios realizar 
+análisis complejos en grandes cantidades de datos. OLAP permite la exploración de datos multidimensionales, proporcionando 
+una forma de segmentar y desglosar los datos desde diferentes perspectivas. Admite operaciones analíticas avanzadas como 
+el desglose (drill-down), la consolidación (roll-up) y el pivote, que ayudan a los usuarios a obtener información valiosa 
+de sus datos.
+
+Detrás del Procesamiento Analítico en Línea (OLAP) se encuentran los Almacenes de Datos (Data Warehouse), que son 
+estructuras que permiten realizar de manera eficiente las operaciones OLAP. Su proceso de creaci\'on implica la 
+recopilación, 
+organización, integración y almacenamiento de datos provenientes de diversas fuentes en un repositorio centralizado. Este 
+repositorio funciona como una base de datos consolidada y estructurada que brinda soporte a consultas y análisis eficientes. 
+Además, proporciona una base sólida para actividades de OLAP y otras funciones de BI, al 
+asegurar la consistencia de los datos, la integración y el almacenamiento de datos históricos.
+
+\section{Motivaci\'on}
+
+La creación y mantenimiento de un Almacén de Datos implica la ejecución de los procesos ETL (Extracción, Transformación y 
+Carga) para abastecerlo de datos. Estos procesos son fundamentales para garantizar la integridad y calidad de los datos 
+almacenados. Sin embargo, la implementación manual de estos procesos puede presentar diversos desafíos\cite{nwokeji2021systematic}.
+
+En primer lugar, la implementación manual de los procesos ETL puede resultar compleja debido a la necesidad 
+de manejar múltiples fuentes de datos, transformarlos de acuerdo con las necesidades del almacén y cargarlos de manera 
+eficiente. Para esto, se requiere un conocimiento profundo de las fuentes de datos y de las técnicas de transformación.
+
+Además, la implementación manual de los procesos ETL es propensa a errores humanos. La manipulación manual de grandes 
+volúmenes de datos aumenta el riesgo de errores, como omisiones, duplicaciones o inconsistencias en los datos cargados, lo 
+cual compromete la calidad del almacen de datos. 
+
+Asimismo, es bien sabido que la implementación procesos ETL puede consumir una considerable cantidad de tiempo y recursos. 
+
+Ante estos desafíos, resulta beneficioso considerar la automatización de los procesos ETL.
+
+\section{Antecedentes}
+
+En la facultad de Matemáticas y Computación de la Universidad de la Habana, investigadores del grupo de Bases 
+Datos han desarrollado una línea de investigación centrada en la poblaci\'on de Almacenes de Datos de forma gen\'erica. 
+
+Dentro de esta l\'inea de investigación se encuentran los trabajos "Población genérica de un Data Warehouse Empresarial", 
+realizado por el Lic. Mijail Veliz Monteagudo, y "Herramienta genérica para la población del Warehouse Informacional", 
+realizado por la Lic. Lis Velázquez Vidal.
+
+En el primero se propone un procedimiento para el diseño de procesos ETCL compuesto por: Acciones, Tareas y Subprocesos.
+Además, brinda la implementación de una herramienta genérica para población del Datawarehouse Empresarial, basada en el 
+diseño ETCL propuesto. La herramienta propuesta hace uso de la arquitectura pluggins, donde en su n\'ucleo se encuentra 
+un Agente ETC encargado de ejecutar los Subprocesos y las extensiones ser\'ian los disitintos tipos de tareas y acciones.
+
+En el segundo se propone una formalización matemático computacional para el modelo de datos multidimensional. Además,
+brinda la implementación de un ambiente de creación para el Data Warehouse Informacional que permite crear y administrar 
+estructuras multidimensionales y gestinar sus metadatos. En el ambiente se modelan cada uno de los componentes del modelo 
+dimensional como interfaces, que describen las funcionalidades y caracter\'isticas de cada uno, dejando a las implementaciones 
+espec\'ificas para cada plataforma definir el c\'omo. Utiliza el patr\'on proxy o representante. Cada representante implementa 
+las interfaces y sirven de intermediarios entre el ambiente y la tecnología que alojar\'a el Data Warehouse Informacional.
+
+Esta investigaci\'on est\'a enmarcada en la tem\'atica de los Almacenes de Datos, inspir\'andose en los trabajos 
+realizados por el grupo de investigación.
+
+
+\section{Problem\'atica}
+
+La generaci\'on autom\'atica de procesos ETL es una tem\'atica amplia que a d\'ia de hoy no cuenta con una soluci\'on 
+universalmente aceptada. En el cap\'itulo 2 se ha realizado un acercamiento a su actualidad exponiendo las 
+especificidades de las principales herramientas de generaci\'on autom\'atica de ETL. Como denominador com\'un entre 
+todas las herramientas se encuentran los modelos conceptuales para definir escenarios ETL.
+
+Siguiendo las pautas de la industria, se plantea la concepci\'on de un modelo conceptual para la modelaci\'on de procesos 
+ETL con vistas a lograr su automatización.
+
+Una tabla de un Almacén de Datos puede contener atributos de m\'ultiples tablas de las fuentes de datos y 
+atributos resultado de agregaciones o de la aplicaci\'on de otras funciones, etc. Por tanto, la generaci\'on autom\'atica 
+del proceso ETL encargado de poblar dicha tabla, pasa por la inferencia de los Joins necesarios para juntar los atributos 
+que componen la tabla del Almacén de Datos. Luego, uno de los problemas primarios a resolver en 
+el marco de la generaci\'on autom\'atica de procesos ETL es la inferencia de Joins, el cual en s\'i mismo es uno de 
+los retos m\'as significativos de la disciplina.
+
+Finalmente, la problem\'atica que se aborda en esta investigación es la inferencia de los Joins requeridos 
+al efecto de la generaci\'on de una ETL conveniente, a partir de un modelo conceptual.
+
+\section{Objetivos}
+
+\subsection{Objetivo general}
+
+Proponer y desarrollar un modelo conceptual para la definici\'on de escenarios ETL as\'i como un sistema que permita 
+inferir los Joins necesarios para su ejecución.
+
+\subsection{Objetivos Espec\'ificos}
+
+\begin{enumerate}
+    \item Estudio de la bibliografía relacionada. 
+    \item Estudio comparación de las herramientas existentes que permiten la automatización de procesos ETL.
+    \item Diseño de un modelo conceptual para la modelación de procesos ETL.
+    \item Implementación de un software que permita: inferir los join necesarios para la ejecución del escenario ETL diseñado y 
+        ejecutar el escenario.
+    \item Validación de la solución mediante experimentación
+\end{enumerate}
+
+\section{Propuesta de soluci\'on}
+
+Se propone utilizar un Lenguaje de Dominio Específico (DSL) como método de solución para la modelación conceptual de ETL. 
+Este DSL cuenta con estructuras gramaticales que permiten definir las dimensiones y hechos del almacén de datos destino.
+
+El proceso comienza convirtiendo la fuente de datos en un grafo, donde las tablas se representan como nodos y las relaciones 
+entre las tablas se representan como aristas. Este grafo, junto con las definiciones realizadas mediante el DSL, se utilizan 
+como entrada para un algoritmo que inferirá los joins necesarios.
+
+Una vez calculados los joins, el usuario podrá seleccionar los joins más adecuados para su modelación y se generará el 
+código SQL correspondiente al escenario ETL diseñado.
+
+Finalmente, el sistema propuesto se encargará de ejecutar periódicamente los códigos generados para mantener actualizado 
+el almacén de datos. 
+
+\section{Estructura del documento}
+
+El resto del documento se ha estructurado en cuatro capítulos que abordan las distintas fases por las que transitó la 
+presente investigación. En el cap\'itulo 1 se realiza un estudio sobre el marco te\'orico conceptual de los Sistemas de 
+Inteligencia de Negocios (BI). En el cap\'itulo 2 se lleva a cabo un estudio de la actualidad de la generaci\'on autom\'atica 
+de procesos ETL, exponiendo las especificidades de las principales herramientas del mercado que tratan de solventar esta 
+problem\'atica. El cap\'itulo 3 constituye un acercamiento al diseño de la soluci\'on propuesta. En el capítulo 4 se 
+detallan los aspectos técnicos de la implementación de un prototipo del sistema y se realiza un análisis de la validez de 
+la solución implementada mediante el desarrollo de experimentos. A mode de descenlace, se presentan las conclusiones,
+que recogen los resultados obtenidos de acuerdo al cumplimiento de los objetivos propuestos, así como las recomendaciones, 
+donde se proponen un conjunto de líneas de investigación como parte de la continuación del presente trabajo. Finalmente, 
+sepresentan las referencias bibliográficas que sustentan la base científica de la solución propuesta.
