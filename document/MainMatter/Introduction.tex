@@ -37,6 +37,11 @@ asegurar la consistencia de los datos, la integración y el almacenamiento de da
 
 \section{Motivaci\'on}
 
+En Cuba, durante los \'ultimos años, se ha promovido la introducción de nuevas tecnologías en los procesos 
+productivos como parte de la diversificación y modernización de la economía. Como resultado, tanto instituciones 
+estatales como privadas, así como organizaciones, empresas y centros, han visto la necesidad de desarrollar un Almac\'en 
+de Datos para aprovechar eficientemente los datos generados por su actividad económica.
+
 La creación y mantenimiento de un Almacén de Datos implica la ejecución de los procesos ETL (Extracción, Transformación y 
 Carga) para abastecerlo de datos. Estos procesos son fundamentales para garantizar la integridad y calidad de los datos 
 almacenados. Sin embargo, la implementación manual de estos procesos puede presentar diversos desafíos
@@ -44,30 +49,46 @@ almacenados. Sin embargo, la implementación manual de estos procesos puede pres
 
 En primer lugar, la implementación manual de los procesos ETL puede resultar compleja debido a la necesidad 
 de manejar múltiples fuentes de datos, transformarlos de acuerdo con las necesidades del almacén y cargarlos de manera 
-eficiente. Para esto, se requiere un conocimiento profundo de las fuentes de datos y de las técnicas de transformación.
+eficiente. Para esto, se requiere un conocimiento profundo de las fuentes de datos y de las técnicas de 
+transformación, captura y extracción.
 
 La implementación manual de los procesos ETL es propensa a errores humanos. La manipulación de grandes 
 volúmenes de datos aumenta el riesgo de errores, como omisiones, duplicaciones o inconsistencias en los datos cargados, lo 
-cual compromete la calidad del almacen de datos. Asimismo, es bien sabido que la implementación de procesos ETL puede consumir una 
-considerable cantidad de tiempo y recursos. 
+cual compromete la calidad del almac\'en de datos. Asimismo, es bien sabido que la implementación de procesos ETL puede consumir una 
+considerable cantidad de tiempo y recursos.
 
-Ante estos desafíos, resulta beneficioso considerar la automatización de los procesos ETL.
+Existen herramientas que abordan estas limitaciones al ofrecer posibilidades para la automatización de procesos ETL. 
+Sin embargo, en su mayoría, estas herramientas son servicios alojados en la nube de sus propietarios, lo cual 
+dificulta su acceso y aprovechamiento por parte de las empresas cubanas. Esto se debe a las limitaciones de la 
+infraestructura de comunicación en la isla y a la abundancia de bases de datos on premise en las empresas, lo cual 
+dificulta el traspaso de los datos a la nube.
+
+Frente a los desafíos inherentes de la programaci\'on manual de los procesos ETL, a la condiciones actuales
+de la isla y al creciente auge de la automatización de procesos en el ámbito de la computación, resulta 
+provechoso contemplar la creación de una herramienta para la automatización de los procesos ETL, que satisfaga 
+las necesidades del empresariado nacional.
 
 \section{Antecedentes}
 
-En la facultad de Matemática y Computación de la Universidad de La Habana, investigadores del grupo de Sistemas de 
-Información han desarrollado una línea de investigación centrada en la poblaci\'on de Almacenes de Datos de forma gen\'erica. 
+En la facultad de Matemática y Computación de la Universidad de La Habana, la labor de investigación e innovación de 
+los profesores del colectivo de Sistemas de Información se ha caracterizado no solo por su interrelación estrecha 
+con el almacenamiento, el análisis y la obtención de información con vista a la toma de decisiones en diversos 
+escenarios de aplicación, sino también por la creación de herramientas genéricas que contribuyan a agilizar los 
+procesos de implementación y población de los repositorios de datos asociados a las soluciones analíticas de 
+inteligencia de negocio. Al respecto, se encuentran los trabajos "Población genérica
+de un Data Warehouse Empresarial"\cite{mijailmaster} y "Herramienta genérica para la población del 
+Warehouse Informacional"\cite{lismaster}.
 
-Dentro de esta l\'inea de investigación se encuentran los trabajos "Población genérica de un Data Warehouse Empresarial", 
-realizado por el Lic. Mijail Veliz Monteagudo, y "Herramienta genérica para la población del Warehouse Informacional", 
-realizado por la Lic. Lis Velázquez Vidal.
+En el primero se propone un procedimiento para el diseño de procesos ETCL(Extracci\'on, Transformaci\'on, Depuraci\'on y Carga) 
+compuesto por acciones, tareas y subprocesos. Las acciones engloban todas las posibles transformaciones que se pueden 
+aplicar a los datos, así como los diversos tipos de extracción y carga. Por otro lado, las tareas constituyen un 
+conjunto de acciones, mientras que los subprocesos se componen de un conjunto de tareas. De esta forma, un proceso 
+ETCL puede ser modelado como un conjunto de subprocesos.
 
-En el primero se propone un procedimiento para el diseño de procesos ETCL(Extraction, Transformaci\'on, Depuraci\'on y Carga) 
-compuesto por: acciones, tareas y subprocesos.
 Además, brinda la implementación de una herramienta genérica para población del Data Warehouse Empresarial, basada en el 
 diseño ETCL propuesto. La herramienta propuesta hace uso de la arquitectura pluggins\cite{noauthor_plug-architectures_nodate}, 
 donde en su n\'ucleo se encuentra 
-un agente ETCL encargado de ejecutar los subprocesos y las extensiones ser\'ian los disitintos tipos de tareas y acciones.
+un agente ETCL encargado de ejecutar los subprocesos y las extensiones ser\'ian los disitintos tipos de acciones.
 
 En el segundo se propone una formalización matemático computacional para el modelo de datos multidimensional. Además,
 brinda la implementación de un ambiente de creación para el Warehouse Informacional que permite crear y administrar 
@@ -83,37 +104,41 @@ realizados por el grupo de investigación.
 
 \section{Problem\'atica}
 
-La generaci\'on autom\'atica de procesos ETL es una tem\'atica amplia que a d\'ia de hoy no cuenta con una soluci\'on 
+La generaci\'on autom\'atica de procesos ETL(Extracción, Transformación y Carga) es una tem\'atica amplia que a d\'ia de hoy no cuenta con una soluci\'on 
 universalmente aceptada. Al realizar un acercamiento a las herramientas de generación automática de ETL más relevantes, podemos 
-identificar un denominador común: la utilización de modelos conceptuales para la definición de escenarios ETL.
+identificar un denominador común: la utilización de modelos gr\'aficos o programativos para la definición de 
+escenarios ETL.
 
-Siguiendo las pautas de la industria, en el presente trabajo, se plantea la automatización de ETL mediante 
-la creaci\'on de modelos conceptuales.
+Siguiendo las pautas de la industria, en el presente trabajo se plantea la automatización de los procesos ETL necesarios 
+para poblar un escenario analítico mediante la creaci\'on de un marco de trabajo que permita, a trav\'es de un lenguaje de dominio espec\'ifico
+(DSL, Domain Specific Languaje), generar el c\'odigo ETL necesario para el proceso de población.
 
 Una tabla de un Almacén de Datos puede contener atributos de m\'ultiples tablas de las fuentes de datos y 
 atributos resultado de agregaciones o de la aplicaci\'on de otras funciones. Por tanto, la generaci\'on autom\'atica 
 del proceso ETL encargado de poblar dicha tabla, pasa por la inferencia de los Joins necesarios para obtener los atributos 
 que la componen. Luego, uno de los problemas primarios a resolver en 
 el marco de la generaci\'on autom\'atica de procesos ETL es la inferencia de Joins, el cual en s\'i mismo es uno de 
-los retos m\'as significativos de la disciplina.
+los retos m\'as significativos de la disciplina y el cual ocup\'o la totalidad del tiempo de investigación e implementación del presente 
+trabajo.
 
-Finalmente, la problem\'atica que se aborda en esta investigación es la inferencia de los Joins requeridos 
-al efecto de la generaci\'on de una ETL conveniente, a partir de un modelo conceptual.
+Finalmente, la presente investigación intentara dar respuesta a la siguiente interrogante: ¿será factible generar 
+automáticamente la(s) consulta(s) asociada(s) a la ETL de interés con vistas a poblar el repositorio de datos 
+correspondiente, apoy\'andose de un lenguaje de dominio espec\'ifico y la teor\'ia de grafos?
 
 \section{Objetivos}
 
 \subsection{Objetivo general}
 
-Proponer y desarrollar un modelo conceptual para la definici\'on de escenarios ETL, as\'i como un marco de trabajo que permita 
-inferir los Joins necesarios para su ejecución.
+Proponer y desarrollar un lenguaje de dominio específico para la definici\'on de escenarios analíticos, as\'i como un marco de trabajo que permita 
+inferir los Joins necesarios para su población en el marco de un proceso ETL.
 
 \subsection{Objetivos Espec\'ificos}
 
 \begin{enumerate}
     \item Estudio de la bibliografía relacionada. 
     \item Estudio comparación de las herramientas existentes que permiten la automatización de procesos ETL.
-    \item Diseño de un modelo conceptual para la modelación de procesos ETL.
-    \item Implementación de un software que permita inferir y ejecutar los join necesarios del escenario ETL diseñado.
+    \item Diseño de un lenguaje de dominio específico para la definici\'on de escenarios analíticos.
+    \item Implementación de un software que permita inferir y ejecutar los joins necesarios para la población del escenario diseñado.
     \item Validación de la solución mediante experimentación
 \end{enumerate}
 
