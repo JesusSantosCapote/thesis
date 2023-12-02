@@ -22,7 +22,7 @@
 \RequirePackage{footmisc}
 \RequirePackage{csquotes}
 \RequirePackage[
-	style=apa,
+	style=ieee,
 	citestyle=numeric,
   hyperref=true,
 	backref=true
@@ -160,7 +160,7 @@
 \newcommand{\logo}[1]{\def\@logo{#1}}
 
 \newenvironment{opinion}%
-  {\chapter*{Opinión del tutor}}%
+  {\chapter*{Opinión de los tutores}}%
   {}
 \newenvironment{acknowledgements}%
   {\chapter*{Agradecimientos}}%
@@ -191,6 +191,7 @@
   {}
 \newenvironment{dedication}%
   {\cleardoublepage%
+   \chapter*{Dedicatoria}
    \thispagestyle{empty}%
    \vskip 3.5cm%
    \begin{flushright}}%
