@@ -2,28 +2,28 @@
 \addcontentsline{toc}{chapter}{Introducción}
 
 Desde finales del siglo XX, el crecimiento acelerado de Internet, la adopci\'on generalizada de computadoras 
-personales y el desarrollo de las redes sociales ha provocado que una gran variedad de datos sean producidos a un ritmo 
+personales y el desarrollo de las redes sociales ha provocado que una gran variedad de datos se produzca a un ritmo 
 sin precedentes y en grandes vol\'umenes. 
 Este fen\'omeno, conocido como "Big Data" \cite{beyer2012importance}, ha impactado significativamente en diversas 
 esferas de la actividad humana, facilitando el desarrollo de soluciones adaptables a las necesidades de diferentes 
 campos de la ciencia y organizaciones industriales.
 
 Al procesar estas grandes cantidades de datos, se genera información actualizada y relevante que puede ser empleada 
-para generar nuevas hipótesis o descubrir tendencias, patrones y correlaciones ocultas en los datos. Con la aparición del 
+para elaborar nuevas hipótesis o descubrir tendencias, patrones y correlaciones ocultas en los datos. Con la aparición del 
 Big Data, las técnicas de procesamiento y metodologías asociadas al análisis de datos han evolucionado para adaptarse a esta 
 nueva realidad, ofreciendo formas más eficientes de manejar y analizar grandes cantidades de información.
 
-El An\'alisis de Datos act\'ua como el proceso subyacente que energiza a otras tecnolog\'ias y procesos, nutriendolos
-de los conocimientos derivados del an\'alisis. Tal es el 
-caso de la Inteligencia de Negocios (Business Intelligence, BI), la cual es un proceso orientado a tecnolog\'ias (technology-driven) 
-para analizar datos y proporcionar información accionable que ayuda a los ejecutivos, gerentes y otros usuarios corporativos 
+El an\'alisis de datos act\'ua como el proceso subyacente que energiza a otras tecnolog\'ias y procesos, nutri\'endolos
+de los conocimientos derivados. Tal es el 
+caso de la Inteligencia de Negocios (Business Intelligence, BI), la cual es un enfoque integrador orientado a tecnolog\'ias (technology-driven) 
+para examinar los datos y proporcionar información accionable que ayude a los ejecutivos, gerentes y otros usuarios corporativos 
 a tomar decisiones comerciales informadas. La BI abarca una amplia gama de herramientas, aplicaciones y metodologías 
 que permiten a las organizaciones recopilar datos de sistemas internos y fuentes externas, prepararlos para análisis, 
-desarrollar y ejecutar consultas contra los datos y crear informes, paneles y visualizaciones de datos\cite{negash2004business}. 
+desarrollar y ejecutar consultas sobre los datos y crear informes, paneles y visualizaciones de datos\cite{negash2004business}. 
 
 Un elemento esencial de BI es el Procesamiento Analítico en Línea (Online Analytical Processing, OLAP), una tecnología que 
-permite a los usuarios realizar análisis complejos en grandes cantidades de datos. OLAP permite la exploración de datos 
-multidimensionales, proporcionando una forma de segmentar y desglosar los datos desde diferentes perspectivas. Admite 
+permite a los usuarios realizar análisis complejos en grandes cantidades de datos. OLAP posibilita la exploración de datos 
+multidimensionales, proporcionando una forma de segmentar y resumir los datos desde diferentes perspectivas. Admite 
 operaciones analíticas avanzadas como el desglose (drill-down), la consolidación (roll-up) y el pivote, que ayudan a los 
 usuarios a obtener información valiosa de sus datos.
 
@@ -32,8 +32,8 @@ estructuras que permiten realizar de manera eficiente las operaciones OLAP. Su p
 recopilación, 
 organización, integración y almacenamiento de datos provenientes de diversas fuentes en un repositorio centralizado. Este 
 repositorio funciona como una base de datos consolidada y estructurada que brinda soporte a consultas y análisis eficientes. 
-Además, proporciona una base sólida para actividades de OLAP y otras funciones de BI, al 
-asegurar la consistencia de los datos, la integración y el almacenamiento de datos históricos.
+Además, establece una base sólida para actividades de OLAP y otras funciones de BI, al 
+asegurar la consistencia de los datos, así como la integración y el almacenamiento de datos históricos.
 
 \section{Motivaci\'on}
 
@@ -59,13 +59,13 @@ considerable cantidad de tiempo y recursos.
 
 Existen herramientas que abordan estas limitaciones al ofrecer posibilidades para la automatización de procesos ETL. 
 Sin embargo, en su mayoría, estas herramientas son servicios alojados en la nube de sus propietarios, lo cual 
-dificulta su acceso y aprovechamiento por parte de las empresas cubanas. Esto se debe a las limitaciones de la 
-infraestructura de comunicación en la isla y a la abundancia de bases de datos on premise en las empresas, lo cual 
-dificulta el traspaso de los datos a la nube.
+dificulta su acceso y aprovechamiento por parte de algunas empresas cubanas. Esto se debe a un grupo de limitaciones 
+y a la existencia de bases de datos on premise en las empresas, lo cual 
+dificulta el tratamiento de los datos en la nube.
 
 Frente a los desafíos inherentes de la programaci\'on manual de los procesos ETL, a la condiciones actuales
 de la isla y al creciente auge de la automatización de procesos en el ámbito de la computación, resulta 
-provechoso contemplar la creación de una herramienta para la automatización de los procesos ETL, que satisfaga 
+provechoso contemplar la creación de una herramienta para la generación automática de procesos ETL, que satisfaga 
 las necesidades del empresariado nacional.
 
 \section{Antecedentes}
@@ -85,41 +85,45 @@ aplicar a los datos, así como los diversos tipos de extracción y carga. Por ot
 conjunto de acciones, mientras que los subprocesos se componen de un conjunto de tareas. De esta forma, un proceso 
 ETCL puede ser modelado como un conjunto de subprocesos.
 
-Además, brinda la implementación de una herramienta genérica para población del Data Warehouse Empresarial, basada en el 
+Además, brinda la implementación de una herramienta genérica para la población del Data Warehouse Empresarial, basada en el 
 diseño ETCL propuesto. La herramienta propuesta hace uso de la arquitectura pluggins\cite{noauthor_plug-architectures_nodate}, 
-donde en su n\'ucleo se encuentra 
-un agente ETCL encargado de ejecutar los subprocesos y las extensiones ser\'ian los disitintos tipos de acciones.
+de modo que en su n\'ucleo se encuentra 
+un agente ETCL encargado de ejecutar los subprocesos cuyas extensiones son los disitintos tipos de acciones.
 
 En el segundo se propone una formalización matemático computacional para el modelo de datos multidimensional. Además,
 brinda la implementación de un ambiente de creación para el Warehouse Informacional que permite crear y administrar 
-estructuras multidimensionales y gestinar los metadatos. En el ambiente se modela cada uno de los componentes del modelo 
-dimensional como interfaces, que describen las funcionalidades y caracter\'isticas de cada uno, dejando el c\'omo a las 
+estructuras multidimensionales y gestionar los metadatos. En el ambiente se modela cada uno de los componentes del modelo 
+dimensional como interfaces, que describen las funcionalidades y caracter\'isticas usuales, dejando el c\'omo a las 
 implementaciones 
-espec\'ificas para cada plataforma. Utiliza el patr\'on proxy o representante. Cada representante implementa 
-las interfaces y sirven de intermediarios entre el ambiente y la tecnología que alojar\'a el Data Warehouse.
+espec\'ificas para cada plataforma. Utiliza el patr\'on proxy o representante para implementar 
+las interfaces que sirven de intermediarios entre el ambiente y la tecnología que alojar\'a el Data Warehouse.
 
-Esta investigaci\'on est\'a enmarcada en la tem\'atica de los Almacenes de Datos, inspir\'andose en los trabajos 
-realizados por el grupo de investigación.
+La presente investigaci\'on est\'a enmarcada en la tem\'atica de los Almacenes de Datos, inspir\'andose en los trabajos 
+referidos, teniendo en cuenta el estudio detallado de las características y  las etapas esenciales del proceso de 
+población en su conjunto, así como los modelos de solución consecuentes con el estado del arte de la época.
 
 
 \section{Problem\'atica}
 
 La generaci\'on autom\'atica de procesos ETL(Extracción, Transformación y Carga) es una tem\'atica amplia que a d\'ia de hoy no cuenta con una soluci\'on 
-universalmente aceptada. Al realizar un acercamiento a las herramientas de generación automática de ETL más relevantes, podemos 
-identificar un denominador común: la utilización de modelos gr\'aficos o programativos para la definición de 
+universalmente aceptada. Al realizar un acercamiento a las herramientas de generación automática de ETL más relevantes, se puede
+identificar un denominador común: la utilización de modelos conceptuales para la definición de los
 escenarios ETL.
 
-Siguiendo las pautas de la industria, en el presente trabajo se plantea la automatización de los procesos ETL necesarios 
-para poblar un escenario analítico mediante la creaci\'on de un marco de trabajo que permita, a trav\'es de un lenguaje de dominio espec\'ifico
-(DSL, Domain Specific Languaje), generar el c\'odigo ETL necesario para el proceso de población.
+En este proyecto, se propone la automatización de los procesos ETL para alimentar un entorno analítico, siguiendo 
+las mejores prácticas de la industria. Esto se llevará a cabo mediante la creación de un Lenguaje de Dominio 
+Específico (Domain Specific Languaje, DSL) y un marco de trabajo asociado, que actuará como enlace entre el modelo relacional de las fuentes 
+de datos y el modelo analítico del almacén de datos final. El propósito es generar el código ETL requerido para el 
+proceso de población de manera eficiente.
 
 Una tabla de un Almacén de Datos puede contener atributos de m\'ultiples tablas de las fuentes de datos y 
-atributos resultado de agregaciones o de la aplicaci\'on de otras funciones. Por tanto, la generaci\'on autom\'atica 
+atributos como resultado de agregaciones o de la aplicaci\'on de otras funciones. Por tanto, la generaci\'on autom\'atica 
 del proceso ETL encargado de poblar dicha tabla, pasa por la inferencia de los Joins necesarios para obtener los atributos 
 que la componen. Luego, uno de los problemas primarios a resolver en 
 el marco de la generaci\'on autom\'atica de procesos ETL es la inferencia de Joins, el cual en s\'i mismo es uno de 
-los retos m\'as significativos de la disciplina y el cual ocup\'o la totalidad del tiempo de investigación e implementación del presente 
-trabajo.
+los retos m\'as significativos de la disciplina y el cual ocup\'o la mayor\'ia del tiempo de investigación e implementación 
+del presente trabajo. En la bibliografía consultada sobre inferencia de Join o problemas que pueden ser adaptados existen 
+propuestas interesantes que utilizan la teor\'ia de grafos para abordar el problema. 
 
 Finalmente, la presente investigación intentara dar respuesta a la siguiente interrogante: ¿será factible generar 
 automáticamente la(s) consulta(s) asociada(s) a la ETL de interés con vistas a poblar el repositorio de datos 
@@ -129,31 +133,31 @@ correspondiente, apoy\'andose de un lenguaje de dominio espec\'ifico y la teor\'
 
 \subsection{Objetivo general}
 
-Proponer y desarrollar un lenguaje de dominio específico para la definici\'on de escenarios analíticos, as\'i como un marco de trabajo que permita 
+Concebir y diseñar un lenguaje de dominio específico para la definici\'on de escenarios analíticos, as\'i como un marco de trabajo que permita 
 inferir los Joins necesarios para su población en el marco de un proceso ETL.
 
 \subsection{Objetivos Espec\'ificos}
 
 \begin{enumerate}
-    \item Estudio de la bibliografía relacionada. 
-    \item Estudio comparación de las herramientas existentes que permiten la automatización de procesos ETL.
-    \item Diseño de un lenguaje de dominio específico para la definici\'on de escenarios analíticos.
+    \item Estudiar el marco te\'orico conceptual respecto a los temas de inter\'es para la presente investigación. 
+    \item Estudiar y comparar las herramientas existentes que permiten la automatización de procesos ETL.
+    \item Concebir y diseñar un lenguaje de dominio específico para la definici\'on de escenarios analíticos.
     \item Implementación de un software que permita inferir y ejecutar los joins necesarios para la población del escenario diseñado.
-    \item Validación de la solución mediante experimentación
+    \item Validar la solución solución propuesta mediante experimentación.
 \end{enumerate}
 
 \section{Propuesta de soluci\'on}
 
-Se propone utilizar un Lenguaje de Dominio Específico (DSL) como método de solución para la modelación conceptual de ETL. 
-El DSL cuenta con estructuras gramaticales que permiten definir las dimensiones y los hechos del almacén de datos de 
-destino.
+Se propone utilizar un Lenguaje de Dominio Específico (DSL) como método para vincular los modelos relacionales y analítico
+que intervienen en un proceso ETL. El DSL cuenta con estructuras gramaticales que permiten definir qu\'e atributos 
+contienen las dimensiones y los hechos del escenario analítico y de qu\'e tablas obtenerlos de las fuentes de datos.
 
-El proceso comienza convirtiendo la fuente de datos en un grafo, donde las tablas se representan como nodos y las relaciones 
-entre las tablas se representan como aristas. Este grafo, junto con las definiciones realizadas mediante el DSL, se utilizan 
-como entrada para un algoritmo que inferiere los joins necesarios.
+El proceso de generación del c\'odigo ETL comienza convirtiendo la fuente de datos en un grafo, donde las tablas 
+se representan como nodos y las relaciones entre las tablas se representan como aristas. Este grafo, junto con las 
+definiciones realizadas mediante el DSL, se utilizan como entrada para un algoritmo que infiere los joins necesarios.
 
 Una vez calculados los joins, se seleccionan los más adecuados y se generará el 
-código SQL correspondiente al escenario ETL diseñado.
+código SQL correspondiente para la población del escenario analítico especificado.
 
 Finalmente, el sistema propuesto se encargará de ejecutar de manera planificada los códigos generados para mantener actualizado 
 el almacén de datos. 
