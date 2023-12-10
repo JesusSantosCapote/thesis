@@ -2,21 +2,28 @@
 
 En el ámbito de los sistemas de administración de bases de datos, el Procesamiento de Transacciones en Línea (OLTP) es un 
 tipo de procesamiento de datos que consiste en ejecutar una serie de transacciones que ocurren simultáneamente y en 
-tiempo real. Los sistemas OLTP están diseñados para garantizar la integridad y coherencia de los datos en un entorno de 
-múltiples usuarios.
+tiempo real en un entorno de múltiples usuarios\cite{harizopoulos2018oltp}.
 
-Los datos transaccionales son información que rastrea las interacciones relacionadas con las actividades de una 
-organización. Estas interacciones pueden ser transacciones comerciales, como pagos de clientes, pagos realizados 
-a proveedores, movimientos en el inventario de una organización, pedidos recibidos o servicios entregados. Los eventos 
-transaccionales, usualmente contienen una dimensión de tiempo, algunos valores 
-numéricos y referencias a otros datos\cite{oltpAzure}. Aunque, con el paso de los años, especialmente desde la llegada de 
+Los datos de transacciones son información que registra las interacciones relacionadas con las actividades de una empresa. Estas 
+interacciones pueden incluir transacciones comerciales, como pagos de clientes, pagos a proveedores, cambios en el inventario de la empresa, 
+pedidos recibidos o servicios prestados. Por lo general, los eventos de transacciones incluyen una dimensión de tiempo, valores numéricos y 
+referencias a otros datos\cite{oltpAzure}. Aunque, con el paso de los años, especialmente desde la llegada de 
 Internet, la definición de transacción 
 se ha expandido para poder abarcar todas las posibles formas de interacción digital entre un usuario y un negocio a través 
-de cualquier sensor conectado a la web. Además, incluye cualquier tipo de acción, como descargar pdfs en una 
+de cualquier sensor conectado a internet. Además, incluye cualquier tipo de acción, como descargar pdfs en una 
 página web, ver un video específico, entre otros\cite{oltpOracle}.
 
 Los sistemas OLTP se centran principalmente en respaldar las operaciones comerciales diarias. Las transacciones que procesan 
-son brebes y sencillas, que normalmente implican la inserción, modificación o recuperación de cantidades pequeñas de datos.
+son breves y sencillas, que normalmente implican la inserción, modificación o recuperación de cantidades pequeñas de datos.
+
+Los datos recopilados por los sistemas OLTP son fundamentales para respaldar los sistemas analíticos. Por lo tanto, la calidad de estos datos es 
+crucial para el correcto funcionamiento de dichos sistemas. Los sistemas OLTP tienen la responsabilidad de mantener la consistencia de los datos, 
+es decir, que la información permanezca válida y precisa a lo largo del tiempo y en todas las operaciones que se realizan, en concordancia con 
+los principios ACID (Atomicidad, Consistencia, Aislamiento, Durabilidad). Asimismo, los sistemas OLTP están diseñados para garantizar la integridad, 
+asegurando que los datos sean precisos y 
+completos, y la coherencia, asegurando que los datos sean lógicamente correctos y estén libres de anomalías o discrepancias. La consistencia, la 
+coherencia y la integridad de los datos son aspectos esenciales para garantizar fiabilidad y la utilidad de los datos en la toma de decisiones y en 
+la realización de análisis científicos y técnicos.
 
 \subsection{Objetivos de los sistemas OLTP}
 
@@ -26,17 +33,15 @@ los sistemas OLTP son:
 
 \begin{itemize}
     \item Posibilitar el procesamiento de transacciones en tiempo real. La rapidez que brinda OLTP en el procesamiento de 
-        las transacciones, permite a las organizaciones mantener datos actualizados y 
+        las transacciones permite a las organizaciones mantener datos actualizados y 
         confiables.
 
-    \item Mantener la integridad y la coherencia de los datos durante todo el proceso transaccional. Los sistemas OLTP 
-        cumplen las propiedades ACID (Atomicidad, Consistencia, Aislamiento, Durabilidad), por tanto garantizan un 
-        procesamiento de datos confiable y sin errores.
+    \item Mantener la integridad, la coherencia y la consistencia de los datos durante todo el proceso transaccional.
 
     \item Recuperar y manipular datos de forma eficiente para respaldar las operaciones transaccionales. Los sistemas OLTP
-        est\'an optimizados para responder consultas e implementan mecanismos de indexación que proporcionan rapidez y presici\'on 
-        a la hora de recuperar datos. Adem\'as, ofrecen capacidades s\'olidas de manipulaci\'on de datos, lo que permite 
-        insertar, eliminar o actualizar registros de forma segura.
+        est\'an optimizados para responder consultas e implementan mecanismos de indexación que proporcionan rapidez y precisi\'on 
+        a la hora de recuperar datos. Adem\'as, el cumplimiento de los principios ACID garantiza que 
+        insertar, eliminar o actualizar registros sean operaciones seguras.
 
     \item Proporcionar alta disponibilidad y escalabilidad. Es necesario que los sistemas OLTP sean capaces de manejar una 
         gran cantidad de usuarios y transacciones concurrentes sin verse afectado su rendimiento.
@@ -48,28 +53,27 @@ los sistemas OLTP son:
 
 \subsection{Arquitectura de los sistemas OLTP}
 
-Los sistemas OLTP se basan en una arquitectura cliente-servidor, donde los clientes envían solicitudes al servidor para 
+Los sistemas OLTP se basan, generalmente, en una arquitectura cliente-servidor, donde los clientes envían solicitudes al servidor para 
 realizar transacciones en la base de datos. El servidor procesa estas solicitudes y actualiza la base de datos en tiempo 
-real. Los sistemas OLTP también utilizan técnicas de concurrencia y control de transacciones para garantizar la integridad 
-de los datos y prevenir problemas como la corrupción de datos o la pérdida de información. Por tanto la arquitectura de los 
-sistemas OLTP puede ser separada, generalmente, en los siguientes componentes:
+real. Por tanto, la arquitectura de los 
+sistemas OLTP puede ser separada en las siguientes capas\cite{oltpAzure}:
 
 \begin{itemize}
-    \item \textbf{Interfaz de usuario:} Este componente permite la interacci\'on entre los usuarios y sistema OLTP. Seg\'un 
-        los requisitos del sistema, la interfaz puede ser basada en la web, una aplicaci\'on m\'ovil o de escritorio.
+    \item \textbf{Interfaz de usuario:} Este componente permite la interacci\'on entre los usuarios y el sistema OLTP. La interfaz puede ser basada 
+        en la web, una aplicaci\'on m\'ovil o de escritorio, entre otros.
 
     \item \textbf{Lógica del Negocio:} Este componente alberga las reglas comerciales y la lógica 
-        que rige el procesamiento de las transacciones. Es la encargada de validar los datos entrados por los usuarios, 
+        que rige el procesamiento de las transacciones. Es la encargada de validar los datos introducidos por los usuarios, 
         garantizar el cumplimiento de las restricciones de integridad y organizar la distribuci\'on de los datos entre los 
         distintos componentes del sistema.
 
-    \item \textbf{Administrador de transacciones:} El administrador de transacciones es el encargado de asegurar la 
+    \item \textbf{Administrador de transacciones:} El administrador de transacciones es el encargado de asegurar 
         la coherencia y atomicidad de las transacciones. Implementa mecanismos para el manejo de múltiples transacciones 
-        simultáneas, garantizando as\'i su ejecuci\'on de forma aislada y que los cambios que generen sean confirmados o 
+        simultáneas, garantizando su ejecuci\'on de forma aislada y que los cambios que generen sean confirmados o 
         revertidos. Implementa mecanismos de control de concurrencia y tolerancia a fallos.
 
     \item \textbf{Almacenamiento de datos:} Por norma general, los sistemas OLTP suelen hacer uso de sistemas de gestión
-        de bases de datos relacionales (RDBMS) para almacenar datos transaccionales, aprovechando as\'i las bondades del 
+        de bases de datos relacionales (RDBMS) para almacenar datos transaccionales, aprovechando las bondades del 
         Modelo Relacional.
 \end{itemize}
 
