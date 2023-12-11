@@ -4,20 +4,23 @@ El Procesamiento Anal\'itico en L\'inea (\textbf{OLAP}) es una tecnología de or
 comerciales que facilita a los usuarios el an\'alisis de grandes conjuntos de datos multidimensionales de manera 
 eficiente y efectiva. A diferencia de las bases de datos relacionales tradicionales, que se centran en el procesamiento 
 de transacciones y la actualización de datos en tiempo real, OLAP se enfoca en el análisis de datos históricos y la 
-identificación de patrones y tendencias. 
+identificación de patrones y tendencias\cite{chaudhuri1997overview}.
+
+En el ámbito informacional, los datos multidimensionales pueden ser definidos como valores cuantitativos que representan hechos medibles del 
+funcionamiento de un negocio, y valores cualitativos que aportan cualidades y descripciones a los valores cuantitativos. Los valores cuantitativos 
+se denominan hechos, mientras que a los valores cualitativos se les llama dimensiones\cite{lismaster}.
 
 \subsection{Objetivos de los sistemas OLAP}
 
 En términos generales, el objetivo principal de OLAP es proporcionar una plataforma para el análisis de datos 
-multidimensionales de manera eficiente y efectiva. De forma m\'as espec\'ifica OLAP tiene el objetivo de: 
+multidimensionales de manera efectiva. De forma m\'as espec\'ifica OLAP tiene el objetivo de: 
 
 \begin{itemize}
-    \item Brindar a los analistas de datos flexibilidad a la hora de realizar sus labores, permitiendoles analizar los datos desde 
-        diferentes perspectivas y dimensiones, así como la capacidad de agregar o desagregar los datos según sea necesario.
-    \item Ofrecer an\'alisis de forma r\'apida y eficiente, incluso cuando se manejan grandes cantidades de datos.
+    \item Permitir analizar los datos desde 
+        diferentes puntos de vista utilizando las dimensiones.
     \item Ser fácilmente accesible para los usuarios finales, incluso si no tienen experiencia en programación o en el 
         manejo de bases de datos. Esto se logra a través de interfaces de usuario intuitivas y herramientas de análisis 
-        visuales que permiten a los usuarios explorar los datos de manera interactiva.
+        visuales que permiten explorar los datos de manera interactiva.
     \item Ser f\'acilmente integrable con otras aplicaciones de análisis y reporting, lo que permite a las organizaciones 
         utilizar la tecnología en conjunto con otras herramientas de análisis de datos y visualización.
     \item Otorgar seguridad permitiendo a las organizaciones controlar quiénes tienen acceso a los datos y qué acciones 
@@ -27,22 +30,20 @@ multidimensionales de manera eficiente y efectiva. De forma m\'as espec\'ifica O
 \subsection{Arquitectura de los sistemas OLAP}
 
 La arquitectura de un sistema OLAP consiste en múltiples componentes que trabajan en conjunto para brindar un entorno 
-analítico integral. Estos son los componentes fundamentales de un sistema OLAP:
+analítico integral. Por lo general, puede dividirse en cuatro componentes fundamentales\cite{nanda2019comprehensive}:
 
 \subsubsection{Fuentes de Datos:}
 El primer componente de un sistema OLAP son las fuentes de datos. Estas pueden ser cualquier número de diferentes 
-tipos de fuentes de datos, como bases de datos relacionales o archivos planos. Las fuentes de 
-datos son típicamente el punto de partida para el proceso ETL (Extraci\'on, Transformaci\'on, Carga), que extrae datos 
-de los sistemas fuente y los carga en el sistema OLAP.
+tipos de fuentes de datos, como bases de datos relacionales o archivos planos. Los datos provenientes de las fuentes 
+son sometidos a procesos ETL (Extraci\'on, Transformaci\'on, Carga), definidos por los desarrolladores, 
+con el objetivo de conciliarlos en un formato unificado para luego ser cargados, bien dentro del repositorio central del sistema OLAP o 
+dentro de un almacén de datos operacionales
+(Operational Data Store, ODS) que le sirva de proveedor. Un acercamiento m\'as profundo sobre los procesos ETL es realizado 
+en la sección \ref{section:etl}.
 
-\subsubsection{ETL:}
-El siguiente componente son los procesos ETL. Estos son los procesos que hacen posible 
-que los datos sean extra\'idos de los sistemas fuente, se transformen en el formato requerido por el sistema OLAP y luego se 
-cargan en el sistema OLAP. Los procesos ETL son los responsables de garantizar la calidad y consistencia de los datos, 
-así como de realizar cualquier limpieza o agregación de datos necesarios.
-
-\subsubsection{Almacén de datos:}
-El tercer componente de un sistema OLAP es el almacén de datos, Data Warehouse en ingl\'es. Aquí es donde se almacenan y 
+\subsubsection{Almacén de datos y Data Marts:}
+El segundo componente de un sistema OLAP es el almacén de datos y los Data Marts derivados. Estas estructuras constituyen el repositorio central 
+del sistema OLAP. En ellos es donde se almacenan y 
 organizan los datos de manera optimizada para consultas analíticas. M\'as adelante se profundizar\'a en las especificidades 
 de los Almacenes de Datos.
 
@@ -53,8 +54,8 @@ optimizadas para consultas analíticas, como cubos multidimensionales, índices 
 
 \subsubsection{Herramientas de cliente:}
 El último componente de un sistema OLAP son las herramientas de cliente. Estas son las herramientas que utilizan los 
-usuarios finales para interactuar con el sistema OLAP y realizar consultas analíticas. Las herramientas de cliente pueden 
-incluir desde simples paneles basados en web hasta herramientas sofisticadas de visualización y análisis de datos.
+usuarios finales para interactuar con el sistema OLAP, realizar consultas analíticas y generar informes y visualizaciones.
+
 
 \subsection{Almacenes de datos}
 
@@ -67,13 +68,22 @@ almacén de datos:
 
 \subsubsection{Orientados a sujetos:}
 %
-Hace referencia a un sistema que est\'a organizado en base a temas o conceptos especiales, permitiendo que los datos y la 
-información de un mismo tipo quede siempre conectada.
+Como en la gramática española, al dividir una oración en sujeto y predicado se separa el ente u origen de la acci\'on 
+de la acci\'on como tal. Esta diferenciación explica por qué se describe a los almacenes de datos como "orientados a sujetos". 
+El centro de los sistemas de apoyo a la toma de decisiones son los conjuntos de entidades (sujetos) y sus interrelaciones 
+en el contexto empresarial como fuente de información, al contrario de los sistemas transaccionales que est\'an orientados a eventos 
+(acci\'on). Los sujetos participan en distintos procesos que se agrupan por 
+tem\'aticas. Aterrizando esta idea en un ejemplo palpable como las ventas minoristas, los sujetos -como empleados, departamentos, 
+locaciones, clientes, facturas y productos- son los medios cuyas interrelaciones garantizan el funcionamiento de los procesos de 
+gestión de recursos humanos, ventas o inventario, los cuales pueden ser catalogados como tem\'aticas. 
 
 \subsubsection{Integrados:}
-Los datos se obtienen de fuentes diferentes, por ejemplo de los diferentes departamentos de una organización, por lo que se 
-deben aplicar técnicas que permitan determinar las interrelaciones existentes entre los datos, para luego guardarlos en el 
-almacén y que puedan ser accedidos eficientemente durante las consultas.
+Los almacenes de datos se nutren de numerosas fuentes, que en la mayor\'ia de los casos, manifiestan 
+incongruencias en cuestiones de formato y estructura, problemas que deben ser eliminados en el almac\'en de datos.
+Por otra parte, las entidades que aparecen en disintas fuentes de datos pero tienen un mismo significado para el 
+negocio, deben ser fusionadas. El almac\'en de datos debe constituir una fuente \'unica de acceso a los or\'igenes de datos 
+y proporcionar medios para combinar y conformar los datos, de modo que se obtenga una vista unificada de los mismos que se 
+corresponda con su significado empresarial.
 
 \subsubsection{No Vol\'atiles:}
 La información contenida en un almac\'en de datos existe para ser leída, pero no modificada.
