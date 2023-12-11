@@ -80,7 +80,7 @@ gestión de recursos humanos, ventas o inventario, los cuales pueden ser catalog
 \subsubsection{Integrados:}
 Los almacenes de datos se nutren de numerosas fuentes, que en la mayor\'ia de los casos, manifiestan 
 incongruencias en cuestiones de formato y estructura, problemas que deben ser eliminados en el almac\'en de datos.
-Por otra parte, las entidades que aparecen en disintas fuentes de datos pero tienen un mismo significado para el 
+Por otra parte, las entidades que aparecen en distintas fuentes de datos pero tienen un mismo significado para el 
 negocio, deben ser fusionadas. El almac\'en de datos debe constituir una fuente \'unica de acceso a los or\'igenes de datos 
 y proporcionar medios para combinar y conformar los datos, de modo que se obtenga una vista unificada de los mismos que se 
 corresponda con su significado empresarial.
@@ -90,18 +90,46 @@ La información contenida en un almac\'en de datos existe para ser leída, pero 
 
 \subsubsection{Variables con el tiempo:}
 Los cambios producidos en los datos a lo largo del tiempo quedan registrados, para que los informes que se generen reflejen 
-esas variaciones.
+esas variaciones. Es fundamental conservar la sucesión de los cambios para realizar análisis de comportamiento o tendencias y 
+predicciones con relación al funcionamiento de la empresa de modo que apoyen el proceso de toma de decisiones.
 
-
-No se puede hablar de Almacenes de Datos sin mencionar los modelos dimensionales. A trav\'es de los a\~{n}os, la industria 
-a conclu\'ido que el modelado dimensional es la t\'ecnica m\'as apropiada para entregar datos a los usuarios de los 
-almacenes de datos. En la siguiente sección profundizaremos en el modelo dimensional.
 
 \subsection{Modelo Dimensional}
 
-Un modelo dimensional contiene la misma información que un modelo normalizado, pero empaqueta los datos en un formato 
-distinto, que tiene como objetivos de diseño la comprensión del usuario, el rendimiento de las consultas y la resiliencia 
-al cambio. Un modelo dimensional se compone de dos elementos fundamentales: las tablas de hechos y las tablas de dimensi\'on.
+No se puede hablar de Almacenes de Datos sin mencionar los modelos dimensionales. A través de los a\~{n}os, la industria 
+a concluido que el modelado dimensional es la técnica m\'as apropiada para entregar datos a los usuarios de los 
+almacenes de datos.
+
+El trabajo con el modelo dimensional persigue analizar los datos desde diferentes perspectivas para lograr una visión 
+global del caso de estudio que permita fundamentar las decisiones estratégicas en diferentes circunstancias, con énfasis 
+en la temporalidad. Sin embargo, la eficiencia de los análisis est\'a fuertemente ligada a forma en que los datos 
+se representan y se almacenan. El enfoque relacional, por su alto grado de difusión y familiarización que generalmente 
+poseen los especialistas, ha servido como una de las instrumentaciones del modelo dimensional, aunque su enfoque f\'isico 
+no exige el almacenamiento en tablas. De esta forma, los valores que representan el funcionamiento del negocio se almacenan 
+en tablas de hechos y los valores que describen el entorno donde ocurren los hechos se almacenan en tablas de dimensiones.
+Las tablas de hechos se relacionan con las tablas de dimensiones formando diferentes esquemas.
+
+El modelo dimensional representa un paradigma de bases de datos que intenta reflejar de manera física varias dimensiones, 
+a diferencia del modelo relacional cuyas estructuras solo son de dos dimensiones. El modelo dimensional introduce el concepto 
+de cubo de información, cuyas celdas constituyen resúmenes de los datos según m\'ultiples aristas. Los cubos y las dimensiones 
+son la estructuras fundamentales del modelo dimensional.
+
+
+\subsubsection{Cubo}
+
+Se utiliza el término "cubo" para referirse a los datos que se organizan y resumen en una estructura multidimensional compuesta 
+por un conjunto de medidas y dimensiones que representan el fenómeno o proceso que se desea analizar. Los cubos constituyen 
+el objeto fundamental del procesamiento analítico en línea\cite{lismaster}. Ejemplificando, con apoyo del modelo relacional, 
+un cubo sería una tabla de hechos, donde se almacenan valores numéricos y que est\'a relacionada con tablas de dimensiones 
+que ofrecen al usuario diferentes puntos de vista para el análisis de los valores.
+
+\subsubsection{Medida}
+
+Las medidas son un conjunto de valores que reflejan el desempeño de la actividad que se analiza. Constituyen un resumen de los 
+hechos\cite{lismaster}, creados a partir de la aplicación sobre los datos de funciones como suma, porcentaje, promedio o cantidad 
+de elementos. No todas las medidas son valores que existen en el origen, a menudo las medidas son el resultado de cálculos entre 
+varios atributos.
+
 %
 \subsubsection{Tablas de Hechos: }
 %
