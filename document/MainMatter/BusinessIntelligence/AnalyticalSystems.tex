@@ -128,94 +128,70 @@ que ofrecen al usuario diferentes puntos de vista para el análisis de los valor
 Las medidas son un conjunto de valores que reflejan el desempeño de la actividad que se analiza. Constituyen un resumen de los 
 hechos\cite{lismaster}, pudiendo incluir sumatorias, porcentajes, promedios o cantidad de elementos como posibles síntesis. 
 No todas las medidas son valores que existen en el origen, a menudo las medidas son el resultado de cálculos entre 
-varios atributos.
+varios atributos. Las medidas se almacenan en las celdas de los cubos y la posici\'on de una celda en un cubo est\'a definida por la 
+intersecci\'on de los miembros de las dimensiones, es decir, los miembros de las dimensiones con los que se relaciona la medida 
+funcionan como coordenadas dentro del cubo.
 
-%
-\subsubsection{Tablas de Hechos: }
-%
-Una tabla de hechos es la tabla principal en un modelo dimensional, en la cual se almacenan las mediciones de desempeño del 
-negocio, generalmente valores num\'ericos\cite{kimball2011data}. Una fila en una tabla de hechos corresponde a una medida.
-%
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.5\textwidth]{../document/Graphics/hechos.png}
-    \caption{Tabla de Hechos Daily Sales (Ventas Diarias) \cite{kimball2011data}}
-    \label{fig:facts}
-  \end{figure}
-%
+\subsubsection{Dimensión}
 
-La Figura\ref{fig:facts} muestra un ejemplo de una tabla de hechos que contiene datos sobre las ventas de un producto, en una fecha dada, 
-en una tienda determinada. N\'otese que los atributos Quantity Sold (Cantidad Vendida) y Dollar Sales Amount (Cantidad de 
-Ventas en Dólares), son atributos num\'ericos que pueden ser de gran ayuda para analizar la rentabilidad y otros indicadores 
-del negocio. 
+Una dimensión constituye una colección lógica de atributos que comparten un significado concreto y proporcionan 
+perspectivas analíticas sobre un hecho particular. Dentro de esta colección, se articula una jerarquía que clarifica y da contexto a los 
+datos. Tomando como ilustración una dimensión que caracteriza la ubicación geográfica de un hecho, ésta podría incorporar categorías 
+como País, Provincia, Municipio y Barrio. Cada una de estas categorías detalla la localización del evento con distinto grado de 
+exactitud, estableciendo a su vez una jerarquía definida que organiza los datos de lo más amplio a lo más específico. En el 
+caso mencionado, la jerarquía estaría secuenciada desde el concepto más abarcador al más detallado: País, Provincia, 
+Municipio, y finalmente Barrio. En una dimensión puede definirse m\'as de una jerarquía\cite{lismaster}.
 
-Las tablas de hechos normalmente ocupan el $90\%$\cite{kimball2011data} del espacio de las bases de datos dimensionales, por tanto, 
-los desarrolladores deben tener bien en cuenta el espacio que ocupa la tabla. Es inconveniente almacenar 
-registros num\'ericos que no vayan a aportar nada relevante a los an\'alisis. Esto tambi\'en se aplica para los atributos 
-de tipo texto, ya que ocupan mayor espacio que los datos num\'ericos y por su naturaleza heterog\'enea es conveniente 
-mantenerlos fuera de las tablas de hechos; aunque esto no es absoluto\cite{kimball2011data}.
+\subsubsection{Nivel}
 
-Las tablas de hechos contienen dos o m\'as llaves for\'aneas, que conectan con las llaves primarias de las tablas de 
-dimensiones.
-%
-\subsubsection{Tablas de Dimensiones: }
-%
-Las tablas de dimensiones contienen los descriptores textuales del negocio. Cada dimensión se identifica por su llave 
-primaria, la cual es \'unica y sirve como base para asegurar la integridad referencial en cualquier tabla de hechos con 
-la que se interrelaciona. Los atributos de las tablas de dimensi\'on son la fuente fundamental de restricciones en las 
-consultas al modelo dimensional, son fundamentales para hacer que el almacén de datos sea utilizable y comprensible. Las 
-dimensiones implementan la interfaz de usuario para el almacén de datos, por tanto, cuánto más tiempo se dedique a 
-proporcionar atributos con información detallada y terminología comercial, mejor es el almacén de datos.
+Un nivel es un conjunto de elementos que pertenecen a la misma categoría, es decir, que se encuentran a una misma distancia 
+de la raíz de la jerarquía. En el ejemplo anterior, Pa\'is constituye un nivel al que pertenecen los elementos Cuba, Chile, 
+Brasil, entre otros.
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.5\textwidth]{../document/Graphics/dimension.png}
-    \caption{Tabla de Dimensi\'on Producto \cite{kimball2011data}}
-    \label{fig:dimension}
-  \end{figure}
+\subsubsection{Granularidad o Grano}
 
-La Figura\ref{fig:dimension} muestra un ejemplo de la tabla de la dimensi\'on Product (Producto). 
-%
-\subsubsection{Esquema Estrella y Esquema Copo de Nieve: }
+La granularidad se refiere al nivel de detalle representado en los datos. Determina 
+la profundidad y precisión de los datos almacenados dentro de una tabla de hechos y est\'a definida por su lista de dimensiones. 
+Indica cual es el alcance de una medida y todas las medidas en una tabla de hechos tienen que tener la misma 
+granularidad\cite{kimball2011data}. Por ejemplo, si los datos de las ventas de un negocio de venta minorista 
+se registran al nivel de cada transacción individual, dicho hecho tendr\'ia una granularidad muy alta. Sin embargo, 
+si los datos se agregan por d\'ia, tendrían una granularidad m\'as baja, puesto que cada registro representa la suma 
+de todas las ventas del d\'ia.
 
-Las tablas de hechos y tablas de dimensiones se combinan para formar un modelo dimensional. Como se puede observar en la 
-Figura\ref{fig:dimmodel}, la tabla de hechos Ventas, que almacena las medidas de inter\'es, se encuentra en el centro del esquema, 
-interrelacionada a las tablas de dimensiones, que le proporcionan a las medidas atributos descriptivos.
+\subsubsection{Esquema Estrella y Esquema Copo de Nieve:}
 
-\begin{figure}[ht]
-  \centering
-  \includegraphics[width=1\textwidth]{../document/Graphics/star schema.png}
-  \caption{Modelo Dimensional \cite{kimball2011data}}
-  \label{fig:dimmodel}
-\end{figure}
+Las tablas de hechos y tablas de dimensiones se combinan para formar distintos esquemas. El m\'as conocido 
+de ellos es el esquema Estrella el cual consiste en una tabla de hechos central relacionada con varias tablas 
+de dimensiones. Los esquemas estrella son f\'aciles de leer y comprender los procesos que intentan modelar debido 
+a su simplicidad. Poseen un rendimiento sobresaliente, con pocas operaciones de Joins son capaces de dar respuesta 
+a consultas complicadas sobre los hechos.
 
-A esta estructura se le conoce como Esquema Estrella (\emph{Star Schema}). Debido a su simplicidad, son f\'aciles de leer 
-y de comprender los procesos que intentan modelar. Adem\'as tienen un rendimiento sobresaliente, con pocas operaciones se 
-pueden manejar consultas complicadas sobre los hechos. Sin embargo, tienen una deficiencia, con tal de mantener la 
-simplicidad, permiten redundancia de datos en las tablas de dimensiones.
+Otro bien conocido es el esquema Copo de Nieve, en el cual, a diferencia del esquema Estrella, las dimensiones se encuentran 
+normalizadas en varias tablas relacionadas. El efecto copo de nieve solo afecta a las tablas de dimensiones, las tablas de hecho 
+permanecen iguales que el esquema Estrella, en el centro del modelo. Este esquema tiene la ventaja de ayudar a reducir la redundancia 
+y mejorar la integridad de los datos. Sin embargo, este esquema puede resultar m\'as difícil de mantener y entender pues aumenta 
+la complejidad del modelo. Adem\'as, es necesario un mayor n\'umero de Joins para responder las consultas debido a que se incrementa
+la cantidad de tablas que intervienen.
 
-Ejemplo de esto es la tabla de la dimensi\'on Product, Figura\ref{fig:dimension}. N\'otese que se puede almacenar varios productos de una 
-misma marca, por tanto, la información de Brand Descriptor (Descriptor de Marca) se repetir\'ia por cada producto de la 
-misma marca. Lo mismo sucede con Category Description (Descriptor de Categor\'ia) y otros de los atributos. Es decir, la 
-información en esta tabla ser\'a redundante. Sin embargo, con el objetivo de optimizar el rendimiento de las consultas y 
-de mantener la legibilidad del modelo, se abstiene de crear una tabla aparte con la informaci\'on de las marcas, y unirla 
-a la dimensi\'on Product mediante una llave for\'anea. Si se realiza esta transformaci\'on en las tablas de dimensi\'on, 
-el Esquema Estrella converge al Esquema Copo de Nieve (\emph{Snowflake Schema}).
-
-En el esquema Copo de Nieve, las dimensiones se encuentran normalizadas en varias tablas relacionales. El efecto Copo de Nieve solo afecta a las tablas de 
-dimensiones, las tablas de hechos permanecen iguales que en el Esquema Estrella, en el centro del modelo. La ventaja de este esquema es que puede ayudar a reducir 
-la redundancia y mejorar la integridad de los datos. Sin embargo, en este esquema las consultas pueden resultar menos eficientes que en el Esquema Estrella, debido 
-a que intervienen un mayor número de tablas en las operaciones. Adem\'as, el Esquema Copo de Nieve puede resultar m\'as dif\'icil de entender y mantener, pues incrementa la complejidad del 
-dise\~{n}o del modelo.
-
-La decisi\'on de usar uno u otro esquema depende de los requerimientos espec\'ificos del proyecto y de las compensaciones entre rendimiento de las consultas, 
-la complejidad del esquema y la integridad de los datos.
+La decisi\'on de usar uno u otro esquema depende de los requerimientos espec\'ificos del proyecto y de las compensaciones entre 
+rendimiento de las consultas, la complejidad del esquema y la integridad de los datos.
 
 
 \subsection{Arquitectura de un almac\'en de datos}
 
+La arquitectura de los almacenes de datos es un tema pol\'emico. Los mismos Inmon y Kimball, los mayores exponentes de la tem\'atica, 
+tienen posiciones dispares. El enfoque planteado por William H. Inmon se centra en la modelación relacional cl\'asica dentro 
+del almacén de datos. Por otro lado, Ralph Kimball propone un enfoque centrado en el modelo dimensional.
+
+\subsubsection{Enfoque Relacional de Inmon}
+
+Seg\'un este enfoque el almacén de datos est\'a compuesto principalmente por los datos reconciliados en un esquema 
+relacional cuyas tablas se encuentran altamente normalizadas, es decir, llevadas a tercera forma normal o superior\cite{mijailmaster}.
+
+
 La estructura de un Almac\'en de Datos puede ser separada por capas. Aunque esto es un tema pol\'emico. Los mismos Inmon y Kimball tienen posiciones dispares 
-con respecto a este tema. Seg\'un Inmon los Data Marts est\'an f\'isicamente separados del Almac\'en de Datos y la forma de acceder a los datos es a trav\'es de los Data Marts \cite{inmon2005building}.
+con respecto a este tema. Seg\'un Inmon los Data Marts est\'an f\'isicamente separados del Almac\'en de Datos y la forma de acceder a los datos es 
+a trav\'es de los Data Marts \cite{inmon2005building}.
 Por otro lado, Kimball no concibe esta separaci\'on y los usuarios acceden a los datos del almac\'en directamente \cite{kimball2011data}.
 
 Cada autor propone diferentes nombres para las capas, pero de manera general pueden distinguirse 3 capas:
@@ -229,40 +205,3 @@ por los datos integrados de los distintos Data Marts. En cambio, seg\'un Inmon e
 
 \subsubsection{Capa de Reportes:} Es donde los usuarios interact\'uan con el Almac\'en de Datos.
 
-\subsection{Herramientas OLAP}
-
-En el campo del Procesamiento Analítico en Línea (OLAP), existen varias herramientas y plataformas establecidas que 
-proporcionan capacidades sólidas para el análisis de datos y el apoyo a la toma de decisiones. Estas herramientas ofrecen 
-una amplia gama de características y funcionalidades para empoderar a las organizaciones en la obtención de conocimientos a 
-partir de sus datos. A continuaci\'on discutiremos algunas de las m\'as conocidas: 
-
-\subsubsection{Microsoft SQL Server Analysis Services (SSAS): }
-
-Microsoft SQL Server Analysis Services (SSAS) es una herramienta OLAP que forma parte del conjunto de herramientas 
-de Microsoft SQL Server. Brinda capacidades de análisis multidimensionales y minería de datos, permitiendo a los 
-usuarios crear y gestionar cubos OLAP para un análisis avanzado de datos. SSAS admite tanto el modelo multidimensional 
-como el modelo tabular, brindando flexibilidad en la modelización y consultas de datos.
-
-\subsubsection{Oracle Essbase: }
-
-Oracle Essbase es una herramienta OLAP ofrecida por Oracle Corporation. Proporciona un sistema de gestión de bases de datos 
-multidimensionales que permite realizar análisis y pronósticos complejos. Admite diversas técnicas de modelado de datos, incluyendo 
-dimensiones densas y dispersas, así como capacidades avanzadas de cálculo. Essbase se integra con otras herramientas y 
-plataformas de Oracle, ofreciendo una solución integral para análisis empresarial.
-
-\subsubsection{IBM Cognos TM1: }
-
-IBM Cognos TM1 es una potente herramienta OLAP diseñada para la gestión del rendimiento y la planificación. Permite a las 
-organizaciones crear modelos multidimensionales y realizar análisis en tiempo real de datos financieros y operativos. TM1 
-ofrece un entorno dinámico y flexible para presupuestar, pronosticar y modelar escenarios. Proporciona capacidades 
-avanzadas de consolidación de datos, análisis "what-if" y análisis predictivo. TM1 se integra con otras herramientas de 
-IBM Cognos, mejorando las capacidades generales de inteligencia empresarial.
-
-\subsubsection{Pentaho Mondrian: }
-
-Pentaho Mondrian es un servidor OLAP de código abierto que forma parte de la plataforma de análisis empresarial Pentaho. 
-Permite a los usuarios la creación e implementaci\'on de cubos OLAP para el análisis interactivo de datos. Mondrian es 
-compatible con el lenguaje de consulta MDX (Multi-Dimensional eXpressions) y proporciona una interfaz basada en web 
-para consultar y explorar datos. Ofrece características que permiten la navegaci\'on en datos multidimensionales como 
-desglose, segmentación y pivotar. Mondrian se integra con otras herramientas de Pentaho, brindando una 
-suite integral para la integración de datos, informes y análisis.
