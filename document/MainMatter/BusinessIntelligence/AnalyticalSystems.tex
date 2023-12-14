@@ -162,7 +162,8 @@ de todas las ventas del d\'ia.
 
 Las tablas de hechos y tablas de dimensiones se combinan para formar distintos esquemas. El m\'as conocido 
 de ellos es el esquema Estrella el cual consiste en una tabla de hechos central relacionada con varias tablas 
-de dimensiones. Los esquemas estrella son f\'aciles de leer y comprender los procesos que intentan modelar debido 
+de dimensiones. Cada estrella simula un cubo n-dimensional. Los esquemas estrella son f\'aciles de leer y comprender 
+los procesos que intentan modelar debido 
 a su simplicidad. Poseen un rendimiento sobresaliente, con pocas operaciones de Joins son capaces de dar respuesta 
 a consultas complicadas sobre los hechos.
 
@@ -181,27 +182,71 @@ rendimiento de las consultas, la complejidad del esquema y la integridad de los 
 
 La arquitectura de los almacenes de datos es un tema pol\'emico. Los mismos Inmon y Kimball, los mayores exponentes de la tem\'atica, 
 tienen posiciones dispares. El enfoque planteado por William H. Inmon se centra en la modelación relacional cl\'asica dentro 
-del almacén de datos. Por otro lado, Ralph Kimball propone un enfoque centrado en el modelo dimensional.
+del almacén de datos. Por otro lado, Ralph Kimball propone un enfoque centrado en el modelo dimensional. Antes de pasar 
+detallar las especificidades de cada enfoque es necesario presentar otro concepto, tambi\'en controversial en el plano de 
+los almacenes de dato. 
+
+\subsubsection{Data Mart}
+
+Un Data Mart es un almac\'en de datos con una funci\'on departamental o regional. Consta de las mismas caracter\'isticas de un 
+almacén de datos y brinda las misma facilidades, solo que no est\'a pensado para responder a las necesidades de toda la organización
+sino a una sola actividad. Es incorrecto pensar en un Data Mart como un almac\'en de datos m\'as pequeño pues no es su tamaño 
+lo que lo define sino su objetivo\cite{mijailmaster}. En la construcci\'on de los almacenes de datos es usual dedicar un Data Mart 
+a cada departamento en vez de que estos accedan a toda la información del almac\'en. Con esto se garantiza llevar solo la información 
+que le corresponde a cada tipo de usuario.
 
 \subsubsection{Enfoque Relacional de Inmon}
 
 Seg\'un este enfoque el almacén de datos est\'a compuesto principalmente por los datos reconciliados en un esquema 
-relacional cuyas tablas se encuentran altamente normalizadas, es decir, llevadas a tercera forma normal o superior\cite{mijailmaster}.
+relacional cuyas tablas se encuentran altamente normalizadas, es decir, llevadas a tercera forma normal o superior\cite{mijailmaster}. 
+Adem\'as, concibe a los Data Marts fisicamente separados del almacén de datos y la forma de acceder a los datos del almacén es a 
+través de los Data Marts.
 
+La principal ventaja que brinda este enfoque para construcci\'on y explotaci\'on de un almacén de datos es la facilidad del proceso 
+de derivaci\'on de los datos para el análisis dado que, previamente, est\'an reconciliados e integrados en una estructura relacional.
 
-La estructura de un Almac\'en de Datos puede ser separada por capas. Aunque esto es un tema pol\'emico. Los mismos Inmon y Kimball tienen posiciones dispares 
-con respecto a este tema. Seg\'un Inmon los Data Marts est\'an f\'isicamente separados del Almac\'en de Datos y la forma de acceder a los datos es 
-a trav\'es de los Data Marts \cite{inmon2005building}.
-Por otro lado, Kimball no concibe esta separaci\'on y los usuarios acceden a los datos del almac\'en directamente \cite{kimball2011data}.
+Con la adopci\'on del modelo relacional, el cual garantiza la inserci\'on y la actualización de los datos de forma consistente, se 
+asegura una estructura que puede manejar la actualización creciente de un almacén de datos. Sin embargo, esta ventaja va en 
+detrimento del acceso a datos. 
 
-Cada autor propone diferentes nombres para las capas, pero de manera general pueden distinguirse 3 capas:
+Por otra parte, la estructura relacional normalizada no es recomendable para presentar los datos a los usuarios finales debido 
+a que estos pueden tener dificultades para entender y recordar el esquema relacional de datos de la empresa o incluso de alguno 
+de sus subconjuntos. En la mayor\'ia de los casos se requiere un conocimiento profundo del modelo relacional para consultar 
+datos representados de esta forma. 
 
-\subsubsection{Sistemas Operacionales:}
-Son las fuentes de datos primarias del Almac\'en de Datos.
+El problema principal del enfoque Inmon es que resta mucho valor a la capa de datos derivados, que es la encargada de brindar 
+una estructura adecuada para optimizar las respuestas a consultas imprevistas, que es precisamente donde radica el car\'acter 
+informacional de un almacén de datos.
 
-\subsubsection{Almac\'en de Datos Empresarial:} 
-Es la capa fundamental del almac\'en. Almacena los datos reconciliados, extra\'idos de los sistemas operacionales. De acuerdo con Kimball esta capa est\'a compuesta
-por los datos integrados de los distintos Data Marts. En cambio, seg\'un Inmon es una estructura en tercera forma normal y los Data Marts derivados, separados f\'isicamente. 
+\subsubsection{Enfoque Dimensional de Kimball}
 
-\subsubsection{Capa de Reportes:} Es donde los usuarios interact\'uan con el Almac\'en de Datos.
+El enfoque de Kimball se acerca m\'as a las necesidades informacionales de los usuarios que toman las decisiones, debido a que su 
+estructura es un reflejo de como los directivos analizan el comportamiento de su actividad empresarial y permite la exploraci\'on 
+de los datos desde puntos de vistas distintos\cite{mijailmaster}, es decir, el almacén de datos est\'a formado por 
+los uni\'on de los distintos Data Marts, modelados dimensionalmente. La modelación dimensional utiliza la denormalizaci\'on como 
+instrumento para optimizar la exploraci\'on de los datos, haciendo uso de esquemas estrella para modelar las necesidades informacionales.
 
+Este enfoque plantea una arquitectura de dos capas, puesto que no existe una capa para almacenar los datos reconciliados, aunque 
+esto no significa que los datos no sean armonizados. Los procesos de integración y reconciliación se llevan a cabo en un \'area 
+de preparaci\'on de datos (Data Staging Area). 
+
+El principal problema de este enfoque en la dificultad del proceso de poblaci\'on de la capa de datos derivados, es decir, los 
+Data Marts. Si a  los datos de las fuentes se les aplica alguna transformaci\'on de agregaci\'on o res\'umen, la comparaci\'on 
+necesaria para la actualización progresiva de los datos en los Data Marts se vuelve una tarea sumamente complicada, imposible en 
+ocasiones. Este problema constituye una evidencia de la necesidades de mantener una copia de los datos reconciliados\cite{mijailmaster}.
+
+\subsubsection{Enfoque Dimensional y Enfoque Relacional}
+
+El autor considera que no es que exista una superioridad de un enfoque con respecto a otro, sino que ambos son buenos en 
+un determinado aspecto del desarrollo de un almac\'en de datos. Lo ideal ser\'ia encontrar un punto medio entre ambos 
+enfoques que trate de aprovechar los puntos fuertes de cada uno. Barry Devlin en \cite{devlin1996data} describe 
+una arquitectura de tres capas para creaci\'on de almacenes de datos, que en cierta forma, trata de aprovechar las 
+bondades de los enfoques relacional y dimensional. 
+
+Las tres capas de Devlin son las fuentes de datos, el Data Warehouse Empresarial y el Warehouse Informacional. La segunda capa 
+es una estructura relacional que contiene los datos reconciliados provenientes de las fuentes, como propone Inmon. El Warehouse 
+Informacional es una estructura dimensional que contiene los datos derivados para el an\'alisis provenientes del Data Warehouse 
+Empresarial, como propone Kimball. Con esta arquitectura se aprovecha consistencia y la integridad que brinda el modelo relacional 
+en la capa de datos reconciliados y tambi\'en se gana en rendimiento a la hora de responder a consultas informacionales y en expresividad 
+del modelo en la capa de datos derivados. No obstante, la sugerencia de una arquitectura de tres capas también ha recibido críticas 
+debido a la gran cantidad de trabajo necesario para implementar un almacén de datos utilizando este enfoque. 
