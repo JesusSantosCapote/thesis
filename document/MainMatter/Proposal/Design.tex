@@ -17,7 +17,7 @@ est\'an dispuestos de forma secuencial para representar el flujo de trabajo de l
         prototipo solo se pueden manejar bases de datos relacionales y una fuente de datos a la vez.
     \item La tarea del \textbf{Crawler} es explorar las fuentes de datos para recopilar información relevante sobre su estructura, 
         con el fin de crear el \textbf{Catálogo de Datos} a partir de dicha información.
-    \item El \textbf{Catálogo de Datos} de datos es una estructura que almacena metadatos sobre las fuentes de datos, los cuales son 
+    \item El \textbf{Catálogo de Datos} es una estructura que almacena metadatos sobre las fuentes de datos, los cuales son 
         utilizados en el proceso de la generaci\'on de consultas.
     \item Los usuarios interactúan con la herramienta a través de una interfaz web. Mediante esta interfaz, especifican el modelo 
         analítico a poblar, establecen conexiones con las fuentes de datos, consultan metadatos, configuran opciones necesarias 
@@ -59,8 +59,8 @@ referencia de la llave for\'anea a la que representa.
 
 Como parte de los objetivos de la presente investigaci\'on est\'a la concepción y diseño de un lenguaje de dominio 
 espec\'ifico para la definici\'on de escenarios analíticos. El objetivo del lenguaje es servir de v\'inculo 
-entre el modelo relacional de la fuente de datos y es modelo dimensional del escenario analítico. El lenguaje 
-brinda recursos sintacticos para la especificaci\'on de tablas de dimensiones y tablas de hechos, las cuales 
+entre el modelo relacional de la fuente de datos y el modelo dimensional del escenario analítico. El lenguaje 
+brinda recursos sintácticos para la especificaci\'on de tablas de dimensiones y tablas de hechos, las cuales 
 en su conjunto constituyen la definicion de un esquema estrella.
 
 La definici\'on de atributos en las tablas de hechos o de dimensi\'on constituye la base del v\'inculo entre 
@@ -116,12 +116,12 @@ las palabras en min\'uscula indican terminales.
 
 %TODO: Agregar definicion de multigrafo en el marco teorico
 
-Tal y como dicta la gramática, un modelo dimensional (Dimensional\_Model), 
+Tal y como dicta la gramática, un modelo dimensional (\textbf{Dimensional\_Model}), 
 en el contexto del DSL, est\'a compuesto por una lista de tablas 
-dimensionales (List\_Dimensional\_Tables). 
+dimensionales (\textbf{List\_Dimensional\_Tables}). 
 
 Una lista de tablas dimensionales est\'a compuesta por al menos una definici\'on de tabla dimensional 
-(Dimensional\_Table), aunque es cierto que un esquema estrella no tiene sentido si tiene una sola tabla 
+(\textbf{Dimensional\_Table}), aunque es cierto que un esquema estrella no tiene sentido si tiene una sola tabla 
 de dimensi\'on o una sola tabla de hechos, expresar la restricci\'on en la gramática de que una lista de 
 tablas dimensionales debe tener al menos una tabla de dimensi\'on y una tabla de hechos es un proceso 
 engorroso que puede atentar contra la legibilidad de la gramática, por tanto se decide dejar dicha 
@@ -129,36 +129,36 @@ comprobaci\'on para los chequeos sem\'anticos que se le efect\'uan a las instanc
 por el usuario, luego de ser parseadas. 
 
 Luego, la 
-definición de una tabla dimensional (Dimensional\_Table) consta de la palabra clave dimension o fact, 
+definición de una tabla dimensional (\textbf{Dimensional\_Table}) consta de la palabra clave dimension o fact, 
 en caso de querer definir una dimension o una tabla de hechos respectivamente, un nombre para dicha tabla 
-(ID), llaves con funci\'on delimitadora ({}) y dentro de estas una lista de definiciones de atributos
-(List\_Attr\_Def). 
+(\textbf{ID}), llaves con funci\'on delimitadora (\textbf{\{\}}) y dentro de estas una lista de definiciones de atributos
+(\textbf{List\_Attr\_Def}). 
 
-Una lista de definiciones de atributos est\'a compuesta por al menos una definición de atributo (Attr\_Def). 
-La definición de un atributo consta de una expresión de atributos (Attr\_Expression), un tipo para el atributo 
+Una lista de definiciones de atributos est\'a compuesta por al menos una definición de atributo (\textbf{Attr\_Def}). 
+La definición de un atributo consta de una expresión de atributos (\textbf{Attr\_Expression}), un tipo para el atributo 
 definido, dicho tipo puede especificarse o no, y un alias que en caso de no ser vacío ser\'a el nombre del 
-atributo en el esquema estrella. Una expresión de atributos (Attr\_Expression) no es m\'as que 
-un recurso gramatical para expresar que una definición de atributo puede ser tanto un solo atributo (Attr)
+atributo en el esquema estrella. Una expresión de atributos (\textbf{Attr\_Expression}) no es m\'as que 
+un recurso gramatical para expresar que una definición de atributo puede ser tanto un solo atributo (\textbf{Attr})
 como una expresi\'on aritm\'etica en la que pueden participar atributos y n\'umeros. 
 
-Un atributo (Attr) es la representaci\'on en el DSL de un atributo de la fuente de datos. Est\'a compuesto, 
+Un atributo (\textbf{Attr}) es la representaci\'on en el DSL de un atributo de la fuente de datos. Est\'a compuesto, 
 fundamentalmente, 
-por el nombre de la tabla de la fuente de datos (Table), dos puntos y el nombre del atributo de dicha tabla 
-de donde se obtendr\'an los valores (ID). Adem\'as puede contener especificaciones de modificadores (Modifier), 
+por el nombre de la tabla de la fuente de datos (\textbf{Table}), dos puntos y el nombre del atributo de dicha tabla 
+de donde se obtendr\'an los valores (\textbf{ID}). Adem\'as puede contener especificaciones de modificadores (\textbf{Modifier}), 
 los cuales pueden ser especificaciones de llave primaria o llave for\'anea. En esta primera versi\'on del 
 DSL un atributo puede ser llave primaria o llave for\'anea, pero no los dos a la vez. Tambi\'en, a los valores
-extra\'idos del atributo con nombre (ID) y tabla (Table) se le puede aplicar funciones o agregaciones. Las 
-funciones de agregaci\'on implementadas son suma (sum), promedio (avg), conteo (count), m\'aximo (max) y 
-m\'inimo (min). Las funciones implementadas en esta primera versi\'on son weekday, la cual a partir de 
-una fecha devuelve el d\'ia de la semana, y monthstr que devuelve el nombre del mes de una fecha pasada 
+extra\'idos del atributo con nombre (\textbf{ID}) y tabla (\textbf{Table}) se le puede aplicar funciones o agregaciones. Las 
+funciones de agregaci\'on implementadas son suma (\textbf{sum}), promedio (\textbf{avg}), conteo (\textbf{count}), m\'aximo (\textbf{max}) y 
+m\'inimo (\textbf{min}). Las funciones implementadas en esta primera versi\'on son \textbf{weekday}, la cual a partir de 
+una fecha devuelve el d\'ia de la semana, y \textbf{monthstr} que devuelve el nombre del mes de una fecha pasada 
 como argumento. La palabra reservada self solo se debe usar para declarar la tabla en la definición de atributos 
 que sean llaves primarias autogeneradas para las tablas de hechos.
 
 Los tipos manejados por el lenguaje son gen\'ericos y facilmente mapeables con los tipos de los sistemas de 
-gesti\'on de bases de datos relacionales m\'as usados. El tipo int engloba a los n\'umeros enteros. 
-Al tipo str pertenecen las cadenas de texto. Los tipos date y datetime agrupan a las fechas y a las fechas con 
-hora respectivamente. El tipo serial se usa para las llaves primarias autogeneradas. El tipo float 
-representa a los n\'umeros con coma flotante. Finalmente, al tipo numeric pertenecen todos los valores numéricos.
+gesti\'on de bases de datos relacionales m\'as usados. El tipo \textbf{int} engloba a los n\'umeros enteros. 
+Al tipo \textbf{str} pertenecen las cadenas de texto. Los tipos \textbf{date} y \textbf{datetime} agrupan a las fechas y a las fechas con 
+hora respectivamente. El tipo \textbf{serial} se usa para las llaves primarias autogeneradas. El tipo \textbf{float} 
+representa a los n\'umeros con coma flotante. Finalmente, al tipo \textbf{numeric} pertenecen todos los valores numéricos.
 
 En caso de que una definición de un atributo solo contenga un atributo de una tabla de la fuente no es necesario 
 especificar el tipo, pues el sistema autom\'aticamente asignar\'a el tipo del atributo fuente al tipo del 
@@ -166,5 +166,49 @@ atributo que est\'a siendo definido. Sin embargo si se define un atributo compue
 en su definición participe m\'as de un atributo de la fuente, es necesario especificar el tipo pues el sistema 
 no es capaz de inferirlo.
 
-Para especificar una llave for\'anea se deben escribir las palabras reservadas fk y to y luego especificar 
-el nombre de una tabla del esquema estrella, un punto y el atributo referenciado. 
+Para especificar una llave for\'anea se deben escribir las palabras reservadas \textbf{fk} y \textbf{to} y luego especificar 
+el nombre de una tabla del esquema estrella, un punto y el atributo referenciado.
+
+Para asignar un alias a un atributo definido para una tabla del modelo dimensional se utiliza la 
+palabra reservada \textbf{as} seguida del nombre del atributo.
+
+
+\subsection{Generador de Consultas}
+
+Este componente es el m\'as importante y el de mayor responsabilidad dentro de la arquitectura. Es el encargado 
+de generar el c\'odigo SQL necesario para la creaci\'on y población del escenario analítico. Las consultas generadas 
+se dividen en dos grupos: el grupo de creaci\'on de tablas y el grupo de selecci\'on de valores. El primer grupo 
+son las consultas de creaci\'on de cada una de las tablas del esquema estrella. El segundo grupo son las  consultas 
+que seleccionan los atributos necesarios para la población de una tabla del esquema estrella. 
+
+Las dimensiones, generalmente, est\'an formadas por atributos de distintas tablas de las fuentes de datos, por 
+ejemplo, una dimension que expresa la ubicaci\'on geogr\'afica se forma por la uni\'on de las tablas municipio, 
+provincia y pa\'is. En las bases de datos relacionales con un diseño correcto, es usual encontrarse estos 
+tres conjuntos de entidades separados en tablas normalizadas, enlazadas mediante llaves for\'aneas, con el objetivo 
+de evitar duplicaci\'on de datos y anomal\'ias en la inserci\'on, modificaci\'on y eliminaci\'on. Por tanto, el 
+proceso de selecci\'on de datos para la población de la dimensi\'on ubicaci\'on geogr\'afica pasa por unir las 
+tablas municipio, provincia y pa\'is, para poder extraer los datos desde una única tabla, es 
+decir, denormalizar la jerarqu\'ia impuesta por el proceso de normalizaci\'on sobre las tablas municipio, provincia
+y pa\'is. La uni\'on de esas tablas se logra mediante la aplicaci\'on del join pertienente.
+
+En las tabla de hechos sucede algo similar, puede que los valores de un hecho se encuentren en una 
+sola tabla o que en su calculo intervengan atributos de múltiples tablas de la fuente, en ese caso 
+el procedimiento es el mismo que con el ejemplo de la dimensi\'on ubicaci\'on geogr\'afica. Es necesario 
+unir todas las tablas que intervengan en el c\'alculo del hecho en cuesti\'on mediante joins.
+
+Luego una parte fundamental del proceso de población de un escenario anal\'itico es la implementaci\'on 
+de estos joins. Precisamente, el Generador de Consultas implementado es el encargado, entre otras cosas, de inferir los 
+joins necesarios en la construcci\'on de las consultas de selecci\'on de valores, que son las encargadas de la 
+extracci\'on de los datos de las tablas fuente que poblaran las tablas del escenario anal\'itico.
+
+En las siguientes secciones se expone como a partir del Catálogo de Datos, la especificaci\'on del 
+modelo analítico a poblar y la intervenci\'on del usuario el Generador de Consultas logra construir 
+las consultas de creaci\'on y de selecci\'on de valores.
+
+
+
+\subsubsection{Consultas de creaci\'on}
+Para construir la consulta de creaci\'on de una tabla del esquema estrella basta con recorrer 
+la lista definiciones de atributos y agregar a la consulta su nombre, su tipo y su modificador. 
+El nombre lo aporta el alias en el caso de atributos compuestos o en caso de ser un solo atributo 
+se mantiene el nombre que posee en la fuente de datos
