@@ -204,6 +204,26 @@ extracci\'on de los datos de las tablas fuente que poblaran las tablas del escen
 En las siguientes secciones se expone como a partir del Catálogo de Datos, la especificaci\'on del 
 modelo analítico a poblar y la intervenci\'on del usuario el Generador de Consultas logra construir 
 las consultas de creaci\'on y de selecci\'on de valores.
+%Mira a ver que va primero este texto o el de arriba
+En otras ocasiones, se ha enfrentado el problema de la inferencia de consultas utilizando representaciones
+de bases de datos en forma de grafos y lenguajes 
+de dominio espec\'ifico. Entre estos trabajo se pueden mencionar aquellos que definen lenguajes de consulta 
+conceptuales (Conceptual Query Languajes, CQL) que tratan de ocultar la dificultad de un esquema de bases de 
+datos relacionando conceptos familiares con el usuario y entidades de la base de datos. Con este enfoque 
+podemos citar los trabajos \cite{owei2001enriching} el cual propone
+un algoritmo basado en caminos m\'inimos para encontrar el camino m\'as corto de joins que una conceptos 
+especificados, dando como resultado una sola interpretaci\'on de la consulta, lo cual no es factible 
+puesto que lo ideal es analizar todas las posibles interpretaciones para una consulta y escoger la 
+que sem\'anticamente responda a las necesidades del usuario. Otro enfoque para abordar el problema 
+es mediante algoritmo de busqueda de palabras clave (Keyword Search Algorithms), especificamente a 
+aquellos que orientan la b\'usqueda sobre grafos. N\'otese que teniendo un conjunto de palabras clave 
+a buscar (atributos que unir en una sola tabla), la respuesta es un sub\'arbol del grafo de b\'usqueda 
+el cual para toda palabra buscada exista un nodo que la contenga. Los trabajos 
+\cite{kimelfeld2006finding,hristidis2003efficient,he2007blinks} exponen algoritmos eficientes para 
+encontrar, dado k, las k mejores interpretaciones, es decir, los k mejores sub\'arboles que dan respuesta 
+a la consulta, m\'as su dependencia al par\'ametro k para explorar todas las posibles interpretaciones 
+hizo que el autor se decantara por la propuesta de \cite{mason2005autojoin} para la resoluci\'on 
+del problema de la inferencia de los joins planteado en los objetivos de la presente investigaci\'on.
 
 
 
