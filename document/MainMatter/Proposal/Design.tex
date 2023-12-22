@@ -120,9 +120,10 @@ las palabras en min\'uscula indican terminales.
 
 Tal y como dicta la gramática, un modelo dimensional (\textbf{Dimensional\_Model}), 
 en el contexto del DSL, est\'a compuesto por una lista de tablas 
-dimensionales (\textbf{List\_Dimensional\_Tables}). 
+dimensionales. 
 
-Una lista de tablas dimensionales est\'a compuesta por al menos una definici\'on de tabla dimensional 
+Una lista de tablas dimensionales (\textbf{List\_Dimensional\_Tables}) est\'a compuesta por al menos 
+una definici\'on de tabla dimensional 
 (\textbf{Dimensional\_Table}), aunque es cierto que un esquema estrella no tiene sentido si tiene una sola tabla 
 de dimensi\'on o una sola tabla de hechos, expresar la restricci\'on en la gramática de que una lista de 
 tablas dimensionales debe tener al menos una tabla de dimensi\'on y una tabla de hechos es un proceso 
@@ -138,7 +139,7 @@ en caso de querer definir una dimension o una tabla de hechos respectivamente, u
 
 Una lista de definiciones de atributos est\'a compuesta por al menos una definición de atributo (\textbf{Attr\_Def}). 
 La definición de un atributo consta de una expresión de atributos (\textbf{Attr\_Expression}), un tipo para el atributo 
-definido, dicho tipo puede especificarse o no, un alias (\textbf{Alias}) que en caso de no ser vacío ser\'a el nombre del 
+definido, dicho tipo (\textbf{Type}) puede especificarse o no, un alias (\textbf{Alias}) que en caso de no ser vacío ser\'a el nombre del 
 atributo en el esquema estrella y un nivel (\textbf{Level}) que es un entero que especifica la profundidad 
 del atributo definido en la jerarqu\'ia de la dimensi\'on. Una expresión de atributos (\textbf{Attr\_Expression}) no es m\'as que 
 un recurso gramatical para expresar que una definición de atributo puede ser tanto un solo atributo (\textbf{Attr})
@@ -204,10 +205,6 @@ de estos joins. Precisamente, el Generador de Consultas implementado es el encar
 joins necesarios en la construcci\'on de las consultas de selecci\'on de valores, que son las encargadas de la 
 extracci\'on de los datos de las tablas fuente que poblaran las tablas del escenario anal\'itico.
 
-En las siguientes secciones se expone como a partir del Catálogo de Datos, la especificaci\'on del 
-modelo analítico a poblar y la intervenci\'on del usuario el Generador de Consultas logra construir 
-las consultas de creaci\'on y de selecci\'on de valores.
-%Mira a ver que va primero este texto o el de arriba
 En otras ocasiones, se ha enfrentado el problema de la inferencia de consultas utilizando representaciones
 de bases de datos en forma de grafos y lenguajes 
 de dominio espec\'ifico. Entre estos trabajo se pueden mencionar aquellos que definen lenguajes de consulta 
@@ -218,7 +215,7 @@ un algoritmo basado en caminos m\'inimos para encontrar el camino m\'as corto de
 especificados, dando como resultado una sola interpretaci\'on de la consulta, lo cual no es factible 
 puesto que lo ideal es analizar todas las posibles interpretaciones para una consulta y escoger la 
 que sem\'anticamente responda a las necesidades del usuario. Otro enfoque para abordar el problema 
-es mediante algoritmo de busqueda de palabras clave (Keyword Search Algorithms, KSA), especificamente a 
+es mediante algoritmo de busqueda de palabras clave (Keyword Search Algorithms, KSA), especificamente  
 aquellos que orientan la b\'usqueda sobre grafos. N\'otese que teniendo un conjunto de palabras clave 
 a buscar (atributos que unir en una sola tabla), la respuesta es un sub\'arbol del grafo de b\'usqueda 
 el cual para toda palabra buscada exista un nodo que la contenga. Los trabajos 
@@ -266,7 +263,7 @@ contraparte más limitada. Siguiendo esta idea, se propone solo computar el graf
 a nodos del grafo de join que tengan grado interior (indegree) igual a cero o que est\'en en una 
 componente fuertemente conexa en la que no existan arcos incidentes externos a la misma. 
 Los \'arboles de join emanados de estos nodos raíz son inherentemente maximales, ya que la naturaleza de su raíz, 
-con un grado interior de cero, implica que no hay otro subárbol que pueda subsumir los generados por dicha raíz.
+implica que no hay otro subárbol que pueda subsumir los generados por dicha raíz.
 
 Ahora, como el conjunto de \'arboles de join depende solamente del esquema de base de datos y no de las consultas
 este puede ser precomputado, trasladando fuera del tiempo de consulta la computaci\'on m\'as costosa. La cantidad
@@ -321,12 +318,12 @@ esquema sufre cambios en su definición.
 
 Para dar respuesta a las consultas, es decir, el devolver un conjunto de joins que constituyen 
 interpretaciones de la consulta, el procedimiento es identificar los \'arboles de join que 
-contengas todos los nodos (tablas) de la consulta. Luego por cada \'arbol de join identificado 
+contengan todos los nodos (tablas) de la consulta. Luego por cada \'arbol de join identificado 
 se busca el ancestro com\'un m\'as bajo (lowest common acestor, LCA) de este conjunto de nodos. 
 El sub\'arbol del \'arbol de join que da respuesta a la consulta y que constituye un join v\'alido 
 para la uni\'on de las tablas, se forma mediante la uni\'on de los caminos desde 
 el LCA hasta los nodos requeridos. El listado de c\'odigo \ref{querytime} muestra el pseudoc\'odigo 
-de para dado una consulta obtener la lista de joins asociada.
+del algoritmo que computa la lista de joins asociados a una consulta.
 
 \begin{lstlisting}[label={querytime}, caption={Pseudoc\'odigo del algoritmo de inferencia de joins}]
     get_joins (List_of_JoinTrees jts, List_of_Query_Tables query)
@@ -356,16 +353,17 @@ Calcular la interseccion de dos conjunto con $s$ y $t$ elementos respectivamente
 complejidad temporal $O(s + t)$ si se utilizan conjuntos hash. Se añaden los $s$ elementos al conjunto hash en $O(1)$
 y luego por cada uno de los $t$ elementos se pregunta si est\'an en el conjunto hash en $O(1)$, los elementos 
 que se confirmen que est\'an en el conjunto hash conforman el conjunto intersección. Luego de estas aclaraciones 
-se puede pasar al an\'alisis de la complejidad temporal del algoritmo
+se puede pasar al an\'alisis de la complejidad temporal del algoritmo.
 
 Para identificar que \'arboles de join contienen todos los nodos de la consulta se puede implementar un índice 
-inverso donde cada tabla (nodo) se enlaza a todos los árboles de unión que contienen 
+inverso donde cada tabla (nodo) se enlaza a todos los árboles de join que contienen 
 este nodo. La intersección de los conjuntos de árboles de join da como resultado todos los árboles de join 
 que contienen todos los nodos especificados. Este procedimiento puede realizarse en $O(QN)$. 
 
 El LCA se computa hallando la intersecci\'on entre todos los acestros de las tablas de consulta y luego 
 seleccionando el m\'as bajo en altura como LCA. Para una tabla (nodo) de la consulta hallar sus ancestros 
-tiene complejidad $O(|V| + |E|)$ empleando DFS tomando el reverso de los arcos y se realiza $Q$ veces. 
+tiene complejidad $O(|V| + |E|)$ empleando DFS tomando el reverso de los arcos, este proceso se realiza $Q$ veces
+para computar los ancestros de cada uno de los $Q$ nodos. 
 Hallar la intersección 
 entre todos los ancestros de los nodos requeridos se realiza tomando un conjunto de ancestros 
 como conjunto inicial y hallando la intersección de este conjunto con el resto de conjuntos de ancestros, 
@@ -384,8 +382,58 @@ del sub\'arbol para ese LCA y se añade el sub\'arbol a una lista. Resultando en
 temporal de $O(NQ(|V| + |E|))$.
 
 
-\subsubsection{Consultas de creaci\'on}
+\subsubsection{Generaci\'on de c\'odigo}
+
+Este componente también tiene la tarea de generar el c\'odigo SQL para la creaci\'on de las 
+tablas del esquema estrella en el almac\'en de datos de destino y para la selecci\'on de 
+los datos que alimentan el almac\'en desde la fuente. Para lograrlo este cometido se apoya 
+del algoritmo de inferencia de joins y de las especificaciones del escenario anal\'itico 
+mediante el lenguaje de dominio espec\'ifico. Por tanto, para inferir las consultas para 
+la población y creaci\'on de un escenario anal\'itico es necesario que el desarrollador y 
+usuario de la herramienta proporcione un script del DSL con la definición del escenario 
+a poblar. Por cada tabla del esquema estrella se genera una consulta de creaci\'on y una 
+consulta de selecci\'on.
+
 Para construir la consulta de creaci\'on de una tabla del esquema estrella basta con recorrer 
-la lista definiciones de atributos y agregar a la consulta su nombre, su tipo y su modificador. 
+la lista definiciones de atributos que expone el script para dicha tabla y agregar a la consulta 
+su nombre, su tipo y su modificador. 
 El nombre lo aporta el alias en el caso de atributos compuestos o en caso de ser un solo atributo 
-se mantiene el nombre que posee en la fuente de datos.
+se mantiene el nombre que posee en la fuente de datos de no tener un alias especificado. Luego se 
+añaden las restricciones de llaves primarias y for\'aneas. Por \'ultimo, si se trata de una tabla 
+de hechos se añade una restricci\'on de unicidad a la combinaci\'on de llaves for\'aneas a las 
+dimensiones.
+
+Para construir las consultas de selecci\'on de una tabla del esquema estrella se recorre la 
+lista definiciones de atributos que expone el script para dicha tabla y se recolectan las 
+tablas que intervienen en la definición de los atributos y los nombres de los atributos requeridos.
+Se conforma una consulta con las tablas especificadas y se llama al algoritmo \textbf{get\_joins} 
+pasando como argumentos la consulta y la lista de \'arboles de joins precomputados para el esquema 
+de base de datos de la fuente, obteniendo as\'i una lista de posibles joins para unir todas las 
+tablas que intervienen en la consulta.
+
+En esta primera propuesta de la herramienta, el sistema no es capaz de inferir cu\'al es el join 
+m\'as adecuado seg\'un las necesidades del usuario, dado que puede haber varios joins que resulten 
+en la uni\'on de las tablas especificadas pero la sem\'antica del resultado no tiene por qu\'e ser 
+la misma. Por tanto, luego de obtener la lista de joins el usuario debe seleccionar el que responda 
+a sus intereses.
+
+Luego de tener el join seleccionado, se pasa a construir la consulta. En la parte de la cl\'ausula 
+\textbf{SELECT} se añaden todos los nombres de los atributos recolectados y en la secci\'on de la cl\'ausula 
+\textbf{FROM} se coloca el join seleccionado. Si existen atributos resultado de agregaciones se añade 
+la cl\'ausula \textbf{GROUP BY} con todos los atributos que intervienen en el select a los que no 
+se les aplique una funci\'on de agregaci\'on.
+
+
+\subsection{Generador de pipelines}
+
+Luego de generar las consultas de creaci\'on y de selecci\'on, el usuario debe especificar 
+mediante la interfaz gr\'afica el \'orden de ejecuci\'on de las consultas generadas, 
+el tipo de extracci\'on de datos de la fuente que utilizar\'a el pipeline, el tipo de carga 
+en el sistema de destino y la frecuencia con que se ejecutar\'a. Con esta información y las 
+consultas generadas se conforma un pipeline. 
+
+Las consultas de creaci\'on son mandadas a ejecutar en el sistema que albergar\'a el almac\'en de 
+datos. Las consultas de selecci\'on son enviadas para su ejecuci\'on en el sistema fuente y el resultado 
+es recepcionado por la herramienta implementada de acuerdo al tipo de extracci\'on seleccionado por el usuario. 
+Luego se genera una consulta de inserci\'on para estos 
+datos y por \'ultimo se ejecutan de acuerdo al tipo de carga especificado.
