@@ -1,0 +1,45 @@
+\section{Teor\'ia de Grafos}\label{section:graphs}
+
+Parte de la pregunta cient\'ifica del presente trabajo es la factibilidad de la utilización de la teoría de 
+grafos para la generación automática de procesos ETL. Por tanto, la presente secci\'on constituye un acercamiento 
+al marco te\'orico-conceptual sobre teoría de grafos necesario para el entendimiento de la solución propuesta.
+
+La teoría de grafos es un \'area de conocimiento que se centra en el estudio de un modelo matemático 
+propuestopor el matemático Leonhard Euler en el año 1736 denominado grafo\cite{estrada2012structure}.
+
+\begin{definition}
+    Un \textbf{\textit{grafo}} es un par $G = <V, E>$ donde $V$ es un conjunto finito y $E$ es un 
+    conjunto de subconjuntos de dos elementos de $V$. A $V$ se le llama conjunto de v\'ertices y 
+    a $E$ conjunto de aristas
+\end{definition}
+
+\begin{definition}
+    Un \textbf{\textit{grafo dirigido}} o \textbf{\textit{digrafo}} es un grafo $G$ cuyo conjunto de 
+    aristas $E$ est\'a formado por pares ordenados. En este caso, el conjunto de aristas $E$ es nombrado 
+    conjunto de arcos.
+\end{definition}
+
+\begin{definition}
+    Sean $v$ y $w$ v\'ertices de un digrafo $D$, si est\'an unidos por un arco $e$, se dicen 
+    \textbf{\textit{v\'ertices adyacentes}}, si $e$ est\'a dirigido de $v$ a $w$, es decir $e=<v,w>$, 
+    se dice que es incidente de $v$ a $w$.
+\end{definition}
+
+\begin{definition}
+    Sea $D$ un digrafo, sea $v$ un v\'ertice de $D$, el \textbf{\textit{grado exterior}} de $v$ es el 
+    n\'umero de arcos incidentes desde $v$ y el \textbf{\textit{grado interior}} de $v$ es el n\'umero 
+    de arcos incidentes a $v$
+\end{definition}
+
+\begin{definition}
+    Un \textbf{\textit{\'arbol dirigido}} o \textbf{\textit{arborescencia}}, es un 
+    grafo dirigido acíclico (DAG) en el que existe exactamente un vértice $r$, llamado raíz, que tiene grado interior 
+    igual a cero, y todo v\'ertice $v \neq r$ tiene grado interior igual a uno, formando un camino 
+    único desde la raíz hasta cada uno de los otros vértices.
+\end{definition}
+
+\begin{definition}
+    Un \textbf{\textit{camino}} $C$ en un digrafo $D$ es una secuencia de v\'ertices de $D$ tal que $|C| = n = 1$ 
+    o si $|C| = n > 1$ entonces $\forall v \in C$ se cumple que $<v_i , v_{i+1}> \in E(D)$, $\forall 1 \leq i < n$.
+    Siendo $E(D)$ el conjunto de arcos de $D$.  
+\end{definition}
