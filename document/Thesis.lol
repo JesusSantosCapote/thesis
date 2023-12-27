@@ -8,3 +8,7 @@
 \contentsline {lstlisting}{\numberline {4.1}clase abstracta crawler}{48}{lstlisting.4.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {4.2}Clase DataCatalogHandler}{50}{lstlisting.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.3}Clase abstracta Visitable}{53}{lstlisting.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.4}Clase Visitor}{53}{lstlisting.4.4}%
