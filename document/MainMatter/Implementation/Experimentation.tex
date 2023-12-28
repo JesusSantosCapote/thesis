@@ -1,5 +1,31 @@
 \section{Experimentaci\'on} \label{section:Experimentation}
 
+Con el objetivo de comprobar la viabilidad y funcionamiento del prototipo implementado se propone la evaluaci\'on 
+de su comportamiento ante dos escenarios de prueba. A continuaci\'on se describen los detalles de los experimentos.
+
+\subsection{Ambiente de experimentaci\'on}
+
+\subsubsection{Equipo}
+
+Se utilizó una computadora portátil con un procesador Intel(R) Core(TM) i7-11370H 11th Gen @ 3.30GHz, 16GB de 
+memoria RAM y sistema operativo Windows 11 Home 23H2.
+
+\subsubsection{Docker}
+
+Se utilizó Docker para simular el traspaso de datos por red entre la aplicaci\'on, el Cat\'alogo de Datos y 
+los servidores de bases de datos fuente y destino. Se crea una im\'agen de la aplicaci\'on basada en python:3.10, con el 
+nombre \textbf{autoetl}. 
+Con el archivo \textbf{docker-compose.yml} se inicializan todos los contenedores que intervienen en el proceso 
+de experimentaci\'on. Los servidores de bases de datos fuente y destino son contenedores de PostgreSQL llamados 
+\textbf{db} y \textbf{target} respectivamente. El Cat\'alogo de Datos es un contenedor de Neo4j con nombre 
+\textbf{data\_catalog}. La aplicaci\'on implementada yace en un contenedor de la imagen creada \textbf{autoetl}. 
+Por \'ultimo, con el objetivo de visualizar los resultados del proceso de poblaci\'on se añade al ambiente un 
+contenedor de \textbf{pgadmin4}, el cual proporciona una herramienta para la visualizaci\'on de bases de datos 
+de PostgreSQL.
+
+
+
+
 Con el objetivo de validar la solución propuesta, se ha desarrollado un sistema transaccional que registra las 
 ventas de una red de tiendas minoristas. Este escenario se basa en \textbf{Retail Sales} expuesto en el Cap\'itulo 2
 de \cite{kimball2011data}. A continuación, se detalla el caso de estudio:
