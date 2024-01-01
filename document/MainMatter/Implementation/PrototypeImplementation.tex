@@ -93,12 +93,9 @@ utilizando el adaptador de PostgreSQL para python \textbf{psycopg2}.
 
 \subsection{Cat\'alogo de Datos}
 
-El Cat\'alogo de Datos es un servido de base de datos de Neo4j. La idea es que exista un base de datos Neo4j por cada 
-fuente de datos, sin embargo la versi\'on community de Neo4j utilizada solo permite la creación de una sola base de datos. 
-Por tanto, cada vez que se establece conexi\'on con otra base de datos fuente la informaci\'on existente en cat\'alogo es 
-sobreescrita. Esto no supone un problema para la inferencia de Joins puesto que el grafo de join obtenido a partir 
-del Cat\'alogo de Datos es almacenado en el disco y recuperado cuando es necesario su uso. Para versiones m\'as avanzadas 
-del prototipo se debe considerar la utilizaci\'on de Neo4j Enterprise.
+El Cat\'alogo de Datos es un servido de base de datos de Neo4j que contiene un grafo de base de datos por cada base de datos 
+fuente que hay sido explorada por la aplicaci\'on. Cada vez que el Crawler explora una base de datos fuente nueva se crea 
+un grafo de base de datos de Neo4j para almacenar sus metadatos.
 
 La comunicaci\'on de la aplicaci\'on con el Cat\'alogo de Datos es mediada por la clase \textbf{DataCatalogHandler} 
 presente en el script \textbf{handler.py} de la carpeta \textbf{data\_catalog}. A continuación se muestra parte 
@@ -114,7 +111,10 @@ del c\'odigo de dicha clase.
             self.db_name = db_name
             self.join_graph = None
 
-        def create_graph_database(self):
+        def create_database(self):
+            # Omitted implementation
+
+        def populate_graph_database(self):
             # Omitted implementation
 
         def export_join_graph(self):
@@ -127,15 +127,19 @@ nombre de la base de datos fuente, \textbf{join\_graph} almacena el grafo de joi
 son los necesarios para establecer una conexi\'on con una base de datos de Neo4j, en especial, el campo \textbf{\_uri} 
 es una cadena de texto que contiene el protocolo de comunicaci\'on con el servidor de Neo4j, su ip y su puerto. 
 
-El m\'etodo \textbf{create\_graph\_database} crea en la base de datos de Neo4j dedicada a la fuente de datos con nombre 
-\textbf{db\_name} y con diccionario de metadatos \textbf{db\_dict} un nodo por cada llave (tabla) 
+El m\'etodo \textbf{create\_database} crea una base de datos de Neo4j en el Cat\'alogo de Datos dedicada a la 
+fuente de datos con nombre \textbf{db\_name} y con diccionario de metadatos \textbf{db\_dict}. 
+
+El m\'etodo \textbf{populate\_graph\_database} se encarga de poblar la base de datos de Neo4j con los metadatos
+recopilados. Se crea 
+un nodo por cada llave (tabla) 
 en \textbf{db\_dict} con las propiedades \textbf{name} que almacena el nombre de la tabla, \textbf{pks} que es una 
 lista con los nombres de los atributos que son llaves primarias y por \'ultimo \textbf{attributes} que 
 es la lista tuplas correspondiente a la llave attributes del diccionario que contiene \textbf{db\_dict} 
 indexado en el nombre de la tabla en cuesti\'on. Adem\'as, se crea una relación direccionada por cada por cada llave for\'anea 
 presente en la lista correspondiente a la llave relations del diccionario que contiene \textbf{db\_dict} 
 indexado en el nombre de la tabla en cuesti\'on. La direcci\'on de la relación la dictamina la direcci\'on de la llave 
-for\'anea, tal y como se expuso en el capitulo \ref{chapter:proposal}
+for\'anea, tal y como se expuso en el capitulo \ref{chapter:proposal}.
 
 El m\'etodo \textbf{export\_join\_graph} es el encargado de construir, a partir de la base de datos Neo4j del esquema 
 de la fuente de turno, el grafo de join. Mediante el lenguaje de consulta Cypher y el adaptador de Neo4j para python 
@@ -154,7 +158,7 @@ Esta \'ultima se encuentra en los scripts \textbf{maximal\_join\_trees.py}, \tex
 \textbf{all\_spanning\_trees.py}. En el primero yace, con el nombre de \textbf{maximal\_join\_trees\_generator}, 
 la implementaci\'on en python del pseudoc\'odigo propuesto para la generaci\'on de los \'arboles de join en el 
 cap\'itulo \ref{chapter:proposal}. Luego de generados los \'arboeles de join son almacenados en la ruta 
-\textbf{data/join\_trees}
+\textbf{data/join\_trees}.
 
 Por simplicidad, se utiliza para la obtenci\'on de los \'arboles en expansi\'on de los grafos alcanzables el algoritmo 
 provisto por NetworkX para este fin. Los \'arboles de join son digrafos de NetworkX. Adem\'as, se les añade las propiedades 
