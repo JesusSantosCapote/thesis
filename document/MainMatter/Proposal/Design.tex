@@ -47,7 +47,8 @@ el catálogo de datos.
 
 \subsection{Catálogo de Datos}
 
-Una vez que los metadatos de la fuente de datos son recopilados por el Crawler se pasa a construir el Catálogo de Datos. Este componente 
+Una vez que los metadatos de la fuente de datos son recopilados por el Crawler se pasa a construir el Catálogo de Datos para dicha fuente. 
+Este componente 
 es un multigrafo dirigido donde los nodos representan las tablas de la base de datos fuente y entre dos nodos $v$, $w$ 
 del catálogo existe un arco $<v,w>$ por cada llave for\'anea en $v$ que referencie a un atributo de $w$. Cada nodo (tabla) guarda 
 los nombres de los atributos de la tabla que representa, sus tipos y si son llaves primarias, for\'aneas o ambas. Cada arco $<v,w>$ 

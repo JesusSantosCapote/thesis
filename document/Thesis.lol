@@ -4,3 +4,31 @@
 \contentsline {lstlisting}{\numberline {3.2}Pseudoc\'odigo del proceso de precomputaci\'on}{40}{lstlisting.3.2}%
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {3.3}Pseudoc\'odigo del algoritmo de inferencia de joins}{41}{lstlisting.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.1}clase abstracta crawler}{48}{lstlisting.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.2}Clase DataCatalogHandler}{50}{lstlisting.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.3}Clase abstracta Visitable}{53}{lstlisting.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.4}Clase Visitor}{54}{lstlisting.4.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.5}Clase VisitorCodeGen}{56}{lstlisting.4.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.6}Clase Orchestrator}{58}{lstlisting.4.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.7}Definici\'on del esquema estrella del almacén de datos asociado al escenario ventas minoristas}{61}{lstlisting.4.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.8}Joins computados para el experimento 1}{63}{lstlisting.4.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.9}Consultas de creaci\'on generadas para el experimento 1}{65}{lstlisting.4.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.10}Consultas de selecci\'on generadas para el experimento 1}{67}{lstlisting.4.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.11}Definici\'on del esquema estrella del almacén de datos asociado al escenario TPCH}{69}{lstlisting.4.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.12}Joins computados para el experimento 2}{71}{lstlisting.4.12}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.13}Consultas de creaci\'on generadas para el experimento 2}{73}{lstlisting.4.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {lstlisting}{\numberline {4.14}Consultas de selecci\'on generadas para el experimento 2}{75}{lstlisting.4.14}%
