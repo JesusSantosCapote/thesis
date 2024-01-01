@@ -1,3 +1,21 @@
 \begin{conclusions}
-    Conclusiones
+    El objetivo fundamental de este trabajo fue realizar una primera aproximaci\'on a la generaci\'on 
+    autom\'atica de procesos ETL mediante el enfrentamiento del problema de la inferencia de joins. 
+
+    A partir del estudio del estado de arte sobre la inferencia de joins y la automatizaci\'on de procesos 
+    ETL se diseña un lenguaje de dominio espec\'ifico para la definici\'on de escenarios anal\'iticos que 
+    vincula el modelo relacional y el modelo dimensional, el cual constituye el principal aporte de la 
+    presente investigaci\'on. Adem\'as, se desarrolló un prototipo funcional de un marco de trabajo extensible 
+    e independiente de los sistemas de gestión de bases de datos. Este marco, partiendo de la definición de un 
+    escenario analítico mediante el lenguaje de dominio específico concebido, es capaz de generar consultas para la 
+    extracción 
+    de datos y la creación de tablas, infiriendo adecuadamente una conjunto joins necesarios para estas consultas, 
+    con el 
+    objetivo de poblar automáticamente el escenario definido. Sin embargo, debido a limitaciones de tiempo, no se 
+    logró concretar una implementación para la generación de pipelines que utilicen las consultas generadas, las 
+    ejecuten en un orden lógico e inserten los datos extra\'idos en el sistema destino
+    para lograr la población efectiva de los escenarios analíticos definidos.
+
+    Se ejecutaron experimentos que permitieron establecer la validez de la propuesta realizada y evidenciaron el 
+    correcto funcionamiento del prototipo implementado.
 \end{conclusions}
