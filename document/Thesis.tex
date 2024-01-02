@@ -1,5 +1,7 @@
 \documentclass[12pt,oneside]{uhthesis}
-\usepackage{biblatex}
+%\usepackage{biblatex}
+\bibliography{Bibliography} % Entries are in the refs.bib file
+
 \usepackage{subfigure}
 \usepackage[ruled,lined,linesnumbered,titlenumbered,algochapter,spanish,onelanguage]{algorithm2e}
 \usepackage{amsmath}
@@ -19,7 +21,7 @@
 \usepackage[utf8]{inputenc}
 \floatstyle{plaintop}
 \restylefloat{table}
-\addbibresource{Bibliography.bib}
+%\addbibresource{Bibliography.bib}
 % \setlength{\parskip}{\baselineskip}%
 \renewcommand{\tablename}{Tabla}
 \renewcommand{\listalgorithmcfname}{Índice de Algoritmos}
@@ -103,7 +105,9 @@
 \include{BackMatter/Conclusions}
 \include{BackMatter/Recomendations}
 \include{BackMatter/Annexes}
-\include{BackMatter/Bibliography}
-
+%\include{BackMatter/Bibliography}
+\nocite{*}
+\bibliographystyle{plain} % We choose the "plain" reference style
+    
 
 \end{document}
