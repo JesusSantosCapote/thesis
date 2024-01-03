@@ -1,26 +1,26 @@
-\section{Experimentaci\'on} \label{section:Experimentation}
+\section{Experimentación} \label{section:Experimentation}
 
-Con el objetivo de comprobar la viabilidad y funcionamiento del prototipo implementado se propone la evaluaci\'on 
+Con el objetivo de comprobar la viabilidad y funcionamiento del prototipo implementado se propone la evaluación 
 de su comportamiento ante dos escenarios de prueba. Los experimentos se dividen en fases. La primera fase verifica 
-la correctitud del proceso de exploraci\'on efectuado por el Crawler y creaci\'on de la base de datos de Neo4j en el  
-Cat\'alogo de Datos para la fuente de datos de turno. La segunda fase consiste en la creaci\'on 
-del grafo de join y \'arboles de join. La tercera fase consiste en la generaci\'on de las consultas dado una 
-definici\'on de esquema 
-estrella mediante un script del DSL y la selecci\'on de los joins efectuada por el usuario. La cuarta fase y \'ultima 
-es la validaci\'on de las consultas generadas 
-mediante la creaci\'on manual de un pipeline de poblaci\'on a partir de las mismas y su ejecución. Todos los archivos que intervienen 
-en el proceso de experimentaci\'on se encuentran en la carpeta \textbf{experiments} en el directorio ra\'iz del proyecto. 
+la correctitud del proceso de exploración efectuado por el Crawler y creación de la base de datos de Neo4j en el  
+Catálogo de Datos para la fuente de datos de turno. La segunda fase consiste en la creación 
+del grafo de join y \'arboles de join. La tercera fase consiste en la generación de las consultas dado una 
+definición de esquema 
+estrella mediante un script del DSL y la selección de los joins efectuada por el usuario. La cuarta fase y \'ultima 
+es la validación de las consultas generadas 
+mediante la creación manual de un pipeline de población a partir de las mismas y su ejecución. Todos los archivos que intervienen 
+en el proceso de experimentación se encuentran en la carpeta \textbf{experiments} en el directorio raíz del proyecto. 
 Cada experimento posee su propia carpeta en las cuales existen tres scripts de python y un scripts del DSL que constituye 
-la definición del esquema estrella a poblar. Los scripts de python tienen el mismo nombre en ambas carpetas de experimentaci\'on, 
+la definición del esquema estrella a poblar. Los scripts de python tienen el mismo nombre en ambas carpetas de experimentación, 
 \textbf{create.py}, \textbf{populate.py}, \textbf{pipeline.py}. El primero se encarga de 
 crear la base de datos correspondiente al escenario de ventas minoristas descrito anteriormente. El segundo se 
-encarga de poblar dicha base de datos. El tercero es la implementaci\'on de un pipeline de poblaci\'on utilizando 
-las consultas generadas. Los scripts utilizan las librerias de python SQLAlchemy, Psycopg2 y Faker para llevar a 
-cabo sus tareas. En particular, la biblioteca de python Faker proporciona facilidades para la generaci\'on de informaci\'on, 
-la cual es utilizada para poblar las bases de datos de prueba. A continuaci\'on se describen 
+encarga de poblar dicha base de datos. El tercero es la implementación de un pipeline de población utilizando 
+las consultas generadas. Los scripts utilizan las librerías de python SQLAlchemy, Psycopg2 y Faker para llevar a 
+cabo sus tareas. En particular, la biblioteca de python Faker proporciona facilidades para la generación de información, 
+la cual es utilizada para poblar las bases de datos de prueba. A continuación se describen 
 los detalles de los experimentos.
 
-\subsection{Ambiente de experimentaci\'on}
+\subsection{Ambiente de experimentación}
 
 \subsubsection{Equipo}
 
@@ -29,20 +29,20 @@ memoria RAM y sistema operativo Windows 11 Home 23H2.
 
 \subsubsection{Docker}
 
-Se utilizó Docker para simular el traspaso de datos por red entre la aplicaci\'on, el Cat\'alogo de Datos y 
-los servidores de bases de datos fuente y destino. Se crea una imagen de la aplicaci\'on basada en python:3.10, con el 
+Se utilizó Docker para simular el traspaso de datos por red entre la aplicación, el Catálogo de Datos y 
+los servidores de bases de datos fuente y destino. Se crea una imagen de la aplicación basada en python:3.10, con el 
 nombre \textbf{autoetl}. 
 Con el archivo \textbf{docker-compose.yml} se inicializan todos los contenedores que intervienen en el proceso 
-de experimentaci\'on. Los servidores de bases de datos fuente y destino son contenedores de PostgreSQL llamados 
-\textbf{db} y \textbf{target} respectivamente. El Cat\'alogo de Datos es un contenedor de Neo4j con nombre 
-\textbf{data\_catalog}. La aplicaci\'on implementada yace en un contenedor de la imagen creada \textbf{autoetl}. 
-Por \'ultimo, con el objetivo de visualizar los resultados del proceso de poblaci\'on se añade al ambiente un 
-contenedor de \textbf{pgadmin4}, el cual proporciona una herramienta para la visualizaci\'on de bases de datos 
+de experimentación. Los servidores de bases de datos fuente y destino son contenedores de PostgreSQL llamados 
+\textbf{db} y \textbf{target} respectivamente. El Catálogo de Datos es un contenedor de Neo4j con nombre 
+\textbf{data\_catalog}. La aplicación implementada yace en un contenedor de la imagen creada \textbf{autoetl}. 
+Por \'ultimo, con el objetivo de visualizar los resultados del proceso de población se añade al ambiente un 
+contenedor de \textbf{pgadmin4}, el cual proporciona una herramienta para la visualización de bases de datos 
 de PostgreSQL.
 
 \subsection{Experimento 1: Escenario de ventas minoristas}
 
-Este escenario se basa en \textbf{Retail Sales} expuesto en el Cap\'itulo 2
+Este escenario se basa en \textbf{Retail Sales} expuesto en el capítulo 2
 de \cite{kimball2011data}. 
 
 Una red de tiendas cuenta con sucursales distribuidas en varias provincias del país. Estas tiendas se encuentran ubicadas 
@@ -60,7 +60,7 @@ La figura \ref{fig:retail-transactional} muestra las tablas del sistema transacc
 
 Los archivos que intervienen en este experimento se encuentran en la carpeta \textbf{retail\_sales} del 
 directorio \textbf{experiments}. La definición del esquema estrella a poblar se encuentra en el archivo 
-\textbf{retailsales.txt}, el listado de c\'odigo \ref{retailsalesstar} muestra su contenido. La figura \ref{fig:retail-Warehouse} muestra la composición de las 
+\textbf{retailsales.txt}, el listado de código \ref{retailsalesstar} muestra su contenido. La figura \ref{fig:retail-Warehouse} muestra la composición de las 
 tablas de dimensión y de hechos del esquema estrella propuesto. 
 
 \begin{lstlisting}[label={retailsalesstar}, caption={Definici\'on del esquema estrella del almacén de datos asociado al escenario ventas minoristas}]
@@ -126,7 +126,7 @@ partir de los datos recopilados por el Crawler se muestra en la figura \ref{fig:
 A partir de la base de datos de Neo4j obtenido en la fase 1 se computan el grafo de join y el \'arbol de 
 join que se muestran en la figura \ref{fig:graphjoin1} y en la figura \ref{fig:jointree1} respectivamente. Para este caso, 
 el \'arbol de join es \'unico y coincide  con el grafo de join debido a que el esquema de bases de datos de 
-las ventas minoristas no presenta ambiguedades.
+las ventas minoristas no presenta ambigüedades.
 
 \begin{figure}
   \centering
@@ -144,9 +144,9 @@ las ventas minoristas no presenta ambiguedades.
 
 \subsubsection{Fase 3: Generaci\'on de las consultas}
 
-La selecci\'on de los joins por parte del usuario se efectúa a través de la interfaz de usuario. 
+La selección de los joins por parte del usuario se efectúa a través de la interfaz de usuario. 
 Como solo hay un \'arbol de join hay una \'unica opción de join para 
-cada tabla del esquema estrella. El listado de c\'odigo \ref{joinselectexp1} muestra los joins 
+cada tabla del esquema estrella. El listado de código \ref{joinselectexp1} muestra los joins 
 computados a partir del \'arbol de join mostrado en la fase 2 y de la definición del esquema estrella 
 presente en \textbf{retailsales.txt}.
 
@@ -170,8 +170,8 @@ presente en \textbf{retailsales.txt}.
   
 \end{lstlisting}
 
-El listado de c\'odigo \ref{quercreateexp1} muestra las consultas de creaci\'on y el listado de c\'odigo 
-\ref{selectexp1} muestra las consultas de selecci\'on, generadas a partir de los joins computados en 
+El listado de código \ref{quercreateexp1} muestra las consultas de creación y el listado de código 
+\ref{selectexp1} muestra las consultas de selección, generadas a partir de los joins computados en 
 la fase previa.
 
 \begin{lstlisting}[label={quercreateexp1}, caption={Consultas de creaci\'on generadas para el experimento 1}, language={sql}]
@@ -285,10 +285,10 @@ la fase previa.
 \subsubsection{Fase 4: Creaci\'on manual del pipeline y poblaci\'on del almac\'en de datos}
 
 El pipeline creado se encuentra en la ruta \textbf{experiments/retail\_sales} con el nombre de 
-\textbf{pipeline.py}. Este script utiliza las consultas generadas ejecutando su c\'odigo utilizando 
+\textbf{pipeline.py}. Este script utiliza las consultas generadas ejecutando su código utilizando 
 Psycopg2.
 
-La figura \ref{fig:fullpg1} muestra el estado del servidor de bases de datos \textbf{target} luego de la ejecuci\'on 
+La figura \ref{fig:fullpg1} muestra el estado del servidor de bases de datos \textbf{target} luego de la ejecución 
 del pipeline. La figura muestra como efectivamente 
 se han creado y poblado todas la tablas del esquema estrella definido.
 
@@ -304,9 +304,9 @@ se han creado y poblado todas la tablas del esquema estrella definido.
 
 Este escenario est\'a inspirado en el escenario de prueba TPCH\footnote{https://www.tpc.org/tpch/}, ampliamente 
 utilizada para probar soluciones de bases de datos e Inteligencia de Negocios. Los scripts que participan 
-en el proceso de creaci\'on y poblaci\'on de la base de datos de prueba TPCH se encuentran en la ruta 
-\textbf{experiments/tpch}. La especificaci\'on del esquema estrella del almacén de datos a poblar se encuentra 
-en el script del DSL \textbf{tpch.txt}, el listado de c\'odigo \ref{tpchstar} muestra su contenido.  A continuaci\'on se describe el escenario que modela la base de datos.
+en el proceso de creación y población de la base de datos de prueba TPCH se encuentran en la ruta 
+\textbf{experiments/tpch}. La especificación del esquema estrella del almacén de datos a poblar se encuentra 
+en el script del DSL \textbf{tpch.txt}, el listado de código \ref{tpchstar} muestra su contenido.  A continuación se describe el escenario que modela la base de datos.
 
 \begin{lstlisting}[label={tpchstar}, caption={Definici\'on del esquema estrella del almacén de datos asociado al escenario TPCH}]
   dimension supplier {
