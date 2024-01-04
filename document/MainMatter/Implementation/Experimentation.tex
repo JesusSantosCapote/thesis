@@ -13,8 +13,8 @@ en el proceso de experimentación se encuentran en la carpeta \textbf{experiment
 Cada experimento posee su propia carpeta en las cuales existen tres scripts de python y un scripts del DSL que constituye 
 la definición del esquema estrella a poblar. Los scripts de python tienen el mismo nombre en ambas carpetas de experimentación, 
 \textbf{create.py}, \textbf{populate.py}, \textbf{pipeline.py}. El primero se encarga de 
-crear la base de datos correspondiente al escenario de ventas minoristas descrito anteriormente. El segundo se 
-encarga de poblar dicha base de datos. El tercero es la implementación de un pipeline de población utilizando 
+crear las bases de datos de prueba. El segundo se 
+encarga de poblar dichas base de datos. El tercero es la implementación de un pipeline de población utilizando 
 las consultas generadas. Los scripts utilizan las librerías de python SQLAlchemy, Psycopg2 y Faker para llevar a 
 cabo sus tareas. En particular, la biblioteca de python Faker proporciona facilidades para la generación de información, 
 la cual es utilizada para poblar las bases de datos de prueba. A continuación se describen 
@@ -344,14 +344,13 @@ en el script del DSL \textbf{tpch.txt}, el listado de código \ref{tpchstar} mue
 \end{lstlisting}
 
 Una distribuidora vende piezas de varios suministradores. Distintos suministradores pueden 
-producir la misma pieza. Los clientes de la suministradora realizan \'ordenes de compra 
-de piezas de determinados suministradores. La figura  muestra el esquema de bases de datos 
-del escenario TPCH. La figura \ref{fig:transactionaltpch} muestra el esquema de base de datos 
+producir la misma pieza. Los clientes de la distribuidora realizan \'ordenes de compra 
+de piezas de determinados suministradores. La figura \ref{fig:transactionaltpch} muestra el esquema de base de datos 
 del escenario descrito.
 
 \begin{figure}
   \centering
-  \includegraphics[scale=0.5]{Graphics/tpch-tpch-transactional.drawio (4).png}
+  \includegraphics[scale=0.5]{Graphics/tpch-tpch-transactional.drawio (5).png}
   \caption{Esquema de la base de datos TPCH}
   \label{fig:transactionaltpch}
 \end{figure}
@@ -380,7 +379,7 @@ partir de los datos recopilados por el Crawler se muestra en la figura \ref{fig:
 
 \subsubsection{Fase 2: Creaci\'on del grafo de join y \'arboles de join}
 
-A partir de la base de datos de Neo4j obtenido en la fase 1 se computan el grafo de join y los \'arboles de 
+A partir de la base de datos de Neo4j obtenida en la fase 1 se computan el grafo de join y los \'arboles de 
 join que se muestran en la figura \ref{fig:graphjoin2} y en la figura \ref{fig:jointree2} respectivamente. 
 N\'otese como en TPCH no existe una relaci\'on directa entre las tablas \textbf{Lineitem} y \textbf{PartSupplier}, 
 sin embargo en el grafo de join se incluye un arco entre ellos dado que cumplen con el criterio expuesto 

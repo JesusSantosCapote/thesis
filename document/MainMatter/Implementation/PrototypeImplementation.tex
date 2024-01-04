@@ -74,8 +74,8 @@ Además, el método \textbf{explore\_db} tiene la responsabilidad de llenar la c
 que almacena los metadatos recopilados en un formato m\'as expresivo para luego ser mostrado al usuario.
 
 El método \textbf{export\_metadata\_to\_file} se encarga guardar \textbf{\_db\_dict} y \textbf{\_metadata\_str} en el disco, 
-en la ruta \textbf{data/schemas}. La carpeta \textbf{schemas} contiene una carpeta por cada base de datos identificada 
-por el nombre de dicha base de datos en la cual se almacena en formato json \textbf{\_db\_dict} y en formato txt 
+en la ruta \textbf{data/schemas}. La carpeta \textbf{schemas} contiene una carpeta por cada base de datos, identificada 
+por el nombre de dicha base de datos, en la cual se almacena en formato json \textbf{\_db\_dict} y en formato txt 
 \textbf{\_metadata\_str}.
 
 En esta primera entrega del prototipo solo se le di\'o implementación a un crawler para PostgreSQL. Su l\'ogica 
@@ -93,8 +93,8 @@ utilizando el adaptador de PostgreSQL para python \textbf{psycopg2}.
 
 \subsection{Catálogo de Datos}
 
-El Catálogo de Datos es un servido de base de datos de Neo4j que contiene un grafo de base de datos por cada base de datos 
-fuente que hay sido explorada por la aplicación. Cada vez que el Crawler explora una base de datos fuente nueva se crea 
+El Catálogo de Datos es un servidor de base de datos de Neo4j que contiene un grafo de base de datos por cada base de datos 
+fuente que haya sido explorada por la aplicación. Cada vez que el Crawler explora una base de datos fuente nueva se crea 
 un grafo de base de datos de Neo4j para almacenar sus metadatos.
 
 La comunicación de la aplicación con el Catálogo de Datos es mediada por la clase \textbf{DataCatalogHandler} 
@@ -216,9 +216,9 @@ del análisis sintáctico del parser es el \'arbol de sintaxis abstracta del scr
 
 \subsubsection{Generaci\'on de c\'odigo}
 
-Luego de tener construido el AST del script se pasa a realizar análisis sobre esta estructura con 
-el objetivo de detectar errores semánticos en el código del script. Si no se encuentran errores 
-entonces a partir del AST se comienza a generar el código de las consultas de creación y selección.
+Luego de tener construido el AST del script se pasa a realizar un análisis sobre esta estructura con 
+el objetivo de detectar errores semánticos en el código del script. Si no se encuentran errores, 
+a partir del AST se comienza a generar el código de las consultas de creación y selección.
 
 Siguiendo las mejores prácticas de la industria, todos los análisis sobre el AST se realizan 
 utilizando el patrón visitor\cite{buttner2004digging}. Cada nodo del AST implementa la clase abstracta 
@@ -272,19 +272,20 @@ nodo del AST.
 
 Las instancias de las clases \textbf{VisitorSemanticCheck}, \textbf{VisitorNamingCheck}, \textbf{VisitorGetTypes} 
 son las encargadas de realizar
-controles semánticos sobre el código del script del DSL analizado. Las instancias de \textbf{VisitorSemanticCheck} realiza los siguientes 
+controles semánticos sobre el código del script del DSL analizado. Las instancias de \textbf{VisitorSemanticCheck} realizan los siguientes 
 chequeos:
 
 \begin{itemize}
-    \item Revisa si en el esquema estrella definido existe al menos una dimensión y una tabla de hechos.
-    \item Se asegura que las tablas definidas tengan al menos un atributo válido.
-    \item Se asegura que todas las tablas tengan definidas al menos una llave primaria.
+    \item Revisan si en el esquema estrella definido existe al menos una dimensión y una tabla de hechos.
+    \item Se aseguran que las tablas definidas tengan al menos un atributo válido.
+    \item Se aseguran que todas las tablas tengan definidas al menos una llave primaria.
 \end{itemize}
 
 Las instancias de \textbf{VisitorNamingCheck} se encargan de recorrer el AST y verificar que: 
 
 \begin{itemize}
     \item En las dimensiones o tablas de hecho no existan dos atributos definidos con el mismo nombre.
+    \item Que no existan dos tablas del esquema estrella con el mismo nombre.
     \item Los atributos compuestos definidos tengan asignados un alias para su correcta identificación.
 \end{itemize}
 
@@ -302,8 +303,8 @@ las siguientes verificaciones:
 \end{itemize}
 
 Las instancias de \textbf{VisitorGetSelects} se encargan de recorrer el AST y por cada dimensión o tabla 
-de hechos recolectan las tablas y los atributos que hay que seleccionar de la fuente de datos 
-para poblar dicha dimensión o tabla de hechos. A partir de esta información se confeccionan las consultas 
+de hechos recolectan los atributos que hay que seleccionar de la fuente de datos 
+para poblar dicha dimensión o tabla de hechos y las tablas que los contienen. A partir de esta información se confeccionan las consultas 
 que se realizan a los \'arboles de join para obtener el join necesario para el proceso de población.
 
 Las instancias de \textbf{VisitorGetLevel} son las encargadas de recopilar los niveles de cada uno de los 
@@ -340,7 +341,7 @@ La generación de código es otro de los puntos de dependencia del prototipo con
 de bases de datos. Específicamente, las consultas de selección dependen del sistema de gestión de bases 
 de datos de la fuente, pues estas se encargan de extraer los datos para la población, y las consultas 
 de creación dependen del sistema de gestión de bases de datos del almacén de datos de destino, pues 
-son las responsables de crear las tablas del esquema estrella en sistema destino. Para resolver esta dependencia 
+son las responsables de crear las tablas del esquema estrella. Para resolver esta dependencia 
 se implementa un visitor para la generación de las consultas de selección y un visitor para la generación 
 de las consultas de creación, por cada sistema de gestión de bases de datos, como se muestra en la 
 figura \ref{fig:visitors}. De esta forma, cada tipo de consulta la genera el visitor que le corresponde 
@@ -357,7 +358,7 @@ tiene un diccionario que mapea los tipos del DSL a los tipos de PostgreSQL.
 
 Las instancias de la clase \textbf{VisitorPostgreSQLSelect} generan las consultas de selección para 
 el sistema gestor PostgreSQL. Reciben los joins seleccionados por el usuario para cada tabla del esquema 
-estrella conforman las consultas de selección.
+estrella y conforman las consultas de selección.
 
 \subsection{Interfaz de Usuario}
 
@@ -391,13 +392,13 @@ grafo de join y los \'arboles de join derivados. El script de esta página es \t
 \subsubsection{Query Generator}
 
 En esta página se mostraran las consultas generadas. Primero se selecciona un script del DSL que 
-define un esquema estrella a poblar. Luego se debe escoger por cada tabla del esquema estrella el 
+define un esquema estrella a poblar. Luego se debe escoger, por cada tabla del esquema estrella, el 
 join que mejor se ajuste para la extracción de los valores. La selección se realiza a través 
 de componentes en la interfaz de usuario. Una vez seleccionado los joins aparecer\'a un bot\'on 
 para comenzar el proceso de generación de consultas y al tocarlo se mostraran las consultas 
 de creación y de selección para cada tabla del esquema estrella, as\'i como la consulta 
 para crear y poblar la tabla de metadatos \textbf{level\_metadata}. Las consultas generadas 
-son almacenadas en la ruta \textbf{data/script} haciendo posible su recuperación y descarga por parte del usuario. 
+son almacenadas en la ruta \textbf{data/querys} haciendo posible su recuperación y descarga por parte del usuario. 
 Todo el proceso de generación y análisis del script del DSL es mediado por la clase \textbf{Orchestrator} 
 presente en \textbf{orchestrator.py}. 
 
