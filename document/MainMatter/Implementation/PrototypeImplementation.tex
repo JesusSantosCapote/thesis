@@ -279,6 +279,11 @@ chequeos:
     \item Revisan si en el esquema estrella definido existe al menos una dimensión y una tabla de hechos.
     \item Se aseguran que las tablas definidas tengan al menos un atributo válido.
     \item Se aseguran que todas las tablas tengan definidas al menos una llave primaria.
+    \item Verifican que no existan llaves for\'aneas declaradas en atributos compuestos.
+    \item Verifican que tanto los atributos referenciados como las tablas referenciadas est\'en definidos en el 
+        script.
+    \item Revisan si las tablas y atributos fuente utilizados en el script existen en la base de datos fuente.
+    \item Verifican el correcto uso de la palabra reservada \textbf{self}.
 \end{itemize}
 
 Las instancias de \textbf{VisitorNamingCheck} se encargan de recorrer el AST y verificar que: 
@@ -296,10 +301,9 @@ información necesaria para el proceso de generación de código. En particular 
 las siguientes verificaciones: 
 
 \begin{itemize}
-    \item Verifica que los atributos compuestos definidos se les haya especificado su tipo.
-    \item En el caso de las llaves for\'aneas comprueba que tanto las tabla referenciada como el atributo 
-        referenciado est\'en previamente declarados en el esquema estrella y que además la llave for\'anea 
-        y el atributo referenciado coincidan en tipo.
+    \item Verifican que los atributos compuestos definidos se les haya especificado su tipo.
+    \item En el caso de las llaves for\'aneas comprueban que la llave for\'anea y el atributo referenciado 
+        coincidan en tipo.
 \end{itemize}
 
 Las instancias de \textbf{VisitorGetSelects} se encargan de recorrer el AST y por cada dimensión o tabla 
@@ -446,4 +450,4 @@ Las consultas son descargadas en archivos separados con extensión .sql.
 \subsubsection{Logs}
 
 Finalmente, en esta página se muestran los errores en la escritura del script de definición del esquema
-estrella encontrados por los visitors.
+estrella encontrados por los visitors e información respecto a la ejecución de la aplicación.
