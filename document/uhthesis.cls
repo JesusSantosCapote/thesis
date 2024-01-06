@@ -74,17 +74,17 @@
 \renewcommand{\textfraction}{0.07}
 
 % Whole biblatex hyperref to bibliography
-\DeclareCiteCommand{\cite}
+\DeclareCiteCommand{\cite}[\mkbibparens]
   {\usebibmacro{prenote}}
   {\usebibmacro{citeindex}%
-   \printtext[bibhyperref]{[\usebibmacro{cite}]}}
+   \printtext[bibhyperref]{\usebibmacro{cite}}}
   {\multicitedelim}
   {\usebibmacro{postnote}}
 
 \DeclareCiteCommand*{\cite}
   {\usebibmacro{prenote}}
   {\usebibmacro{citeindex}%
-   \printtext[bibhyperref]{\usebibmacro{cite}}}
+   \printtext[bibhyperref]{\usebibmacro{citeyear}}}
   {\multicitedelim}
   {\usebibmacro{postnote}}
 
@@ -160,7 +160,7 @@
 \newcommand{\logo}[1]{\def\@logo{#1}}
 
 \newenvironment{opinion}%
-  {\chapter*{Opinión de los tutores}}%
+  {\chapter*{Opinión del tutor}}%
   {}
 \newenvironment{acknowledgements}%
   {\chapter*{Agradecimientos}}%
@@ -183,12 +183,6 @@
    \addcontentsline{toc}{chapter}{Conclusiones}%
    \chapter*{Conclusiones}}%
   {}
-\newenvironment{recomendations}%
-  {\cleardoublepage%
-   \phantomsection%
-   \addcontentsline{toc}{chapter}{Recomendaciones}%
-    \chapter*{Recomendaciones}}%
-  {}
 
 \newenvironment{annexes}%
   {\cleardoublepage%
@@ -197,9 +191,14 @@
     \chapter*{Anexos}}%
   {}
 
+\newenvironment{recomendations}%
+  {\cleardoublepage%
+   \phantomsection%
+   \addcontentsline{toc}{chapter}{Recomendaciones}%
+    \chapter*{Recomendaciones}}%
+  {}
 \newenvironment{dedication}%
   {\cleardoublepage%
-   \chapter*{Dedicatoria}
    \thispagestyle{empty}%
    \vskip 3.5cm%
    \begin{flushright}}%
