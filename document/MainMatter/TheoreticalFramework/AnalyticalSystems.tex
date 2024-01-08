@@ -82,8 +82,8 @@ almacenes de datos.
 El trabajo con el modelo dimensional persigue analizar los datos desde diferentes perspectivas para lograr una visión 
 global del caso de estudio que permita fundamentar las decisiones estratégicas en diferentes circunstancias, con énfasis 
 en la temporalidad. Sin embargo, la eficiencia de los análisis est\'a fuertemente ligada a la forma en que los datos 
-se representan y se almacenan. El enfoque relacional, por su alto grado de difusión y familiarización que generalmente 
-poseen los especialistas, ha servido como una de las instrumentaciones del modelo dimensional, aunque su enfoque f\'isico 
+se representan y se almacenan. El modelo conceptual entidad relacionalidad, por su alto grado de difusión y familiarización que generalmente 
+poseen los especialistas, ha servido para representar modelo dimensional, aunque su enfoque f\'isico 
 no exige el almacenamiento en tablas. De esta forma, los valores que representan el funcionamiento del negocio se almacenan 
 en tablas de hechos y los valores que describen el entorno donde ocurren los hechos se almacenan en tablas de dimensiones.
 Las tablas de hechos se relacionan con las tablas de dimensiones formando diferentes esquemas.
@@ -98,9 +98,9 @@ son las estructuras fundamentales del modelo dimensional.
 
 Se utiliza el término cubo para referirse a los datos que se organizan y resumen en una estructura multidimensional compuesta 
 por un conjunto de medidas y dimensiones que representan el fenómeno o proceso que se desea analizar. Los cubos constituyen 
-el objeto fundamental del procesamiento analítico en línea\cite{lismaster}. Ejemplificando, con apoyo del modelo relacional, 
-un cubo sería una tabla de hechos, donde se almacenan valores numéricos y que est\'a relacionada con tablas de dimensiones 
-que ofrecen al usuario diferentes puntos de vista para el análisis de los valores.
+el objeto fundamental del procesamiento analítico en línea\cite{lismaster}. Ejemplificando, con apoyo del modelo conceptual
+entidad relacionalidad, un cubo sería una tabla de hechos, donde se almacenan valores numéricos, que est\'a 
+relacionada con tablas de dimensiones que ofrecen al usuario diferentes puntos de vista para el análisis de los valores.
 
 \subsubsection{Medida}
 
@@ -218,3 +218,6 @@ Empresarial, como propone Kimball. Con esta arquitectura se aprovecha consistenc
 en la capa de datos reconciliados y tambi\'en se gana en rendimiento a la hora de responder a consultas informacionales y en expresividad 
 del modelo en la capa de datos derivados. No obstante, la sugerencia de una arquitectura de tres capas también ha recibido críticas 
 debido a la gran cantidad de trabajo necesario para implementar un almacén de datos utilizando este enfoque. 
+
+Esta investigación est\'a dirigida, esencialmente, a la poblaci\'on de la segunda capa de la arquitectura de tres 
+capas propuesta por Devlin.
