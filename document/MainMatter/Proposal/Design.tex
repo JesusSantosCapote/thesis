@@ -10,76 +10,86 @@
 AutoETL se concibe como una herramienta para ser utilizada por los desarrolladores de almacenes de datos 
 con el objetivo de aliviar la carga de trabajo en la implementación de los procesos de población de las 
 estructuras analíticas. Su funcionamiento general consiste en generar las consultas y un pipeline que las utilice 
-con el objetivo de poblar automáticamente un escenario analítico definido por el usuario. Como se observa en la 
-Figura \ref{fig:arquitectura} los componentes de la aplicación 
-est\'an dispuestos de forma secuencial para representar el flujo de trabajo de la herramienta.
+con el objetivo de poblar automáticamente un escenario analítico definido por el desarrollador. La 
+figura \ref{fig:arquitectura} muestra los componentes de la aplicación, los cuales se corresponden 
+con los componentes principales de una soluci\'on de ETL automático expuestos en el cap\'itulo \ref{chapter:auto-etl}.
 
 \begin{itemize}
-    \item El primer elemento de la arquitectura propuesta son las \textbf{Fuentes de Datos}. En esta primera concepción del 
-        prototipo solo se pueden manejar bases de datos relacionales y una fuente de datos a la vez.
-    \item La tarea del \textbf{Crawler} es explorar las fuentes de datos para recopilar información relevante sobre su estructura, 
+    \item El primer elemento de la arquitectura propuesta son las \textbf{Fuentes de Datos}. En ellas yacen los 
+        datos que poblar\'an el escenario analítico.
+    \item La tarea del \textbf{Crawler} es explorar las fuentes de datos para recopilar información relevante sobre su estructura 
         con el fin de crear el \textbf{Catálogo de Datos} a partir de dicha información.
-    \item El \textbf{Catálogo de Datos} es una estructura que almacena metadatos sobre las fuentes de datos, los cuales son 
+    \item El \textbf{Catálogo de Datos} es el repositorio que almacena metadatos sobre las fuentes de datos, los cuales son 
         utilizados en el proceso de la generación de consultas.
-    \item Los usuarios interactúan con la herramienta a través de una interfaz web. Mediante esta interfaz, especifican el modelo 
+    \item El escenario analítico es definido mediante un script del lenguaje de dominio específico, dicho script debe ser programado por el desarrollador en 
+        un editor de código de su preferencia. Los desarrolladores interactúan con la herramienta a través de una interfaz web, mediante la cual especifican el escenario 
         analítico a poblar, establecen conexiones con las fuentes de datos, consultan metadatos, configuran opciones necesarias 
-        para el proceso de generación de consultas y del pipeline, y finalmente ejecutan el pipeline generado. El escenario analítico 
-        es especificado mediante un script del lenguaje de dominio específico, dicho script debe ser programado por el usuario en 
-        un editor de código de su preferencia.
+        para el proceso de generación de consultas y del pipeline y finalmente ordenan la ejecución del pipeline generado. 
     \item El \textbf{Generador de Consultas} es el encargado de tomar la información proveniente del \textbf{Catálogo de Datos}, de la especificación
-        del escenario analítico y de las configuraciones del usuario, para generar una lista de consultas que creen y pueblen el escenario 
-        analítico en cuestión.
-    \item El \textbf{Generador de Pipelines} tiene la tarea de crear el pipeline para la población y creación del escenario analítico, partiendo 
-        de la lista de consultas generadas por el \textbf{Generador de Consultas} y de las especificaciones del usuario para la creación del pipeline.
+        del escenario analítico y de las configuraciones del usuario, para construir una lista de consultas, a partir de las cuales se creen y se pueblen 
+        las estructuras de datos correspondientes al escenario analítico en cuestión.
+    \item El \textbf{Generador de Pipelines} tiene la tarea de crear una secuencia lógica que define el flujo y el orden de ejecución de las actividades 
+        que conforman el escenario de integración de datos, partiendo 
+        de la lista de consultas generadas por el \textbf{Generador de Consultas} y de las especificaciones del usuario para la creación del pipeline. 
+        Además, tiene la responsabilidad de ejecutar los pipelines, por tanto este componente es motor de integración de AutoETL.
     \item Por \'ultimo, el pipeline es una estructura en la que est\'a correctamente especificado el orden de ejecución de las consultas, 
-        el método de carga y captura de los datos para la población, y la frecuencia con que se ejecutar\'a el pipeline.
+        el método de carga y captura de los datos para la población, así como la frecuencia con que se se realizará la integración de los datos propiamente dicha.
 \end{itemize}
 
-En las secciones a continuación se expone de forma general el funcionamiento de
-los distintos módulos del sistema y las principales consideraciones tomadas durante
+En las secciones que aparecen a continuación se expone, de forma general, el funcionamiento de los módulos correspondientes a la primera 
+aproximación de la solución propuesta y las principales consideraciones tomadas durante
 su diseño.
 
 \subsection{Crawler}
 
 Este componente tiene la tarea de explorar las fuentes de datos para recopilar metadatos \'utiles para el proceso de generación
-de consultas. Los metadatos extra\'idos son los nombres de las tablas de la base de datos fuente, por cada tabla se obtienen sus 
+de consultas. Teniendo en cuenta que en esta primera aproximación se parte de fuentes relacionales, los metadatos extra\'idos son 
+los nombres de las tablas de la base de datos fuente, por cada tabla se obtienen sus 
 atributos, por cada atributo su tipo y si son llaves primarias. Además, por cada tabla se obtienen los atributos que son llaves 
-for\'aneas y por cada una, se extrae la tabla a la que referencian y el atributo referenciado. Con esta información se construye 
+for\'aneas y, por cada una, se extrae el nombre de la tabla a la que referencian y el atributo referenciado. Con esta información se construye 
 el catálogo de datos.
 
 \subsection{Catálogo de Datos}
 
 Una vez que los metadatos de la fuente de datos son recopilados por el Crawler se pasa a poblar el Catálogo de Datos para dicha fuente. 
 El Cat\'alogo de Datos se puebla, por cada fuente, 
-con un multigrafo dirigido donde los nodos representan las tablas de la base de datos fuente y entre dos nodos $v$, $w$ 
-existe un arco $<v,w>$ por cada llave for\'anea en $v$ que referencie a un atributo de $w$. Cada nodo (tabla) guarda 
-los nombres de los atributos de la tabla que representa, sus tipos y si son llaves primarias, for\'aneas o ambas. Cada arco $<v,w>$ 
+con un pseudografo dirigido donde los nodos representan las tablas de la base de datos fuente y entre dos nodos $v$, $w$ 
+existe un arco $<v,w>$ por cada llave for\'anea en $v$ que referencie a un atributo de $w$, en el caso de las relaciones unarias $v=w$. Cada nodo 
+(tabla) guarda los nombres de los atributos de la tabla que representa, sus tipos y si son llaves primarias, for\'aneas o ambas. Cada arco $<v,w>$ 
 guarda una tupla donde en la primera posición se encuentra el nombre del atributo de $v$ que es llave for\'anea y en la segunda 
 posición el nombre del atributo de $w$ referenciado. Nótese que la dirección de un arco representa el sentido de la 
-referencia de la llave for\'anea a la que representa.
+referencia de la llave for\'anea a la que representa como se muestra en la figura \ref{fig:datacatalogproposal}.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Graphics/data_catalog.drawio.png}
+    \caption{Estructura del catálogo de datos}
+    \label{fig:datacatalogproposal}
+\end{figure}
 
 \subsection{Lenguaje de Dominio Espec\'ifico}
 
 Como parte de los objetivos de la presente investigación est\'a la concepción y diseño de un lenguaje de dominio 
 específico para la definición de escenarios analíticos. El objetivo del lenguaje es servir de vínculo 
-entre el modelo relacional de la fuente de datos y el modelo dimensional del escenario analítico. El lenguaje 
+entre el esquema relacional de la fuente de datos y el esquema dimensional del escenario analítico. El lenguaje 
 brinda recursos sintácticos para la especificación de tablas de dimensiones y tablas de hechos, las cuales 
 en su conjunto constituyen la definición de un esquema estrella.
 
 La definición de atributos en las tablas de hechos o de dimensión constituye la base del vínculo entre 
-los modelos mencionados. La definición de un atributo 
+los esquemas mencionados. La definición de un atributo 
 implica detallar la procedencia y los valores que lo constituirán, es decir, la tabla de donde se extraerán los 
-valores (el 'dónde'), 
-así como identificar el atributo concreto dentro de esa tabla cuyos valores se usarán para completar el atributo 
-que estamos definiendo (el 'con qué'). Este proceso garantiza que cada atributo se defina de manera clara y que 
-se alimente correctamente con los datos pertinentes. De esta forma se entrelazan la definición relacional 
-de la fuente de datos con el modelo dimensional del esquema estrella. A continuación se presenta la gramática 
-libre del contexto que da definición al DSL propuesto. Las palabras en mayúscula indican no terminales y 
+valores (el dónde). Asimismo, la definición de un atributo permite identificar el atributo concreto dentro de esa 
+tabla cuyos valores se usarán para completar el atributo 
+que estamos definiendo (el con qué). Este proceso garantiza que cada atributo se defina de manera clara y que 
+se alimente correctamente con los datos pertinentes. De esta forma se entrelazan la representación relacional 
+de la fuente de datos con el enfoque dimensional del esquema estrella. El listado de código \ref{code:CFG} presenta 
+una primera aproximación de la gramática 
+libre del contexto que da definición al DSL propuesto. Las palabras que comienzan con letra mayúscula indican no terminales y 
 las palabras en minúscula indican terminales.
 
-\begin{lstlisting}[caption={Gram\'atica libre del contexto del lenguaje de dominio espec\'ifico}]
+\begin{lstlisting}[label={code:CFG},caption={Gram\'atica libre del contexto del lenguaje de dominio espec\'ifico}]
     S' -> Dimensional_Model
-    Dimensional_Model -> List_Dimensional_Tables
+    Dimensional_Schema -> List_Dimensional_Tables
     List_Dimensional_Tables -> Dimensional_Table
                     | List_Dimensional_Tables Dimensional_Table
 
@@ -119,7 +129,7 @@ las palabras en minúscula indican terminales.
     Modifier -> pk | fk to ID . ID | empty
 \end{lstlisting}
 
-Tal y como dicta la gramática, un modelo dimensional (\textbf{Dimensional\_Model}), 
+Tal y como dicta la gramática, un esquema dimensional en forma de estrella (\textbf{Dimensional\_Schema}), 
 en el contexto del DSL, est\'a compuesto por una lista de tablas 
 dimensionales. 
 
