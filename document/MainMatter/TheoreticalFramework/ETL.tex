@@ -1,28 +1,24 @@
-\section{Procesos ETL}\label{section:etl}
+\section{Procesos de integración o ETL}\label{section:etl}
 
-Los procesos ETL se encargan, a grandes rasgos, de convertir y unificar datos provenientes de diversas fuentes, generalmente 
-con formatos distintos, en un \'unico repositorio de datos. Constituye un tipo especial de r\'eplica en la cual los datos 
+Los procesos de integración llamados ETL (\emph{Extract, Transform, Load}) se encargan, a grandes rasgos, de convertir y unificar datos provenientes de diversas fuentes, generalmente 
+con formatos distintos, en un \'unico repositorio de datos. Constituyen un tipo especial de r\'eplica en el cual los datos 
 capturados se modifican para obtener un escenario m\'as completo de una determinada actividad. ETL est\'a presente en la 
 industria desde la década de 1970 y empez\'o a ganar popularidad con el auge de los almacenes de datos\cite{etl_vs_elt_amazon}.
-
-\subsection{Objetivos de los procesos ETL}
 
 Con la instrumentaci\'on de procesos ETL los desarrolladores buscan garantizar la calidad y confiabilidad de los datos para 
 fines anal\'iticos y de toma de decisiones. Adem\'as, cumplen con otros objetivos clave. En una primera instancia, 
 tienen el objetivo de conciliar datos de m\'ultiples fuentes, d\'igase bases de datos, hojas de c\'alculo, APIs, 
 archivos planos y sistemas externos, en un formato unificado y estandarizado, que responda a la estructura del repositorio de destino,
-sea un almac\'en de datos u otro tipo repositorio. 
+sea un almac\'en de datos u otro tipo de repositorio. 
 La conciliación de los datos facilita 
 los procesos de an\'alisis y de generación de informes de datos. En segundo lugar, con los procesos ETL se busca 
-limpiar y transformar los datos, asegurando que sean precisos, completos y cumplan con las reglas y requisitos comerciales. 
+limpiar y transformar los datos, asegurando que sean precisos, completos y cumplan con las reglas y requisitos organizacionales. 
 Por \'ultimo, ETL permite la integración o conciliación de datos en tiempo real e históricos, lo cual brinda a las organizaciones una visión 
 completa de sus datos a lo largo del tiempo, mejorando la obtenci\'on de conocimiento y la toma de decisiones.
 
-\subsection{ETL vs ELT}
-
 Extraer, Cargar y Transformar, ELT por sus siglas en ingl\'es es un proceso derivado de ETL solo que invierte las operaciones 
-de carga y transformación. En ELT se cargan los datos en el sistema destino justo despu\'es de ser extra\'idos de la fuente 
-o\'igen. El cómputo de las transformaciones de los datos extraídos, definidas por los desarrolladores, se realiza en el sistema de destino. 
+de carga y transformación\cite{raunakjhawar_ETL_microsoft}. En ELT se cargan los datos en el sistema destino justo despu\'es de ser extra\'idos de la fuente 
+origen. El cómputo de las transformaciones de los datos extraídos, definidas por los desarrolladores, se realiza en el sistema de destino. 
 La mayor parte de las 
 transformaciones se realizan en la etapa de análisis y se cargan los datos en bruto mínimamente procesados en el 
 almacenamiento de datos.
@@ -32,9 +28,8 @@ infraestructura en la nube, proporciona a los sistemas de destino la potencia de
 necesaria para realizar transformaciones definidas sobre inmensas cantidades de datos.
 
 Comparando ambos enfoques, con ELT se simplifica la arquitectura pues se elimina del proceso el motor de transformación. 
-Tambi\'en, al escalar el almacenamientode datos de destino también se escala el rendimiento del proceso ELT pues es all\'i
-donde se realizan las transformaciones. ELT omite el paso de copia presente en ETL que puede ser una operaci\'on muy costosa 
-si el conjunto de datos es grande. Pero solo es efectivo usar este enfoque si el sistema destino es lo suficientemente
+Tambi\'en, al escalar el almacenamiento de datos de destino también se escala el rendimiento del proceso ELT pues es all\'i
+donde se realizan las transformaciones. Pero solo es efectivo usar este enfoque si el sistema destino es lo suficientemente
 potente como para transformar los datos de manera eficiente.
 
 Por otro lado, ETL es la mejor opci\'on para el tratamiento de datos estructurados\cite{etl_vs_elt_amazon}. Con 
@@ -42,8 +37,6 @@ ETL se transforma el formato de los datos, pero se mantiene su naturaleza estruc
 con m\'as de 50 años de explotaci\'on, sus protocolos y buenas pr\'acticas son conocidos y bien documentados. Como principal 
 desventaja le acompaña el hecho de que requiere m\'as definici\'on al principio, pues deben definirse los tipos de datos 
 del destino, estructuras y relaciones.
-
-\subsection{Operaciones de los Procesos ETL}
 
 Como su nombre lo indica, las operaciones que conforman los Procesos ETL son:
 
@@ -62,35 +55,16 @@ m\'inimo.
 
 Durante la fase de transformación, los datos extraídos de los sistemas fuente deben ser ajustados para estandarizar sus formatos, 
 permitiendo así su integración coherente de acuerdo con la estructura y el diseño del sistema de destino. Estas modificaciones 
-suelen diferir de la replicación convencional, requiriendo la ejecución de operaciones específicas combinadas. Entre las 
-posibles transformaciones que se le pueden aplicar a los datos est\'an:
-
-\begin{itemize}
-    \item Seleccionar solo algunas columnas para ser cargadas.
-    \item Traducir c\'odigos (por ejemplo, si la fuente almacena una M para Masculino y F para Femenino pero el destino 
-        tiene que guardar 1 para Masculino y 2 para Femenino)
-    \item Codificar valores, ejemplo de esto es convertir Principal en P o Secundario en S
-    \item Eliminar datos duplicados.
-    \item Revisi\'on de los formatos de los datos. Un caso com\'un de esto es la conversi\'on de unidades de medida 
-        o la conversi\'on de los formatos de fecha/hora.
-\end{itemize}
-
-También se pueden realizar transformaciones m\'as avanzadas, que siguen las reglas del negocio para optimizar los datos y 
-facilitar los análisis:
-
-\begin{itemize}
-    \item Aplicar directamente reglas comerciales a los datos, por ejemplo convertir los ingresos en ganancias restando los 
-        gastos.
-    \item Vincular datos de diferentes or\'igenes. Por ejemplo, calcular el costo total de compra de un producto 
-        sumando el valor de compra de los diferentes proveedores y almacenando solo el total final en el sistema de destino.
-    \item Cifrar datos confidenciales para cumplir con las leyes de datos o de privacidad antes de cargar la informaci\'on 
-        en el sistema destino.
-\end{itemize}
+suelen diferir de la replicación convencional, requiriendo la ejecución de operaciones específicas combinadas. Las 
+transformaciones aplicables a los datos incluyen la selección de columnas, la traducción de códigos, la codificación 
+de valores, la eliminación de datos duplicados y la revisión de formatos de datos. Además, se pueden realizar 
+transformaciones más avanzadas, como la aplicación de reglas comerciales, la vinculación de datos de diferentes 
+orígenes y el cifrado de datos confidenciales.
 
 
 \subsubsection{Carga}
 
-La fase de Carga es el momento en que los datos resultantes de la fase de Transformaci\'on son almacenados en sistema destino. 
+La fase de Carga es el momento en que los datos resultantes de la fase de Transformaci\'on son almacenados en el sistema destino. 
 En dependencia de los requisitos de cada organización, el proceso de carga abarca una variedad de acciones diferentes. 
 En ocasiones se sobrescribe la información antigua de la bases de datos con nuevos datos. En cambio, los Almacenes de Datos 
 conservan todos los datos con el objetivo de mantener un historial. La mayoría de las organizaciones que utilizan ETL, 
@@ -104,7 +78,4 @@ automatizaci\'on en la generación de procesos de ETL. Estas herramientas, en su
 nube, lo que dificulta su acceso y explotaci\'on por parte de las pequeñas y medianas empresas cubanas, debido 
 a una serie de limitaciones que fueron abordadas en la introducci\'on del presente trabajo. El siguiente 
 cap\'itulo constituye una revisi\'on de algunas de las principales herramientas que ofrecen posibilidades 
-para la generación autom\'atica de procesos ETL y cuyos criterios de selecci\'on fueron su posici\'on en el 
-Cuadrante M\'agico 2023 de Herramientas para la Integración de Datos de 
-Gartner (2023 Gartner® Magic Quadrant™ for Data Integration Tools)\cite{magic_q}, y la trayectoria y prestigio 
-de las compañ\'ias responsable de su desarrollo.
+para la generación autom\'atica de procesos ETL. 

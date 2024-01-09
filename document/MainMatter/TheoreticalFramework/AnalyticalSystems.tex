@@ -1,7 +1,7 @@
 \section{Online Analytical Processing (OLAP)} \label{section:olap}
 
 El Procesamiento Anal\'itico en L\'inea (\textbf{OLAP}) es una tecnología de organización de grandes bases de datos 
-comerciales que facilita a los usuarios el an\'alisis de grandes conjuntos de datos multidimensionales de manera 
+que facilita a los usuarios el an\'alisis de grandes conjuntos de datos multidimensionales de manera 
 eficiente y efectiva. A diferencia de las bases de datos relacionales tradicionales, que se centran en el procesamiento 
 de transacciones y la actualización de datos en tiempo real, OLAP se enfoca en el análisis de datos históricos y la 
 identificación de patrones y tendencias\cite{chaudhuri1997overview}.
@@ -10,10 +10,7 @@ En el ámbito informacional, los datos multidimensionales pueden ser definidos c
 funcionamiento de un negocio, y valores cualitativos que aportan cualidades y descripciones a los valores cuantitativos. Los valores cuantitativos 
 se denominan hechos, mientras que a los valores cualitativos se les llama dimensiones\cite{lismaster}.
 
-\subsection{Objetivos de los sistemas OLAP}
-
-En términos generales, el objetivo principal de OLAP es proporcionar una plataforma para el análisis de datos 
-multidimensionales de manera efectiva. De forma m\'as espec\'ifica OLAP tiene el objetivo de: 
+De forma m\'as espec\'ifica OLAP tiene el objetivo de: 
 
 \begin{itemize}
     \item Permitir analizar los datos desde 
@@ -27,108 +24,90 @@ multidimensionales de manera efectiva. De forma m\'as espec\'ifica OLAP tiene el
         pueden realizar. Esto es especialmente importante en el caso de datos confidenciales o críticos para el negocio.
 \end{itemize}
 
-\subsection{Arquitectura de los sistemas OLAP}
-
 La arquitectura de un sistema OLAP consiste en múltiples componentes que trabajan en conjunto para brindar un entorno 
 analítico integral. Por lo general, puede dividirse en cuatro componentes fundamentales\cite{nanda2019comprehensive}:
 
 \subsubsection{Fuentes de Datos:}
-El primer componente de un sistema OLAP son las fuentes de datos. Estas pueden ser cualquier número de diferentes 
+El primer componente de un sistema OLAP son las fuentes de datos. Estas pueden ser cualquier cantidad de diferentes 
 tipos de fuentes de datos, como bases de datos relacionales o archivos planos. Los datos provenientes de las fuentes 
-son sometidos a procesos ETL (Extraci\'on, Transformaci\'on, Carga), definidos por los desarrolladores, 
+son sometidos a procesos de integración, llamados ETL (Extraci\'on, Transformaci\'on, Carga), definidos por los desarrolladores, 
 con el objetivo de conciliarlos en un formato unificado para luego ser cargados, bien dentro del repositorio central del sistema OLAP o 
 dentro de un almacén de datos operacionales
-(Operational Data Store, ODS) que le sirva de proveedor. Un acercamiento m\'as profundo sobre los procesos ETL es realizado 
-en la sección \ref{section:etl}.
+(Operational Data Store, ODS) que le sirva de proveedor. La presente investigación se sitúa en el ámbito de los 
+procesos de integración de datos y uno de sus centros de atención son los procesos ETL.
 
 \subsubsection{Almacén de datos y Data Marts:}
-El segundo componente de un sistema OLAP es el almacén de datos y los Data Marts derivados. Estas estructuras constituyen el repositorio central 
+El segundo componente de un sistema OLAP es el almacén de datos (\emph{Data Warehouse}) y los Data Marts derivados. 
+Estas estructuras constituyen el repositorio central 
 del sistema OLAP. En ellos es donde se almacenan y 
-organizan los datos de manera optimizada para consultas analíticas. M\'as adelante se profundizar\'a en las especificidades 
-de los Almacenes de Datos.
-
-\subsubsection{Motor OLAP:}
-El motor OLAP es el responsable de responder consultas analíticas de forma rápida y eficiente sobre 
-los datos en el almacén de datos. El motor OLAP consiste en un conjunto de algoritmos y estructuras de datos 
-optimizadas para consultas analíticas, como cubos multidimensionales, índices de bits y esquemas en estrella.
-
-\subsubsection{Herramientas de cliente:}
-El último componente de un sistema OLAP son las herramientas de cliente. Estas son las herramientas que utilizan los 
-usuarios finales para interactuar con el sistema OLAP, realizar consultas analíticas y generar informes y visualizaciones.
-
-
-\subsection{Almacenes de datos}
+organizan los datos de manera optimizada para consultas analíticas. 
 
 El término \emph{Data Warehouse} fue acuñado por primera vez por Bill Inmon en 1990. William H. Inmon planteó que: 
 “Un \textbf{\emph{Data Warehouse}} es una colección de datos integrada, orientada a sujetos, variante en el tiempo y 
 no volátil, utilizada como apoyo para los procesos de toma de decisión.”
 
-Analizando cada uno de los elementos principales de esta definición, se puede obtener una mejor comprensión de qué es un 
-almacén de datos:
+Con orientada a sujetos se refiere a que funcionan diferenciando las entidades o conjuntos de datos que representan 
+los sujetos del negocio y sus correlaciones dentro de la empresa, a diferencia de los sistemas transaccionales que 
+se enfocan en eventos o acciones específicas. Integrados, pues los almacenes de datos se nutren de numerosas fuentes, 
+que en la mayor\'ia de los casos, manifiestan 
+incongruencias en cuestiones de formato y estructura, problemas que deben ser eliminados en el 
+almac\'en de datos. Precisamente los procesos ETL son los responsables de hacer esto posible. 
+La información contenida en un almac\'en de datos existe para ser leída, pero no modificada. Adem\'as, registran 
+los cambios producidos en los datos a lo largo del tiempo con el objetivo de realizar análisis de comportamiento 
+o tendencias y predicciones con relación al funcionamiento de la empresa.
 
-\subsubsection{Orientados a sujetos:}
-%
-Como en la gramática española, al dividir una oración en sujeto y predicado se separa el ente u origen de la acci\'on 
-de la acci\'on como tal. Esta diferenciación explica por qué se describe a los almacenes de datos como "orientados a sujetos". 
-El centro de los sistemas de apoyo a la toma de decisiones son los conjuntos de entidades (sujetos) y sus interrelaciones 
-en el contexto empresarial como fuente de información, al contrario de los sistemas transaccionales que est\'an orientados a eventos 
-(acci\'on). Los sujetos participan en distintos procesos que se agrupan por 
-tem\'aticas. Aterrizando esta idea en un ejemplo palpable como las ventas minoristas, los sujetos -como empleados, departamentos, 
-locaciones, clientes, facturas y productos- son los medios cuyas interrelaciones garantizan el funcionamiento de los procesos de 
-gestión de recursos humanos, ventas o inventario, los cuales pueden ser catalogados como tem\'aticas. 
+Un Data Mart es un almac\'en de datos con una funci\'on departamental o regional. Consta de las mismas caracter\'isticas de un 
+almacén de datos y brinda las misma facilidades, solo que no est\'a pensado para responder a las necesidades de toda la organización
+sino a una sola actividad. Es incorrecto pensar en un Data Mart como un almac\'en de datos m\'as pequeño pues no es su tamaño 
+lo que lo define sino su objetivo\cite{mijailmaster}.
 
-\subsubsection{Integrados:}
-Los almacenes de datos se nutren de numerosas fuentes, que en la mayor\'ia de los casos, manifiestan 
-incongruencias en cuestiones de formato y estructura, problemas que deben ser eliminados en el almac\'en de datos.
-Por otra parte, las entidades que aparecen en distintas fuentes de datos pero tienen un mismo significado para el 
-negocio, deben ser fusionadas. El almac\'en de datos debe constituir una fuente \'unica de acceso a los or\'igenes de datos 
-y proporcionar medios para combinar y conformar los datos, de modo que se obtenga una vista unificada de los mismos que se 
-corresponda con su significado empresarial.
 
-\subsubsection{No Vol\'atiles:}
-La información contenida en un almac\'en de datos existe para ser leída, pero no modificada.
-
-\subsubsection{Variables con el tiempo:}
-Los cambios producidos en los datos a lo largo del tiempo quedan registrados, para que los informes que se generen reflejen 
-esas variaciones. Es fundamental conservar la sucesión de los cambios para realizar análisis de comportamiento o tendencias y 
-predicciones con relación al funcionamiento de la empresa de modo que apoyen el proceso de toma de decisiones.
+\subsubsection{Motor OLAP:}
+El motor OLAP es el responsable de responder consultas analíticas de forma rápida y eficiente sobre 
+los datos en el almacén de datos. Consta de un conjunto de implementaciones de las operaciones OLAP, algoritmos 
+para el análisis de tendencias, predicciones y análisis estadísticos. Además, posee ciertas optimizaciones para 
+disminuir los tiempos de lectura y respuesta a las consultas, como el precálculo de datos agregados e índices.
+ 
+\subsubsection{Herramientas de cliente:}
+El cuarto componente de un sistema OLAP son las herramientas de cliente. Estas son las herramientas que utilizan los 
+usuarios finales para interactuar con el sistema OLAP, realizar consultas analíticas y generar informes y visualizaciones.
 
 
 \subsection{Modelo Dimensional}
 
 No se puede hablar de Almacenes de Datos sin mencionar los modelos dimensionales. A través de los a\~{n}os, la industria 
-a concluido que el modelado dimensional es la técnica m\'as apropiada para entregar datos a los usuarios de los 
+ha concluido que el modelado dimensional es la técnica m\'as apropiada para entregar datos a los usuarios de los 
 almacenes de datos.
 
 El trabajo con el modelo dimensional persigue analizar los datos desde diferentes perspectivas para lograr una visión 
 global del caso de estudio que permita fundamentar las decisiones estratégicas en diferentes circunstancias, con énfasis 
-en la temporalidad. Sin embargo, la eficiencia de los análisis est\'a fuertemente ligada a forma en que los datos 
-se representan y se almacenan. El enfoque relacional, por su alto grado de difusión y familiarización que generalmente 
-poseen los especialistas, ha servido como una de las instrumentaciones del modelo dimensional, aunque su enfoque f\'isico 
+en la temporalidad. Sin embargo, la eficiencia de los análisis est\'a fuertemente ligada a la forma en que los datos 
+se representan y se almacenan. El modelo conceptual entidad relacionalidad, por su alto grado de difusión y familiarización que generalmente 
+poseen los especialistas, ha servido para representar modelo dimensional, aunque su enfoque f\'isico 
 no exige el almacenamiento en tablas. De esta forma, los valores que representan el funcionamiento del negocio se almacenan 
 en tablas de hechos y los valores que describen el entorno donde ocurren los hechos se almacenan en tablas de dimensiones.
 Las tablas de hechos se relacionan con las tablas de dimensiones formando diferentes esquemas.
 
-El modelo dimensional representa un paradigma de bases de datos que intenta reflejar de manera física varias dimensiones, 
+El modelo dimensional representa un paradigma de bases de datos que intenta reflejar de manera física varias perspectivas o dimensiones, 
 a diferencia del modelo relacional cuyas estructuras solo son de dos dimensiones. El modelo dimensional introduce el concepto 
 de cubo de información, cuyas celdas constituyen resúmenes de los datos según m\'ultiples aristas. Los cubos y las dimensiones 
-son la estructuras fundamentales del modelo dimensional.
+son las estructuras fundamentales del modelo dimensional.
 
 
 \subsubsection{Cubo}
 
-Se utiliza el término "cubo" para referirse a los datos que se organizan y resumen en una estructura multidimensional compuesta 
+Se utiliza el término cubo para referirse a los datos que se organizan y resumen en una estructura multidimensional compuesta 
 por un conjunto de medidas y dimensiones que representan el fenómeno o proceso que se desea analizar. Los cubos constituyen 
-el objeto fundamental del procesamiento analítico en línea\cite{lismaster}. Ejemplificando, con apoyo del modelo relacional, 
-un cubo sería una tabla de hechos, donde se almacenan valores numéricos y que est\'a relacionada con tablas de dimensiones 
-que ofrecen al usuario diferentes puntos de vista para el análisis de los valores.
+el objeto fundamental del procesamiento analítico en línea\cite{lismaster}. Ejemplificando, con apoyo del modelo conceptual
+entidad relacionalidad, un cubo sería una tabla de hechos, donde se almacenan valores numéricos, que est\'a 
+relacionada con tablas de dimensiones que ofrecen al usuario diferentes puntos de vista para el análisis de los valores.
 
 \subsubsection{Medida}
 
 Las medidas son un conjunto de valores que reflejan el desempeño de la actividad que se analiza. Constituyen un resumen de los 
 hechos\cite{lismaster}, pudiendo incluir sumatorias, porcentajes, promedios o cantidad de elementos como posibles síntesis. 
 No todas las medidas son valores que existen en el origen, a menudo las medidas son el resultado de cálculos entre 
-varios atributos. Las medidas se almacenan en las celdas de los cubos y la posici\'on de una celda en un cubo est\'a definida por la 
+varios atributos. Las medidas se almacenan en las celdas de los cubos y la posici\'on de una celda en un cubo est\'a determinada por la 
 intersecci\'on de los miembros de las dimensiones, es decir, los miembros de las dimensiones con los que se relaciona la medida 
 funcionan como coordenadas dentro del cubo.
 
@@ -150,11 +129,11 @@ Brasil, entre otros.
 
 \subsubsection{Granularidad o Grano}
 
-La granularidad se refiere al nivel de detalle representado en los datos. Determina 
+La granularidad se refiere al grado de detalle representado en los datos. Determina 
 la profundidad y precisión de los datos almacenados dentro de una tabla de hechos y est\'a definida por su lista de dimensiones. 
-Indica cual es el alcance de una medida y todas las medidas en una tabla de hechos tienen que tener la misma 
+Indica cu\'al es el alcance de una medida y todas las medidas en una tabla de hechos tienen que tener la misma 
 granularidad\cite{kimball2011data}. Por ejemplo, si los datos de las ventas de un negocio de venta minorista 
-se registran al nivel de cada transacción individual, dicho hecho tendr\'ia una granularidad muy alta. Sin embargo, 
+se registran por cada transacción individual, dicho hecho tendr\'ia una granularidad muy alta. Sin embargo, 
 si los datos se agregan por d\'ia, tendrían una granularidad m\'as baja, puesto que cada registro representa la suma 
 de todas las ventas del d\'ia.
 
@@ -168,37 +147,26 @@ a su simplicidad. Poseen un rendimiento sobresaliente, con pocas operaciones de 
 a consultas complicadas sobre los hechos.
 
 Otro bien conocido es el esquema Copo de Nieve, en el cual, a diferencia del esquema Estrella, las dimensiones se encuentran 
-normalizadas en varias tablas relacionadas. El efecto copo de nieve solo afecta a las tablas de dimensiones, las tablas de hecho 
+normalizadas en varias tablas interrelacionadas. El efecto copo de nieve solo afecta a las tablas de dimensiones, las tablas de hechos 
 permanecen iguales que el esquema Estrella, en el centro del modelo. Este esquema tiene la ventaja de ayudar a reducir la redundancia 
 y mejorar la integridad de los datos. Sin embargo, este esquema puede resultar m\'as difícil de mantener y entender pues aumenta 
 la complejidad del modelo. Adem\'as, es necesario un mayor n\'umero de Joins para responder las consultas debido a que se incrementa
 la cantidad de tablas que intervienen.
 
-La decisi\'on de usar uno u otro esquema depende de los requerimientos espec\'ificos del proyecto y de las compensaciones entre 
-rendimiento de las consultas, la complejidad del esquema y la integridad de los datos.
+La decisi\'on de usar uno u otro tipo de esquema depende de los requerimientos espec\'ificos del proyecto y de las compensaciones entre 
+el rendimiento de las consultas, la complejidad del esquema y la integridad de los datos.
 
 
 \subsection{Arquitectura de un almac\'en de datos}
 
 La arquitectura de los almacenes de datos es un tema pol\'emico. Los mismos Inmon y Kimball, los mayores exponentes de la tem\'atica, 
 tienen posiciones dispares. El enfoque planteado por William H. Inmon se centra en la modelación relacional cl\'asica dentro 
-del almacén de datos. Por otro lado, Ralph Kimball propone un enfoque centrado en el modelo dimensional. Antes de pasar 
-detallar las especificidades de cada enfoque es necesario presentar otro concepto, tambi\'en controversial en el plano de 
-los almacenes de dato. 
-
-\subsubsection{Data Mart}
-
-Un Data Mart es un almac\'en de datos con una funci\'on departamental o regional. Consta de las mismas caracter\'isticas de un 
-almacén de datos y brinda las misma facilidades, solo que no est\'a pensado para responder a las necesidades de toda la organización
-sino a una sola actividad. Es incorrecto pensar en un Data Mart como un almac\'en de datos m\'as pequeño pues no es su tamaño 
-lo que lo define sino su objetivo\cite{mijailmaster}. En la construcci\'on de los almacenes de datos es usual dedicar un Data Mart 
-a cada departamento en vez de que estos accedan a toda la información del almac\'en. Con esto se garantiza llevar solo la información 
-que le corresponde a cada tipo de usuario.
+del almacén de datos. Por otro lado, Ralph Kimball propone un enfoque centrado en el modelo dimensional.
 
 \subsubsection{Enfoque Relacional de Inmon}
 
 Seg\'un este enfoque el almacén de datos est\'a compuesto principalmente por los datos reconciliados en un esquema 
-relacional cuyas tablas se encuentran altamente normalizadas, es decir, llevadas a tercera forma normal o superior\cite{mijailmaster}. 
+relacional cuyas tablas se encuentran altamente normalizadas, es decir, llevadas a tercera forma normal o superior\cite{inmon2005building}. 
 Adem\'as, concibe a los Data Marts fisicamente separados del almacén de datos y la forma de acceder a los datos del almacén es a 
 través de los Data Marts.
 
@@ -222,7 +190,7 @@ informacional de un almacén de datos.
 
 El enfoque de Kimball se acerca m\'as a las necesidades informacionales de los usuarios que toman las decisiones, debido a que su 
 estructura es un reflejo de como los directivos analizan el comportamiento de su actividad empresarial y permite la exploraci\'on 
-de los datos desde puntos de vistas distintos\cite{mijailmaster}, es decir, el almacén de datos est\'a formado por 
+de los datos desde puntos de vistas distintos\cite{kimball2011data}, es decir, el almacén de datos est\'a formado por 
 los uni\'on de los distintos Data Marts, modelados dimensionalmente. La modelación dimensional utiliza la denormalizaci\'on como 
 instrumento para optimizar la exploraci\'on de los datos, haciendo uso de esquemas estrella para modelar las necesidades informacionales.
 
@@ -231,7 +199,7 @@ esto no significa que los datos no sean armonizados. Los procesos de integració
 de preparaci\'on de datos (Data Staging Area). 
 
 El principal problema de este enfoque en la dificultad del proceso de poblaci\'on de la capa de datos derivados, es decir, los 
-Data Marts. Si a  los datos de las fuentes se les aplica alguna transformaci\'on de agregaci\'on o res\'umen, la comparaci\'on 
+Data Marts. Si a  los datos de las fuentes se les aplica alguna transformaci\'on de agregaci\'on o resumen, la comparaci\'on 
 necesaria para la actualización progresiva de los datos en los Data Marts se vuelve una tarea sumamente complicada, imposible en 
 ocasiones. Este problema constituye una evidencia de la necesidades de mantener una copia de los datos reconciliados\cite{mijailmaster}.
 
@@ -240,7 +208,7 @@ ocasiones. Este problema constituye una evidencia de la necesidades de mantener 
 El autor considera que no es que exista una superioridad de un enfoque con respecto a otro, sino que ambos son buenos en 
 un determinado aspecto del desarrollo de un almac\'en de datos. Lo ideal ser\'ia encontrar un punto medio entre ambos 
 enfoques que trate de aprovechar los puntos fuertes de cada uno. Barry Devlin en \cite{devlin1996data} describe 
-una arquitectura de tres capas para creaci\'on de almacenes de datos, que en cierta forma, trata de aprovechar las 
+una arquitectura de tres capas para la creaci\'on de almacenes de datos, que en cierta forma, trata de aprovechar las 
 bondades de los enfoques relacional y dimensional. 
 
 Las tres capas de Devlin son las fuentes de datos, el Data Warehouse Empresarial y el Warehouse Informacional. La segunda capa 
@@ -250,3 +218,6 @@ Empresarial, como propone Kimball. Con esta arquitectura se aprovecha consistenc
 en la capa de datos reconciliados y tambi\'en se gana en rendimiento a la hora de responder a consultas informacionales y en expresividad 
 del modelo en la capa de datos derivados. No obstante, la sugerencia de una arquitectura de tres capas también ha recibido críticas 
 debido a la gran cantidad de trabajo necesario para implementar un almacén de datos utilizando este enfoque. 
+
+Esta investigación est\'a dirigida, esencialmente, a la poblaci\'on de la segunda capa de la arquitectura de tres 
+capas propuesta por Devlin.
