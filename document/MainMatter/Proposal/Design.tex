@@ -88,7 +88,7 @@ libre del contexto que da definición al DSL propuesto. Las palabras que comienz
 las palabras en minúscula indican terminales.
 
 \begin{lstlisting}[label={code:CFG},caption={Gram\'atica libre del contexto del lenguaje de dominio espec\'ifico}]
-    S' -> Dimensional_Model
+    S' -> Dimensional_Schema
     Dimensional_Schema -> List_Dimensional_Tables
     List_Dimensional_Tables -> Dimensional_Table
                     | List_Dimensional_Tables Dimensional_Table
@@ -135,12 +135,7 @@ dimensionales.
 
 Una lista de tablas dimensionales (\textbf{List\_Dimensional\_Tables}) est\'a compuesta por al menos 
 una definición de tabla dimensional 
-(\textbf{Dimensional\_Table}), aunque es cierto que un esquema estrella no tiene sentido si tiene una sola tabla 
-de dimensión o una sola tabla de hechos, expresar la restricción en la gramática de que una lista de 
-tablas dimensionales debe tener al menos una tabla de dimensión y una tabla de hechos es un proceso 
-engorroso que puede atentar contra la legibilidad de la gramática, por tanto se decide dejar dicha 
-comprobación para los chequeos semánticos que se le efectúan a las instancias del lenguaje provistas 
-por el usuario, luego de ser parseadas. 
+(\textbf{Dimensional\_Table}). 
 
 Luego, la 
 definición de una tabla dimensional (\textbf{Dimensional\_Table}) consta de la palabra clave \textbf{dimension} o \textbf{fact}, 
@@ -164,9 +159,7 @@ los cuales pueden ser especificaciones de llave primaria o llave for\'anea. En e
 DSL un atributo puede ser llave primaria o llave for\'anea, pero no los dos a la vez. También, a los valores
 extra\'idos del atributo con nombre (\textbf{ID}) y tabla (\textbf{Table}) se le puede aplicar funciones o agregaciones. Las 
 funciones de agregación implementadas son suma (\textbf{sum}), promedio (\textbf{avg}), conteo (\textbf{count}), máximo (\textbf{max}) y 
-mínimo (\textbf{min}). Las funciones implementadas en esta primera versión son \textbf{weekday}, la cual a partir de 
-una fecha devuelve el d\'ia de la semana, y \textbf{monthstr} que devuelve el nombre del mes de una fecha pasada 
-como argumento. La palabra reservada \textbf{self} solo se debe usar para declarar la tabla en la definición de atributos 
+mínimo (\textbf{min}). La palabra reservada \textbf{self} solo se debe usar para declarar la tabla en la definición de atributos 
 que sean llaves primarias autogeneradas para las tablas de hechos.
 
 Los tipos manejados por el lenguaje son genéricos y fácilmente mapeables con los tipos de los sistemas de 
@@ -177,124 +170,127 @@ representa a los n\'umeros con coma flotante. Finalmente, al tipo \textbf{numeri
 
 En caso de que una definición de un atributo solo contenga un atributo de una tabla de la fuente no es necesario 
 especificar el tipo, pues el sistema automáticamente asignar\'a el tipo del atributo fuente al tipo del 
-atributo que est\'a siendo definido. Sin embargo si se define un atributo compuesto, es decir, un atributo que 
-en su definición participe m\'as de un atributo de la fuente, es necesario especificar el tipo pues el sistema 
+atributo que est\'a siendo definido. Sin embargo, si se define un atributo compuesto, es decir un atributo en 
+cuya definición participe m\'as de un atributo de la fuente, es necesario precisar el tipo pues el sistema 
 no es capaz de inferirlo.
 
-Para especificar una llave for\'anea se deben escribir las palabras reservadas \textbf{fk} y \textbf{to} y luego especificar 
+Para especificar una llave for\'anea se deben escribir las palabras reservadas \textbf{fk} y \textbf{to} y luego puntualizar 
 el nombre de una tabla del esquema estrella, un punto y el atributo referenciado.
 
-Para asignar un alias a un atributo definido para una tabla del modelo dimensional se utiliza la 
+Para asignar un alias a un atributo definido para una tabla del esquema dimensional se utiliza la 
 palabra reservada \textbf{as} seguida del nombre del atributo.
 
 
 \subsection{Generador de Consultas}
 
-Este componente es el m\'as importante y el de mayor responsabilidad dentro de la arquitectura. Es el encargado 
+Este componente es el m\'as importante y el de mayor responsabilidad dentro de la arquitectura concebida, ya que es el 
+encargado 
 de generar el código SQL necesario para la creación y población del escenario analítico. Las consultas generadas 
 se dividen en dos grupos: el grupo de creación de tablas y el grupo de selección de valores. El primer grupo 
-son las consultas de creación de cada una de las tablas del esquema estrella. El segundo grupo son las  consultas 
-que seleccionan los atributos necesarios para la población de una tabla del esquema estrella. 
+está constituido por las consultas de creación de cada una de las tablas del esquema estrella. El segundo grupo 
+consiste en las  consultas 
+que permiten seleccionar los valores de los atributos necesarios para la población de una tabla del esquema estrella. 
+Durante el proceso de construcción de las consultas de selección el generador de consultas infiere los joins 
+necesarios para la concatenación apropiada de las tablas que intervienen en dichas consultas.
 
-Las dimensiones, generalmente, est\'an formadas por atributos de distintas tablas de las fuentes de datos, por 
-ejemplo, una dimension que expresa la ubicación geográfica se forma por la uni\'on de las tablas municipio, 
-provincia y pa\'is. En las bases de datos relacionales con un diseño correcto, es usual encontrarse estos 
-tres conjuntos de entidades separados en tablas normalizadas, enlazadas mediante llaves for\'aneas, con el objetivo 
-de evitar duplicación de datos y anomalías en la inserción, modificación y eliminación. Por tanto, el 
-proceso de selección de datos para la población de la dimensión ubicación geográfica pasa por unir las 
-tablas municipio, provincia y pa\'is, para poder extraer los datos desde una única tabla, es 
-decir, denormalizar la jerarquía impuesta por el proceso de normalización sobre las tablas municipio, provincia
-y pa\'is. La uni\'on de esas tablas se logra mediante la aplicación del join pertinente.
-
-En las tabla de hechos sucede algo similar, puede que los valores de un hecho se encuentren en una 
-sola tabla o que en su calculo intervengan atributos de múltiples tablas de la fuente, en ese caso 
-el procedimiento es el mismo que con el ejemplo de la dimensión ubicación geográfica. Es necesario 
-unir todas las tablas que intervengan en el cálculo del hecho en cuestión mediante joins.
-
-Luego una parte fundamental del proceso de población de un escenario analítico es la implementación 
-de estos joins. Precisamente, el Generador de Consultas implementado es el encargado, entre otras cosas, de inferir los 
-joins necesarios en la construcción de las consultas de selección de valores, que son las encargadas de la 
-extracción de los datos de las tablas fuente que poblaran las tablas del escenario analítico.
+\subsubsection{Inferencia de joins}
 
 En otras ocasiones, se ha enfrentado el problema de la inferencia de consultas utilizando representaciones
 de bases de datos en forma de grafos y lenguajes 
-de dominio específico. Entre estos trabajo se pueden mencionar aquellos que definen lenguajes de consulta 
-conceptuales (Conceptual Query Languages, CQL) que tratan de ocultar la dificultad de un esquema de bases de 
-datos relacionando conceptos familiares con el usuario y entidades de la base de datos. Con este enfoque 
-podemos citar los trabajos \cite{owei2001enriching} el cual propone
-un algoritmo basado en caminos mínimos para encontrar el camino m\'as corto de joins que una conceptos 
+de dominio específico. Entre estos trabajos se pueden mencionar aquellos que definen lenguajes de consulta 
+conceptuales (\emph{Conceptual Query Languages}, CQL) que tratan de ocultar la complejidad de un esquema de bases de 
+datos al vincular conceptos familiares para usuario con entidades presentes en la base de datos. Con este enfoque 
+se puede citar el trabajo \cite{owei2001enriching} el cual propone
+un algoritmo basado en caminos mínimos para encontrar el camino m\'as corto de joins que vincule los conceptos 
 especificados, dando como resultado una sola interpretación de la consulta, lo cual no es factible 
 puesto que lo ideal es analizar todas las posibles interpretaciones para una consulta y escoger la 
 que sem\'anticamente responda a las necesidades del usuario. Otro enfoque para abordar el problema 
-es mediante algoritmo de búsqueda de palabras clave (Keyword Search Algorithms, KSA), específicamente  
-aquellos que orientan la búsqueda sobre grafos. Nótese que teniendo un conjunto de palabras clave 
-a buscar (atributos que unir en una sola tabla), la respuesta es un sub\'arbol del grafo de búsqueda 
-el cual para toda palabra buscada exista un nodo que la contenga. Los trabajos 
+se refiere al uso de algoritmos de búsqueda de palabras clave (\emph{Keyword Search Algorithms}, KSA), específicamente  
+aquellos que orientan la búsqueda sobre grafos. Si se representa un esquema de base de datos como un grafo
+donde las tablas del esquema son los nodos y las relaciones entre las tablas son representadas mediante 
+aristas, tomando los nombres de las tablas que intervienen en los joins de una determinada consulta de selección 
+como las palabras clave a buscar en este grafo, se puede adaptar el problema de inferencia de joins 
+a un problema de búsqueda de palabras clave. En este caso, la respuesta a la consulta de búsqueda 
+es un sub\'arbol del grafo de búsqueda 
+tal que, para toda palabra buscada, exista un nodo que la contenga. Recorriendo este sub\'arbol se puede construir 
+f\'acilmente un join v\'alido para concatenar las tablas de una consulta de selección. Los trabajos 
 \cite{kimelfeld2006finding,hristidis2003efficient,he2007blinks} exponen algoritmos eficientes para 
-encontrar, dado $k$, las $k$ mejores interpretaciones, es decir, los $k$ mejores sub\'arboles que dan respuesta 
-a la consulta, pero su dependencia al parámetro $k$ para explorar todas las posibles interpretaciones 
+encontrar las $k$ mejores interpretaciones dado $k$, es decir, los $k$ mejores sub\'arboles que dan respuesta 
+a la consulta de búsqueda. Sin embargo, la dependencia del parámetro $k$ para explorar todas las posibles 
+interpretaciones,  
 hizo que el autor se decantara por la propuesta de \cite{mason2005autojoin} para la resolución 
 del problema de la inferencia de los joins planteado en los objetivos de la presente investigación.
 
-El enfoque seleccionado parte de un grafo de join, que no es m\'as que un grafo con las mismas características 
+El enfoque seleccionado parte de un grafo de joins, que no es m\'as que un grafo con las mismas características 
 del Catálogo de Datos solo que empaca la información de los múltiples arcos que pueden existir entre 
-dos nodos del catálogo en un \'unico arco y además, añade un arco $<v, w>$ si el nodo $v$ contiene un subconjunto 
+dos nodos del catálogo en un \'unico arco y elimina los lazos (relaciones unarias), como muestra la 
+figura \ref{fig:joingraphobtention}, pues estos \'ultimos no son 
+relevantes dado que a partir de ellos solo se puede llegar al mismo nodo. Además, añade un arco $<v, w>$ si el nodo $v$ contiene un subconjunto 
 de atributos contenidos en $w$ tal que todos los miembros de dicho subconjunto sean llaves for\'aneas en $v$
-y en $w$ sean llaves primarias. Nótese que estos subconjuntos de atributos cumplen con las restricciones 
-de una llave for\'anea aunque dicha relación entre ambas tablas no est\'a explicita en la base de datos, 
-y por tanto constituyen un join válido.
+y sean llaves primarias en $w$. Nótese que estos subconjuntos de atributos cumplen con las restricciones 
+de una llave for\'anea aunque la interrelación entre ambas tablas no aparezca explícitamente en la base de 
+datos y, por tanto, representan un join válido.
 
-Dado un conjunto de atributos fuente que conforman una dimensión o una tabla de hechos, el join necesario 
-para unir estos atributos en una tabla \'unica es un sub\'arbol del grafo de join. Pero, este join no tiene 
-porque ser \'unico, pueden existir otros sub\'arboles que también constituyan joins válidos para lograr 
-la uni\'on de los atributos. 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.60\textwidth]{Graphics/graph join transformation.drawio.png}
+    \caption{Grafo de join asociado al pseudografo de una base de datos fuente.}
+    \label{fig:joingraphobtention}
+\end{figure}
 
-Explorar todos los posibles sub\'arboles durante una consulta sobre el grafo de join mediante 
-recorridos sucesivos es ineficiente. Para resolver este problema \cite{mason2005autojoin} propone 
-generar, a partir del grafo de join, sub\'arboles maximales. Cada sub\'arbol maximal, al tener un juego 
+Dado un conjunto de atributos fuente que conforman una tabla de dimensión o una tabla de hechos, el join necesario 
+para concatenar apropiadamente estos atributos en una tabla \'unica es un sub\'arbol del grafo de joins. Pero, este join no tiene 
+por qu\'e ser \'unico, pueden existir otros sub\'arboles que también constituyan joins válidos para lograr 
+la la concatenación apropiada de los atributos. 
+
+Explorar todos los posibles sub\'arboles durante una consulta sobre el grafo de joins mediante 
+recorridos sucesivos es ineficiente. Para resolver este problema, \cite{mason2005autojoin} propone 
+generar, a partir del grafo de joins, sub\'arboles maximales. Cada sub\'arbol maximal, al tener un juego 
 de arcos diferentes, aporta potencialmente un join distinto. En el resto del documento estos sub\'arboles 
-maximales ser\'an referidos como \'arboles de join. Una consulta sobre estos \'arboles no es m\'as que 
-un conjunto de nodos (tablas) a unir. Una respuesta a una consulta sobre un \'arbol de join es un sub\'arbol 
-del mismo cuyos nodos hojas sean los nodos de la consulta, y esto constituye una interpretación 
-de la consulta para dicho  \'arbol de join.
+maximales ser\'an referidos como \'arboles de join. Una consulta sobre un determinado \'arbol de join no es m\'as que 
+un conjunto de nodos (tablas) a concatenar mediante un join. Una respuesta a una consulta sobre un \'arbol de join es un sub\'arbol 
+minimal que contenga los nodos de la consulta, lo que constituye una interpretación 
+de la consulta para dicho \'arbol de join.
 
-Propuestas anteriores a \cite{mason2005autojoin} proponen para computar los \'arboles de join hallar 
+Para computar los \'arboles de join, propuestas anteriores a \cite{mason2005autojoin} proponen hallar 
 el subgrafo alcanzable desde un nodo y a este sub\'arbol calcularle todos los posibles \'arboles de 
-expansión, los cuales constituyen los \'arboles de join. Repitiendo este proceso para cada nodo se lograba 
+expansión, los cuales constituyen los \'arboles de join. Repitiendo este proceso para 
+cada nodo se logra 
 calcular el conjunto de \'arboles de join, 
-pero estos enfoques daban como resultado \'arboles de join duplicados y sobre todo 
-es un algoritmo ineficiente y no computable para grafos de gran tamaño.
+pero estos enfoques dan como resultado \'arboles de join duplicados y sobre todo 
+es un algoritmo ineficiente y no computable para grafos de gran tamaño\cite{mason2005autojoin}.
 
 El planteamiento de \cite{mason2005autojoin} introduce mejoras a este algoritmo. Establece que un \'arbol 
 de join debe ser maximal, de no serlo, es posible que exista un \'arbol de join m\'as extenso que lo contenga. 
 Tal \'arbol de join ampliado sería capaz de proporcionar, no solo 
-los joins posibilitados por el \'arbol de join inferior en tamaño sino también adicionales, debido a que engloba 
+las interpretaciones derivadas del \'arbol de join inferior en tamaño sino también adicionales, debido a que engloba 
 un mayor número de nodos y, por ende, tiene la capacidad de brindar joins para consultas inaccesibles a su 
 contraparte más limitada. Siguiendo esta idea, se propone solo computar el grafo alcanzable 
-a nodos del grafo de join que tengan grado interior (indegree) igual a cero o que est\'en en una 
-componente fuertemente conexa en la que no existan arcos incidentes externos a la misma. 
+a los nodos del grafo de join que tengan grado interior (indegree) igual a cero o que est\'en en una 
+componente fuertemente conexa en la que no existan arcos incidentes externos. 
 Los \'arboles de join emanados de estos nodos raíz son inherentemente maximales, ya que la naturaleza de su raíz, 
 implica que no hay otro subárbol que pueda subsumir los generados por dicha raíz.
 
-Ahora, como el conjunto de \'arboles de join depende solamente del esquema de base de datos y no de las consultas
-este puede ser precomputado, trasladando fuera del tiempo de consulta la computación m\'as costosa. La cantidad
-de \'arboles de join depende \'unicamente de la ambigüedad inherente del esquema de base de datos. Una esquema 
+Ahora, el conjunto de árboles de join puede ser precomputado, ya que depende únicamente del esquema de base de 
+datos y no de las consultas. Esto traslada la computación más costosa fuera del tiempo de consulta. La cantidad
+de \'arboles de join depende \'unicamente de la ambigüedad inherente al esquema de base de datos. Un esquema 
 de base de datos no ambiguo resultar\'a en un único \'arbol de join y, por ende, en una \'unica interpretación 
 para cada consulta. Las ambigüedades m\'as comunes se materializan en el grafo de join como nodos con m\'as de 
-un arco incidente a \'el y como componentes fuertemente conexas.
+un arco incidente y como componentes fuertemente conexas.
 
 \subsubsection{Fase de precomputaci\'on}
 
-La fase de precomputaci\'on se encarga de dado un grafo de join, calcular los \'arboles de join. Como se expuso 
-anteriormente se identifican las posibles ra\'ices, se halla el grafo alcanzable para cada una de las ra\'ices. 
+Dado un grafo de joins, la fase de precomputaci\'on se encarga de calcular los \'arboles de join. Como se expuso 
+anteriormente, se identifican las posibles raíces y se halla el grafo alcanzable para cada una ellas. 
 Por cada grafo alcanzable se computan sus \'arboles de expansión. El conjunto de todos los \'arboles en 
 expansión calculados es el conjunto de \'arboles de join del grafo de join dado. Los \'arboles de join 
-son almacenados y recuperados cuando se necesite responder una consulta. El algoritmo utilizado para calcular 
-los \'arboles de expansión (spanning trees) de los grafos alcanzable es el propuesto por Harold N. Gabow y 
+se almacenan y cuando se necesite responder una consulta son recuperados. El algoritmo recomendado en \cite{mason2005autojoin} 
+para calcular 
+los \'arboles de expansión (\emph{spanning trees}) de los grafos alcanzables es el propuesto por Harold N. Gabow y 
 Eugene W. Myers en 1978 \cite{gabow1978finding}. El listado de código \ref{precom} muestra el pseudoc\'odigo 
 del proceso de precomputaci\'on.
 
-\begin{lstlisting}[label={precom}, caption={Pseudoc\'odigo del proceso de precomputaci\'on}]
+\begin{lstlisting}[label={precom}, caption={Pseudoc\'odigo del proceso de precomputaci\'on (tomado de \cite{mason2005autojoin})}]
     precomputation (JoinGraph dg)
     {
         allSCC = strongly connected components of dg
@@ -313,27 +309,27 @@ del proceso de precomputaci\'on.
     }
 \end{lstlisting}
 
-La demostración de que este algoritmo produce todos \'arboles de join se puede encontrar en 
+La demostración de correctitud de este algoritmo puede encontrarse en 
 \cite{mason2005autojoin}. Con respecto a la complejidad temporal, el algoritmo de Harold N. Gabow y 
 Eugene W. Myers tiene complejidad temporal $O(|V| + |E| + |E|N)$ donde $|V|, |E|, N$ son la cardinalidad 
 del conjunto de vértices, la cardinalidad del conjunto de arcos y la cantidad de \'arboles de expansión respectivamente. 
-Esta complejidad temporal, dentro del ciclo, es la que domina en el algoritmo. El n\'umero de \'arboles de 
+Esta complejidad temporal, dentro del ciclo, es la que domina en el algoritmo. La cantidad de \'arboles de 
 expansión de un grafo dirigido puede ser exponencial en el caso peor, caso en que el grafo de join sea 
-completo, por tanto la complejidad temporal de este algoritmo en el caso peor es exponencial. Sin embargo, 
-el caso peor, un esquema de bases de datos completamente conectado, no es com\'un y la mayoría de esquemas 
-poseen un n\'umero razonable de \'arboles de join. Además, la precomputaci\'on solo se realiza una vez, 
-cuando se descubre el esquema de la base de datos y solo se vuelve a realizar la precomputaci\'on si dicho 
+completo; por tanto la complejidad temporal de este algoritmo en el caso peor es exponencial. Sin embargo, 
+el caso peor, un esquema de bases de datos completamente conectado, no es com\'un. Además, la precomputaci\'on 
+solo se realiza una vez, 
+cuando se descubre el esquema de la base de datos, y solo se vuelve a realizar si dicho 
 esquema sufre cambios en su definición.
 
 \subsubsection{Fase de consulta}
 
-Para dar respuesta a las consultas, es decir, el devolver un conjunto de joins que constituyen 
-interpretaciones de la consulta, el procedimiento es identificar los \'arboles de join que 
-contengan todos los nodos (tablas) de la consulta. Luego por cada \'arbol de join identificado 
+Para dar respuesta a las consultas, es decir, devolver un conjunto de joins que constituyen 
+interpretaciones de la consulta, el procedimiento consiste en identificar los \'arboles de join que 
+contengan todos los nodos (tablas) de la consulta. Luego, por cada \'arbol de join identificado, 
 se busca el ancestro com\'un m\'as bajo (lowest common ancestor, LCA) de este conjunto de nodos. 
 El sub\'arbol del \'arbol de join que da respuesta a la consulta y que constituye un join válido 
-para la uni\'on de las tablas, se forma mediante la uni\'on de los caminos desde 
-el LCA hasta los nodos requeridos. El listado de código \ref{querytime} muestra el pseudoc\'odigo 
+para la concatenación apropiada de las tablas, se forma mediante el enlace del LCA con los nodos requeridos 
+mediante los caminos que los unen a ambos. El listado de código \ref{querytime} muestra el pseudoc\'odigo 
 del algoritmo que computa la lista de joins asociados a una consulta.
 
 \begin{lstlisting}[label={querytime}, caption={Pseudoc\'odigo del algoritmo de inferencia de joins}]
@@ -350,7 +346,55 @@ del algoritmo que computa la lista de joins asociados a una consulta.
     }
 \end{lstlisting}
 
-Basado en toda la teoría expuesta anteriormente, resulta bastante fácil corroborar la correctitud del 
+La demostración de la correctitud del algoritmo \textbf{get\_joins} consiste en demostrar 
+que todas las interpretaciones calculadas constituyen sub\'arboles minimales, que todas las interpretaciones calculadas
+para una consulta pasada como argumento constituyen 
+joins v\'alidos y que que el algoritmo devuelve todas las interpretaciones presentes en el grafo de join 
+para la consulta pasada como argumento.
+
+\begin{theorem}
+    Todas las interpretaciones calculadas constituyen subárboles minimales.
+\end{theorem}
+
+Tomando al LCA entre los nodos de la consulta como raíz del subárbol que representa la interpretaci\'on 
+se asegura que no exista un nodo m\'as bajo a partir del cual se puedan alcanzar los nodos de la consulta. 
+Cada nodo de la consulta se enlaza con el LCA mediante un camino simple, por tanto es de distancia m\'inima. 
+Luego el subárbol que se forma mediante el enlace del LCA con los nodos de la consulta por medio de los respectivos 
+caminos es minimal.
+
+\begin{theorem}
+    Todas las interpretaciones calculadas por el algoritmo \textbf{get\_joins} para una consulta pasada como 
+    argumento constituyen joins v\'alidos.
+\end{theorem}
+
+Por la forma en que se construye el grafo de joins y los \'arboles de joins, el camino desde el 
+LCA hasta un nodo de la consulta constituye una secuencia de joins v\'alidos sobre las llaves for\'aneas entre los 
+nodos que participan en el camino. Luego a las tablas resultantes de efectuar los joins que dictan los caminos 
+desde el LCA hasta los nodos de la consulta se les puede efectuar joins entre ellas tomando como condici\'on 
+la igualdad de la llave for\'anea presente en LCA. Por tanto, el sub\'arbol que se forma por la union de los 
+caminos desde el LCA hasta los nodos de la consulta representa una secuencia de joins v\'alida para concatenar 
+apropiadamente las tablas representadas por nodos en la consulta pasada como argumento. 
+
+\begin{theorem}
+    El algoritmo \textbf{get\_joins} devuelve todas las interpretaciones presentes en el grafo de join 
+    para la consulta pasada como argumento.
+\end{theorem}
+
+Si existe una interpretaci\'on para una consulta que no es devuelta por el algoritmo entonces 
+existe un sub\'arbol minimal $T$ del grafo de join que contiene todos los nodos de la consulta y que no est\'a contenido 
+en ninguno de los \'arboles de join. Si la raíz de este sub\'arbol tiene indegree cero en el grafo de join entonces 
+el algoritmo de precomputaci\'on debi\'o haber tomado en cuenta dicha ra\'iz para generar \'arboles de join 
+por tanto si existir\'ia un \'arbol de join que contiene al sub\'arbol $T$, contradicción. Si la ra\'iz $r$ del 
+sub\'arbol $T$ no tiene indegree cero en el grafo de joins, se recorren sus ancestros, si algún ancestro $a$ tiene 
+indegree cero entonces el algoritmo de precomputaci\'on produce \'arboles de join que contienen a $T$, lo 
+cual es una contradicción; si ninguno de los ancestros de $r$ tiene indegree cero entonces tiene un ancestro 
+que pertenece a una componente fuertemente conexa sin arcos incidentes exteriores, si existieran estos arcos 
+se pudiera 
+
+
+Para demostrar la correctitud del algoritmo \textbf{get\_joins} hay que demostrar 
+
+Basado en la teoría expuesta anteriormente, resulta bastante fácil corroborar la correctitud del 
 algoritmo. La construcción de los \'arboles de joins garantiza que el sub\'arbol reconstruido mediante el 
 LSA constituye un join válido y el algoritmo devuelve todos los joins posibles para una consulta pues 
 precisamente el conjunto de \'arboles de join representan correctamente todas las posibles formas de 
@@ -360,37 +404,38 @@ Para el análisis de complejidad temporal se denota como $Q$ a la cantidad de ta
 $N$ a la cantidad de \'arboles de joins, $|V|$ a la cantidad de nodos del \'arbol de join m\'as extenso y $|E|$
 a su cantidad de arcos. 
 
-Calcular la intersección de dos conjunto con $s$ y $t$ elementos respectivamente tiene 
+Calcular la intersección de dos conjuntos con $s$ y $t$ elementos respectivamente tiene 
 complejidad temporal $O(s + t)$ si se utilizan conjuntos hash. Se añaden los $s$ elementos al conjunto hash en $O(1)$
 y luego por cada uno de los $t$ elementos se pregunta si est\'an en el conjunto hash en $O(1)$, los elementos 
 que se confirmen que est\'an en el conjunto hash conforman el conjunto intersección. Luego de estas aclaraciones 
 se puede pasar al análisis de la complejidad temporal del algoritmo.
 
-Para identificar que \'arboles de join contienen todos los nodos de la consulta se puede implementar un índice 
+Para identificar cu\'ales \'arboles de join contienen todos los nodos de la consulta se puede implementar un índice 
 inverso donde cada tabla (nodo) se enlaza a todos los árboles de join que contienen 
 este nodo. La intersección de los conjuntos de árboles de join da como resultado todos los árboles de join 
 que contienen todos los nodos especificados. Este procedimiento puede realizarse en $O(QN)$. 
 
-El LCA se computa hallando la intersección entre todos los ancestros de las tablas de consulta y luego 
-seleccionando el m\'as bajo en altura como LCA. Para una tabla (nodo) de la consulta hallar sus ancestros 
-tiene complejidad $O(|V| + |E|)$ empleando DFS tomando el reverso de los arcos, este proceso se realiza $Q$ veces
-para computar los ancestros de cada uno de los $Q$ nodos. 
+El ancestro común más bajo (LCA) se computa hallando la intersección entre todos los ancestros de las tablas de consulta y luego 
+seleccionando el m\'as bajo en altura. Para una tabla (nodo) de la consulta hallar sus ancestros 
+tiene complejidad $O(|V| + |E|)$ utilizando el algoritmo \emph{depth first search} (DFS) para recorrer el reverso de los arcos, 
+este proceso se realiza $Q$, una vez por cada nodo de la consulta. 
+
 Hallar la intersección 
 entre todos los ancestros de los nodos requeridos se realiza tomando un conjunto de ancestros 
-como conjunto inicial y hallando la intersección de este conjunto con el resto de conjuntos de ancestros, 
-resultando al final en el conjunto de ancestros comunes, este procedimiento tiene complejidad temporal 
+como conjunto inicial y hallando la intersección de este conjunto con el resto de los conjuntos de ancestros, 
+resultando al final en el conjunto de ancestros comunes. Este procedimiento tiene complejidad temporal 
 $O(Q(|V| + |V|)) = O(Q(2|V|)) = O(Q|V|)$ asumiendo el caso peor que es que todos los conjuntos de ancestros 
-tengan cardinalidad $|V|$. Luego de tener los ancestros comunes se identifica el que contenga menor altura 
-en $O(|V|)$ resultando que el computo del LCA para un conjunto de nodos de tamaño $Q$ es $O(Q(|V| + |E|))$
+tengan cardinalidad $|V|$. Luego de tener los ancestros comunes, se identifica el que contenga menor altura 
+en $O(|V|)$, resultando que el cómputo del LCA para un conjunto de nodos de tamaño $Q$ es $O(Q(|V| + |E|))$.
 
-Reconstruir el sub\'arbol que se forma mediante la uni\'on de los caminos desde el LCA hasta los nodos 
+Reconstruir el sub\'arbol que se forma mediante el enlace de los caminos desde el LCA hasta los nodos 
 de la consulta tiene complejidad temporal $O(|V| + |E|)$. Añadir elementos a una lista tiene complejidad 
-$O(1)$ u $O(n)$ en dependencia de la implementación de lista que se utilice, siendo $n$ la cantidad 
+$O(1)$ u $O(n)$, en dependencia de la implementación de lista que se utilice, siendo $n$ la cantidad 
 de elementos de la lista, por simplicidad del análisis se toma como $O(1)$.
 
 Finalmente, el algoritmo realiza por cada \'arbol de join una búsqueda de LCA, una reconstrucción 
 del sub\'arbol para ese LCA y se añade el sub\'arbol a una lista. Resultando en una complejidad 
-temporal de $O(NQ(|V| + |E|))$.
+temporal para el algoritmo \textbf{get\_joins} de $O(NQ + NQ(|V| + |E|)) = O(NQ(|V| + |E|))$.
 
 
 \subsubsection{Generaci\'on de c\'odigo}
