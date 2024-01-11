@@ -1,9 +1,37 @@
 \section{Implementación del prototipo}\label{section:prototype}
 
-El prototipo implementado se concibe como una aplicación web. Se compone de cuatro componentes: Crawler, Catálogo de Datos, Generador de Consultas 
-e Interfaz de Usuario; los cuales se corresponden al diseño de sistema propuesto en el capítulo \ref{chapter:proposal}. 
-La lógica de los análisis sintáctico y léxico del DSL propuesto fue incluida dentro del Generador de Consultas. 
-Por cuestiones de tiempo no se pudo concretar una implementación del Generador de Pipelines.
+El prototipo implementado se concibe como una aplicación web. Se compone de cuatro componentes: crawler, catálogo de datos, generador de consultas 
+e interfaz de usuario; los cuales se corresponden con la concepción y el diseño del sistema propuesto en el capítulo \ref{chapter:proposal}, 
+ilustrado en la figura \ref{fig:arquitectura}. 
+La lógica de los análisis sintáctico y léxico del lenguaje de dominio específico, DSL, propuesto fue incluida como parte 
+del generador de consultas. 
+
+Por cuestiones de tiempo no se pudo concretar una implementación del generador de pipelines. 
+La implementación de este componente plantea desafíos considerables. Primeramente, 
+este debe ser independiente de los sistemas gestores de bases de datos de la fuente y almacén de datos. 
+Además, su implementación implica la implementación de la lógica para los tipos de extracción y carga de datos. 
+Por otro lado, el generador de pipelines también es el encargado de ejecutar los pipelines de forma autónoma, 
+por tanto se debe implementar un mecanismo de captura de eventos que dictamine en que momento ejecutar el pipeline.
+
+Durante el proceso de investigación previo a la implementación se identificó que con la utilización de la  
+plataforma Apache Airflow\footnote{https://airflow.apache.org} se pueden satisfacer varios de los 
+requisitos funcionales del generador de pipelines. Airflow es una herramienta de orquestación de flujos de 
+trabajo de procesamiento de datos que permite a los desarrolladores definir y monitorear flujos de trabajo. 
+Un flujo de trabajo es modelado como un grafo dirigido y ac\'iclico, (DAG), cuyos nodos representan tareas y los 
+arcos modelan la dependencia entre las tareas. Los DAG son definidos mediante scripts de Python, en los cuales 
+se especifican las tareas a realizar mediante operadores de Airflow y su \'orden. Luego, generar un DAG 
+cuyas tareas sean la ejecución de las consultas construidas por el generador de consultas para la población de 
+un escenario analítico determinado implica generar 
+din\'amicamente un script de Python que de definición al DAG. Además, la estructura de dicho script 
+no es estática pues el n\'umero de tareas a realizar y su orden dependen del escenario analítico a poblar,
+y los operadores de Airflow para la ejecución de las consultas varían según el sistema gestor de base de 
+datos de la fuente y del sistema destino. Por tanto, la generación dinámica del script de python que define un DAG 
+no es un proceso trivial.
+
+Luego, la implementación del generador de pipelines mediante el uso de Airflow plantea desafíos significativos que 
+no pudieron ser resueltos debido al alto volumen de trabajo necesario para implementar otros componentes del marco 
+de trabajo propuesto y al tiempo disponible para la realización de esta investigación. Por lo tanto, se propone 
+la implementación del generador de pipelines como trabajo futuro.
 
 \subsection{Organización de los archivos}
 
@@ -17,24 +45,32 @@ grafos y \'arboles de join en el disco.
 
 \subsection{Fuentes de datos}
 
-El prototipo solo es capaz de manejar una sola fuente de datos a la vez, aunque si se pueden considerar varias 
+El prototipo maneja una única fuente de datos a la vez, aunque es posible considerar varias 
 fuentes de datos para un mismo almacén de datos de destino. Para esto se debe definir un script del DSL por 
 cada fuente de datos que alimente el almacén de datos. Las primeras consultas de creación generadas que se ejecuten 
-para dicho almacén de datos van a determinar el nombre de las dimensiones y tablas de hechos, as\'i como 
+para dicho almacén determinarán el nombre de las tablas de las dimensiones y de los hechos, as\'i como 
 como el nombre de sus atributos, sus tipos y restricciones. Luego, para alimentar el almacén de datos con otras 
-fuentes basta con ejecutar solamente las consultas de selección generadas a partir del script correspondiente a 
-dicha fuente y luego insertar en el almacén los valores extra\'idos.
+fuentes, basta con ejecutar las consultas de selección generadas a partir del script correspondiente a 
+dicha fuente y, con posterioridad, insertar en el almacén los valores extra\'idos.
 
 \subsection{Crawler}
 
 El Crawler constituye un elemento de interdependencia dentro del prototipo en relación con los sistemas 
-de gestión de bases de datos, específicamente con los SGBD de las fuentes de datos. Con el objetivo de lograr una 
+que administran las fuentes de datos, específicamente con los los sistemas de gestión de bases de datos, (SGBD). 
+Con el objetivo de lograr una 
 mayor extensibilidad, se plantea la creación de una clase abstracta llamada \textbf{crawler}, la cual establecerá 
 el comportamiento general de este componente. De este modo, se delega a las implementaciones específicas para cada 
-SGBD la definición de la forma en que se llevan a cabo las operaciones, como se muestra en la figura \ref{fig:crawler}.
-A continuación de se muestra la definición de la clase crawler.
+SGBD la definición de la forma en que se llevan a cabo las operaciones, como se muestra en la figura \ref{fig:crawler}. 
+El listado de código \ref{code:crawler} muestra la definición de la clase abstracta \textbf{crawler}.
 
-\begin{lstlisting}[label={code:crawler}, caption={clase abstracta crawler}, language={python}]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{Graphics/crawler_class.drawio.png}
+    \caption{Jerarquía de la clase abstracta crawler}
+    \label{fig:crawler}
+\end{figure}
+
+\begin{lstlisting}[label={code:crawler}, caption={Definición de la clase abstracta crawler}, language={python}]
     import abc
 
     class Crawler(metaclass=abc.ABCMeta):
@@ -58,7 +94,7 @@ A continuación de se muestra la definición de la clase crawler.
 
 \end{lstlisting}
 
-La definición de esta clase se encuentra en el archivo \textbf{crawler.py} de la carpeta del componente. Los 
+La implementación de esta clase se encuentra en el archivo \textbf{crawler.py} de la carpeta del componente homónimo. Los 
 campos de la clase se corresponden con la información necesaria para establecer una conexión con una base de 
 datos. 
 
@@ -83,12 +119,7 @@ se encuentra en el archivo \textbf{postgreSQL\_crawler.py}. Los metadatos son re
 a la tabla \textbf{information\_schema} de base de datos fuente ejecutadas 
 utilizando el adaptador de PostgreSQL para python \textbf{psycopg2}.
 
-\begin{figure}[htb]
-    \centering
-    \includegraphics[width=0.5\textwidth]{Graphics/crawler_class.drawio.png}
-    \caption{Jerarquía de la clase abstracta crawler}
-    \label{fig:crawler}
-\end{figure}
+
 
 
 \subsection{Catálogo de Datos}

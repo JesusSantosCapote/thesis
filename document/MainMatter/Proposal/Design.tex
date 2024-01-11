@@ -1,18 +1,20 @@
 \section{Concepción y Diseño}\label{section:design}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=0.60\textwidth]{Graphics/arch.drawio.png}
-    \caption{Arquitectura del prototipo de AutoETL}
-    \label{fig:arquitectura}
-    \end{figure}
-
 AutoETL se concibe como una herramienta para ser utilizada por los desarrolladores de almacenes de datos 
 con el objetivo de aliviar la carga de trabajo en la implementación de los procesos de población de las 
 estructuras analíticas. Su funcionamiento general consiste en generar las consultas y un pipeline que las utilice 
 con el objetivo de poblar automáticamente un escenario analítico definido por el desarrollador. La 
 figura \ref{fig:arquitectura} muestra los componentes de la aplicación, los cuales se corresponden 
 con los componentes principales de una soluci\'on de ETL automático expuestos en el cap\'itulo \ref{chapter:auto-etl}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.60\textwidth]{Graphics/arch.drawio.png}
+    \caption{Arquitectura del prototipo de AutoETL}
+    \label{fig:arquitectura}
+    \end{figure}
+
+
 
 \begin{itemize}
     \item El primer elemento de la arquitectura propuesta son las \textbf{Fuentes de Datos}. En ellas yacen los 
@@ -60,7 +62,7 @@ guarda una tupla donde en la primera posición se encuentra el nombre del atribu
 posición el nombre del atributo de $w$ referenciado. Nótese que la dirección de un arco representa el sentido de la 
 referencia de la llave for\'anea a la que representa como se muestra en la figura \ref{fig:datacatalogproposal}.
 
-\begin{figure}[htb]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{Graphics/data_catalog.drawio.png}
     \caption{Estructura del catálogo de datos}
@@ -231,7 +233,7 @@ y sean llaves primarias en $w$. Nótese que estos subconjuntos de atributos cump
 de una llave for\'anea aunque la interrelación entre ambas tablas no aparezca explícitamente en la base de 
 datos y, por tanto, representan un join válido.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.60\textwidth]{Graphics/graph join transformation.drawio.png}
     \caption{Grafo de join asociado al pseudografo de una base de datos fuente.}
@@ -249,7 +251,8 @@ generar, a partir del grafo de joins, sub\'arboles maximales. Cada sub\'arbol ma
 de arcos diferentes, aporta potencialmente un join distinto. En el resto del documento estos sub\'arboles 
 maximales ser\'an referidos como \'arboles de join. Una consulta sobre un determinado \'arbol de join no es m\'as que 
 un conjunto de nodos (tablas) a concatenar mediante un join. Una respuesta a una consulta sobre un \'arbol de join es un sub\'arbol 
-minimal que contenga los nodos de la consulta, lo que constituye una interpretación 
+minimal que contenga los nodos de la consulta, es decir, el subárbol m\'as pequeño que contenga todos los nodos 
+de la consulta, el cual constituye una interpretación 
 de la consulta para dicho \'arbol de join.
 
 Para computar los \'arboles de join, propuestas anteriores a \cite{mason2005autojoin} proponen hallar 
@@ -323,7 +326,7 @@ esquema sufre cambios en su definición.
 
 \subsubsection{Fase de consulta}
 
-Para dar respuesta a las consultas, es decir, devolver un conjunto de joins que constituyen 
+Para dar respuesta a las consultas sobre los \'arboles de join, es decir, devolver un conjunto de joins que constituyen 
 interpretaciones de la consulta, el procedimiento consiste en identificar los \'arboles de join que 
 contengan todos los nodos (tablas) de la consulta. Luego, por cada \'arbol de join identificado, 
 se busca el ancestro com\'un m\'as bajo (lowest common ancestor, LCA) de este conjunto de nodos. 
@@ -356,11 +359,11 @@ para la consulta pasada como argumento.
     Todas las interpretaciones calculadas constituyen subárboles minimales.
 \end{theorem}
 
-Tomando al LCA entre los nodos de la consulta como raíz del subárbol que representa la interpretaci\'on 
+Tomando al LCA entre los nodos de la consulta como raíz del subárbol que representa la interpretaci\'on, 
 se asegura que no exista un nodo m\'as bajo a partir del cual se puedan alcanzar los nodos de la consulta. 
-Cada nodo de la consulta se enlaza con el LCA mediante un camino simple, por tanto es de distancia m\'inima. 
-Luego el subárbol que se forma mediante el enlace del LCA con los nodos de la consulta por medio de los respectivos 
-caminos es minimal.
+Cada nodo de la consulta se enlaza con el LCA mediante un camino simple, por tanto es de distancia m\'inima.
+Luego no existe un subárbol m\'as pequeño que contenga los nodos de la consulta y por tanto es minimal. 
+
 
 \begin{theorem}
     Todas las interpretaciones calculadas por el algoritmo \textbf{get\_joins} para una consulta pasada como 
@@ -369,43 +372,42 @@ caminos es minimal.
 
 Por la forma en que se construye el grafo de joins y los \'arboles de joins, el camino desde el 
 LCA hasta un nodo de la consulta constituye una secuencia de joins v\'alidos sobre las llaves for\'aneas entre los 
-nodos que participan en el camino. Luego a las tablas resultantes de efectuar los joins que dictan los caminos 
-desde el LCA hasta los nodos de la consulta se les puede efectuar joins entre ellas tomando como condici\'on 
-la igualdad de la llave for\'anea presente en LCA. Por tanto, el sub\'arbol que se forma por la union de los 
+nodos que participan en el camino. Luego las tablas resultantes de efectuar los joins que dictan los caminos 
+desde el LCA hasta los nodos de la consulta se pueden concatenar mediante joins pues con que al menos una de ellas posea 
+los atributos presentes en la tabla LCA es posible hacer join de esta tabla con el resto. Por tanto, el sub\'arbol que se forma por la union de los 
 caminos desde el LCA hasta los nodos de la consulta representa una secuencia de joins v\'alida para concatenar 
 apropiadamente las tablas representadas por nodos en la consulta pasada como argumento. 
 
 \begin{theorem}
-    El algoritmo \textbf{get\_joins} devuelve todas las interpretaciones presentes en el grafo de join 
+    El algoritmo \textbf{get\_joins} devuelve todas las interpretaciones presentes en el grafo de joins 
     para la consulta pasada como argumento.
 \end{theorem}
 
 Si existe una interpretaci\'on para una consulta que no es devuelta por el algoritmo entonces 
 existe un sub\'arbol minimal $T$ del grafo de join que contiene todos los nodos de la consulta y que no est\'a contenido 
 en ninguno de los \'arboles de join. Si la raíz de este sub\'arbol tiene indegree cero en el grafo de join entonces 
-el algoritmo de precomputaci\'on debi\'o haber tomado en cuenta dicha ra\'iz para generar \'arboles de join 
+el algoritmo de precomputaci\'on debi\'o haber tomado en cuenta dicha ra\'iz para generar \'arboles de join, 
 por tanto si existir\'ia un \'arbol de join que contiene al sub\'arbol $T$, contradicción. Si la ra\'iz $r$ del 
 sub\'arbol $T$ no tiene indegree cero en el grafo de joins, se recorren sus ancestros, si algún ancestro $a$ tiene 
 indegree cero entonces el algoritmo de precomputaci\'on produce \'arboles de join que contienen a $T$, lo 
-cual es una contradicción; si ninguno de los ancestros de $r$ tiene indegree cero entonces tiene un ancestro 
-que pertenece a una componente fuertemente conexa sin arcos incidentes exteriores, si existieran estos arcos 
-se pudiera 
+cual es una contradicción; si ninguno de los ancestros de $r$ tiene indegree cero entonces existen 
+ancestros de $r$ que pertenecen a componentes fuertemente conexas. Sea $a'$ un ancestro de $r$ que 
+participa en una componente fuertemente conexa sin arcos incidentes exteriores a ella. El algoritmo 
+de precomputaci\'on tiene en cuenta a $a'$ como ra\'iz para generar \'arboles de join y por tanto 
+existe alguno que contiene a $T$, contradicción. Luego por reducci\'on al absurdo el algoritmo 
+\textbf{get\_joins} devuelve todas las interpretaciones presentes en el grafo de join 
+para la consulta pasada como argumento.
 
-
-Para demostrar la correctitud del algoritmo \textbf{get\_joins} hay que demostrar 
-
-Basado en la teoría expuesta anteriormente, resulta bastante fácil corroborar la correctitud del 
-algoritmo. La construcción de los \'arboles de joins garantiza que el sub\'arbol reconstruido mediante el 
-LSA constituye un join válido y el algoritmo devuelve todos los joins posibles para una consulta pues 
-precisamente el conjunto de \'arboles de join representan correctamente todas las posibles formas de 
-unir mediante joins las tablas de la base de datos.
+Luego, como se demostr\'o la veracidad de los tres teoremas anteriores se puede concluir que el 
+algoritmo \textbf{get\_joins} es correcto.
 
 Para el análisis de complejidad temporal se denota como $Q$ a la cantidad de tablas que contiene la consulta, 
 $N$ a la cantidad de \'arboles de joins, $|V|$ a la cantidad de nodos del \'arbol de join m\'as extenso y $|E|$
 a su cantidad de arcos. 
 
 Calcular la intersección de dos conjuntos con $s$ y $t$ elementos respectivamente tiene 
-complejidad temporal $O(s + t)$ si se utilizan conjuntos hash. Se añaden los $s$ elementos al conjunto hash en $O(1)$
+complejidad temporal amortizada $O(s + t)$ si se utilizan conjuntos hash donde el costo de inserción y b\'usqueda 
+tiene un una complejidad temporal amortizada de $O(1)$. Se añaden los $s$ elementos al conjunto hash en $O(1)$
 y luego por cada uno de los $t$ elementos se pregunta si est\'an en el conjunto hash en $O(1)$, los elementos 
 que se confirmen que est\'an en el conjunto hash conforman el conjunto intersección. Luego de estas aclaraciones 
 se puede pasar al análisis de la complejidad temporal del algoritmo.
@@ -415,17 +417,17 @@ inverso donde cada tabla (nodo) se enlaza a todos los árboles de join que conti
 este nodo. La intersección de los conjuntos de árboles de join da como resultado todos los árboles de join 
 que contienen todos los nodos especificados. Este procedimiento puede realizarse en $O(QN)$. 
 
-El ancestro común más bajo (LCA) se computa hallando la intersección entre todos los ancestros de las tablas de consulta y luego 
+El ancestro común más bajo (LCA) se computa hallando la intersección entre todos los ancestros de las tablas de la consulta y luego 
 seleccionando el m\'as bajo en altura. Para una tabla (nodo) de la consulta hallar sus ancestros 
 tiene complejidad $O(|V| + |E|)$ utilizando el algoritmo \emph{depth first search} (DFS) para recorrer el reverso de los arcos, 
-este proceso se realiza $Q$, una vez por cada nodo de la consulta. 
+este proceso se realiza $Q$ veces, una vez por cada nodo de la consulta. 
 
 Hallar la intersección 
 entre todos los ancestros de los nodos requeridos se realiza tomando un conjunto de ancestros 
 como conjunto inicial y hallando la intersección de este conjunto con el resto de los conjuntos de ancestros, 
 resultando al final en el conjunto de ancestros comunes. Este procedimiento tiene complejidad temporal 
 $O(Q(|V| + |V|)) = O(Q(2|V|)) = O(Q|V|)$ asumiendo el caso peor que es que todos los conjuntos de ancestros 
-tengan cardinalidad $|V|$. Luego de tener los ancestros comunes, se identifica el que contenga menor altura 
+tengan cardinalidad $|V|$. Luego de tener los ancestros comunes, se identifica el que posea menor altura 
 en $O(|V|)$, resultando que el cómputo del LCA para un conjunto de nodos de tamaño $Q$ es $O(Q(|V| + |E|))$.
 
 Reconstruir el sub\'arbol que se forma mediante el enlace de los caminos desde el LCA hasta los nodos 
@@ -433,50 +435,57 @@ de la consulta tiene complejidad temporal $O(|V| + |E|)$. Añadir elementos a un
 $O(1)$ u $O(n)$, en dependencia de la implementación de lista que se utilice, siendo $n$ la cantidad 
 de elementos de la lista, por simplicidad del análisis se toma como $O(1)$.
 
-Finalmente, el algoritmo realiza por cada \'arbol de join una búsqueda de LCA, una reconstrucción 
-del sub\'arbol para ese LCA y se añade el sub\'arbol a una lista. Resultando en una complejidad 
-temporal para el algoritmo \textbf{get\_joins} de $O(NQ + NQ(|V| + |E|)) = O(NQ(|V| + |E|))$.
+Finalmente, el algoritmo calcula los ancestros de los nodos de la consulta en $O(NQ)$. Luego por cada \'arbol de join realiza una búsqueda de LCA, 
+una reconstrucción 
+del sub\'arbol para ese LCA y se añade el sub\'arbol a una lista; efectuar estos tres pasos por cada \'arbol de join resulta en una complejidad temporal de 
+$O(NQ(|V| + |E|))$. 
+Por tanto, el algoritmo \textbf{get\_joins} tiene una complejidad 
+temporal de $O(NQ + NQ(|V| + |E|)) = O(NQ(|V| + |E|))$.
 
 
-\subsubsection{Generaci\'on de c\'odigo}
+\subsubsection{Fase de generaci\'on de c\'odigo}
 
-Este componente también tiene la tarea de generar el código SQL para la creación de las 
+El generador de consultas también tiene la tarea de producir el código SQL para la creación de las 
 tablas del esquema estrella en el almacén de datos de destino y para la selección de 
-los datos que alimentan el almacén desde la fuente. Para lograrlo este cometido se apoya 
-del algoritmo de inferencia de joins y de las especificaciones del escenario analítico 
+los datos que alimentan el almacén desde la fuente. Para lograr este cometido se apoya 
+en el algoritmo de inferencia de joins y en las especificaciones del escenario analítico 
 mediante el lenguaje de dominio específico. Por tanto, para inferir las consultas para 
-la población y creación de un escenario analítico es necesario que el desarrollador y 
+la creación y población de un escenario analítico es necesario que el desarrollador y 
 usuario de la herramienta proporcione un script del DSL con la definición del escenario 
-a poblar. Por cada tabla del esquema estrella se genera una consulta de creación y una 
+de inter\'es. Por cada tabla del esquema estrella se genera una consulta de creación y una 
 consulta de selección.
 
-Para construir la consulta de creación de una tabla del esquema estrella basta con recorrer 
-la lista definiciones de atributos que expone el script para dicha tabla y agregar a la consulta 
+Para construir la consulta de creación de una tabla del esquema estrella se recorre 
+la lista definiciones de atributos que expone el script para dicha tabla y se agrega a la consulta 
 su nombre, su tipo y su modificador. 
-El nombre lo aporta el alias en el caso de atributos compuestos o en caso de ser un solo atributo 
-se mantiene el nombre que posee en la fuente de datos de no tener un alias especificado. Luego se 
+El nombre lo aporta el alias en el caso de atributos compuestos oo, en caso de ser un solo atributo y no tener un alias especificado, 
+se mantiene el nombre que posee en la fuente de datos. Luego, se 
 añaden las restricciones de llaves primarias y for\'aneas. Por \'ultimo, si se trata de una tabla 
-de hechos se añade una restricción de unicidad a la combinación de llaves for\'aneas a las 
-dimensiones.
+de hechos, se añade una restricción de unicidad a la combinación de las llaves foráneas referidas a las 
+tablas de dimensiones.
 
 Para construir las consultas de selección de una tabla del esquema estrella se recorre la 
-lista definiciones de atributos que expone el script para dicha tabla y se recolectan las 
-tablas que intervienen en la definición de los atributos y los nombres de los atributos requeridos.
-Se conforma una consulta con las tablas especificadas y se llama al algoritmo \textbf{get\_joins} 
+lista definiciones de atributos que expone el script para dicha tabla y se recolectan los 
+nombres de las tablas de la fuente que intervienen en la definición, así como los 
+nombres de los atributos requeridos para la población.
+Se conforma una consulta de b\'usqueda con las tablas especificadas y se llama al algoritmo \textbf{get\_joins} (Listado de c\'odigo \ref{querytime}),
 pasando como argumentos la consulta y la lista de \'arboles de joins precomputados para el esquema 
-de base de datos de la fuente, obteniendo as\'i una lista de posibles joins para unir todas las 
-tablas que intervienen en la consulta.
+de base de datos de la fuente. As\'i se obtiene una lista de posibles joins para concatenar apropiadamente todas las 
+tablas que intervienen en la consulta de selección.
 
 En esta primera propuesta de la herramienta, el sistema no es capaz de inferir cu\'al es el join 
 m\'as adecuado según las necesidades del usuario, dado que puede haber varios joins que resulten 
-en la uni\'on de las tablas especificadas pero la semántica del resultado no tiene por qu\'e ser 
-la misma. Por tanto, luego de obtener la lista de joins el usuario debe seleccionar el que responda 
+en la concatenación apropiada de las tablas especificadas, pero la semántica del resultado no tiene por qu\'e ser 
+la misma. Por tanto, luego de obtener la lista de joins, el desarrollador debe seleccionar el que responda 
 a sus intereses.
 
-Luego de tener el join seleccionado, se pasa a construir la consulta. En la parte de la cláusula 
-\textbf{SELECT} se añaden todos los nombres de los atributos recolectados y en la sección de la cláusula 
-\textbf{FROM} se coloca el join seleccionado. Si existen atributos resultado de agregaciones se añade 
-la cláusula \textbf{GROUP BY} con todos los atributos que intervienen en el select a los que no 
+A partir del join seleccionado, se pasa a construir la consulta. En la cláusula \textbf{SELECT}, se 
+incluyen todos los nombres de los atributos recopilados. Si se aplican funciones de agregación a ciertos 
+atributos, se agrega la función específica junto con el atributo correspondiente como argumento. En la sección 
+de la cláusula 
+\textbf{FROM}, se coloca el join seleccionado. Si existen atributos recolectados cuyos valores a seleccionar 
+son resultado de agregaciones,  se añade 
+la cláusula \textbf{GROUP BY} con todos los atributos que intervienen en la cla\'usula \textbf{SELECT} a los que no 
 se les aplique una función de agregación.
 
 
@@ -488,8 +497,13 @@ el tipo de extracción de datos de la fuente que utilizar\'a el pipeline, el tip
 en el sistema de destino y la frecuencia con que se ejecutar\'a. Con esta información y las 
 consultas generadas se conforma un pipeline. 
 
-Las consultas de creación son mandadas a ejecutar en el sistema que albergar\'a el almacén de 
-datos. Las consultas de selección son enviadas para su ejecución en el sistema fuente y el resultado 
-es recepcionado por la herramienta implementada de acuerdo al tipo de extracción seleccionado por el usuario. 
-Luego se genera una consulta de inserción para estos 
-datos y por \'ultimo se ejecutan de acuerdo al tipo de carga especificado.
+Las consultas de creación son enviadas al sistema que albergar\'a el almacén de 
+datos para su ejecución. Las consultas de selección se ejecutan en el sistema fuente de acuerdo al tipo 
+de extracción especificado. Luego, el resultado es recibido por la herramienta y se pasa a generar una consulta 
+de inserción para estos. Por \'ultimo, se ejecutan las inserciones de acuerdo al tipo de carga especificado.
+
+
+Tras explorar detalladamente el proceso de concepción y diseño del marco de trabajo AutoETL y del 
+lenguaje de dominio específico, el siguiente cap\'itulo se centra en la
+implementaci\'on de cada uno de los componentes discutidos. Además, se detalla el proceso 
+de experimentaci\'on realizado para comprobar el funcionamiento del prototipo implementado.

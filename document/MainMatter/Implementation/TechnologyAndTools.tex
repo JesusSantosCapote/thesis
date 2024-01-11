@@ -7,7 +7,7 @@ interpretado, multi-paradigma, de tipado dinámico y con gestión automática de
 por Guido Van Rossum en 1991 y en la actualidad se encuentra disponible en su versión 3.12.1.
 
 La sintaxis de Python es conocida por ser simple e intuitiva, lo que facilita su accesibilidad tanto para 
-investigadores, analistas como para programadores. Debido al crecimiento del uso de datos en las empresas y 
+investigadores, analistas como para desarrolladores y programadores. Debido al crecimiento del uso de datos en las empresas y 
 las facilidades que ofrece Python, el desarrollo del ecosistema profesional del lenguaje ha sido considerable. 
 Actualmente, Python cuenta con múltiples bibliotecas y paquetes científicos que brindan diversas funcionalidades 
 y son utilizados en varios campos de la ciencia e ingeniería.
@@ -28,8 +28,7 @@ aristas, lo que la hace adaptable para una amplia gama de casos de uso.
 
 PLY\footnote{https://www.dabeaz.com/ply} es una implementación en Python de las 
 herramientas de análisis léxico y sintáctico 
-tradicionales lex y yacc. PLY utiliza el algoritmo de análisis LALR(1) y es 
-compatible con todas las versiones modernas de Python. Es conocido por ser fácil de usar,
+tradicionales lex y yacc. Es conocido por ser fácil de usar,
 abarcar la mayoría de las características fundamentales de yacc y proporcionar una extensa verificación de errores. 
 PLY permite la especificación de gramáticas 
 mediante el uso de funciones de Python, lo que proporciona flexibilidad en la definición de la estructura del 
@@ -61,15 +60,14 @@ La biblioteca Neo4j\footnote{https://neo4j.com/} es el adaptador oficial para Py
 diseñada para proporcionar una 
 interfaz de Python para ejecutar 
 consultas y gestionar datos almacenados en dichas bases de datos en el contexto de aplicaciones de Python, lo que permite 
-a los usuarios integrar y aprovechar las bondades de esta base de datos orientada a grafos directamente desde sus 
+a los desarrolladores integrar y aprovechar las bondades de las base de datos orientada a grafos directamente desde sus 
 proyectos de Python.
 
 \subsubsection{Streamlit}
 
 Streamlit\footnote{https://streamlit.io} es una biblioteca de Python de código abierto que proporciona una forma rápida y sencilla para que los 
-científicos de datos e ingenieros de aprendizaje automático conviertan los análisis de datos en aplicaciones web 
-interactivas con un código mínimo. Está diseñado para simplificar el proceso de creación y despliegue de aplicaciones 
-basadas en datos, optimizando flujos de trabajo que normalmente requieren un extenso desarrollo de la parte frontal. 
+desarrolladores conviertan c\'odigo de Python en aplicaciones web 
+interactivas con un código mínimo. 
 Las aplicaciones de Streamlit son scripts de Python mejorados con comandos específicos de Streamlit que luego se 
 transforman en componentes de la interfaz de usuario. Este diseño 
 permite una transición fluida de los scripts de datos a las aplicaciones web, con una curva de aprendizaje baja.
@@ -81,7 +79,7 @@ PostgreSQL\footnote{https://www.postgresql.org} es un sistema de gestión de bas
 reconocido por sus sólidas 
 características en la gestión y organización de datos. Es altamente valorado por su confiabilidad, escalabilidad, 
 rendimiento, cumplimiento de ACID, compatibilidad con varios sistemas operativos y lenguajes de programación, lo que 
-lo convierte en una opción popular para el desarrollo de una amplia gama de aplicaciones 
+lo convierte en una opción popular para el desarrollo de una amplia gama de herramientas 
 como aplicaciones web, 
 almacenes de datos y procesamiento de grandes volúmenes de datos. 
 Al ser un sistema de gestión de bases de datos de código abierto, PostgreSQL es rentable y se beneficia del 
@@ -90,14 +88,16 @@ disponibles.
 
 \subsection{Neo4j}
 
-Neo4j\footnote{https://neo4j.com/} es un sistema de gestión de bases de datos basado en grafos de alto rendimiento desarrollado por 
+Neo4j\footnote{https://neo4j.com/} es un sistema de gestión de bases de datos orientado a grafos de alto rendimiento desarrollado por 
 Neo4j, Inc., 
 que utiliza estructuras de grafos con nodos, relaciones y propiedades para representar y almacenar datos. A 
 diferencia de las bases de datos relacionales que almacenan datos en tablas y filas, Neo4j almacena datos en 
 forma de nodos (entidades) y relaciones (enlaces), permitiendo que tanto los nodos como las relaciones contengan 
 propiedades en forma de pares clave-valor. Esta estructura está diseñada para explotar las conexiones entre 
 los datos, convirtiéndola en una plataforma ideal para aplicaciones que requieren consultas complejas y 
-análisis de relaciones. 
+análisis de relaciones. Cypher es el lenguaje de consulta para Neo4j. Permite la consulta de datos de forma eficiente 
+y expresiva dentro de un grafo de propiedades a través de 
+una sintaxis declarativa, que se basa en especificar patrones presentes en los datos consultados. 
 
 \subsection{Docker}
 
