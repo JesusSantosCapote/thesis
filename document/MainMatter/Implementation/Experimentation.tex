@@ -4,8 +4,8 @@ Con el objetivo de comprobar la validez de la solución concebida y el diseño d
 la viabilidad y funcionamiento del prototipo implementado, se propone la evaluación 
 de su comportamiento ante dos escenarios de prueba: escenario de ventas minoristas y escenario TPCH. En aras de 
 la claridad, la exposición de cada experimento se ha dividido en cuatro fases. La primera fase verifica 
-la correctitud del proceso de exploración efectuado por el Crawler y la creación de la base de datos de Neo4j en el  
-Catálogo de Datos para la fuente de datos de turno. La segunda fase consiste en la creación 
+la correctitud del proceso de exploración efectuado por el crawler y la creación de la base de datos de Neo4j en el  
+catálogo de datos para la fuente de datos de turno. La segunda fase consiste en la creación 
 del grafo de joins y los \'arboles de join. La tercera fase consiste en la generación de las consultas dada una 
 definición de esquema 
 estrella mediante un script del DSL y la selección de los joins efectuada por el desarrollador. La cuarta fase y \'ultima 
@@ -30,12 +30,12 @@ los detalles de los experimentos.
 Se utilizó una computadora portátil con un procesador Intel(R) Core(TM) i7-11370H 11th Gen @ 3.30GHz, 16GB de 
 memoria RAM y sistema operativo Windows 11 Home 23H2.
 
-Se utilizó Docker para simular el traspaso de datos por red entre la aplicación, el Catálogo de Datos y 
+Se utilizó Docker para simular el traspaso de datos por red entre la aplicación, el catálogo de datos y 
 los servidores de las bases de datos fuente y destino. Se crea una imagen de la aplicación basada en Python:3.10 con el 
 nombre \textbf{autoetl}. 
 Con el archivo \textbf{docker-compose.yml} se inicializan todos los contenedores que intervienen en el proceso 
 de experimentación. Los servidores de las bases de datos fuente y destino son contenedores de PostgreSQL llamados 
-\textbf{db} y \textbf{target} respectivamente. El Catálogo de Datos es un contenedor de Neo4j con nombre 
+\textbf{db} y \textbf{target} respectivamente. El catálogo de datos es un contenedor de Neo4j con nombre 
 \textbf{data\_catalog}. La aplicación implementada yace en un contenedor de la imagen creada \textbf{autoetl}. 
 Por \'ultimo, con el objetivo de visualizar los resultados del proceso de población se añade al ambiente un 
 contenedor de \textbf{pgadmin4}, el cual proporciona una herramienta para la visualización de bases de datos 
@@ -116,15 +116,15 @@ por cada atributo de una tabla del esquema estrella definido, se especifica el n
 fuente, dos puntos, el nombre del atributo de la fuente cuyos valores poblar\'an el atributo definido. 
 Además, se pueden definir atributos cuyos valores son el resultado de la aplicación de una funci\'on de agregación 
 o el resultado de operaciones aritméticas. Nótese que a cada definición de atributo de las tablas de 
-dimensi\'on le acompaña un n\'umero el 
-cu\'al representa el nivel del atributo en la jerarquía presente en la tabla de dimensi\'on. Este n\'umero 
+dimensi\'on le acompaña un n\'umero, el 
+cu\'al representa el nivel del atributo en la tabla de dimensi\'on. Este n\'umero 
 se utiliza en la generación de las consultas para crear la tabla de metadatos \textbf{level\_metadata}. 
 El nivel que no est\'e especificado en el script es tomado como cero. 
 
 \subsubsection{Fase 1: Exploraci\'on del Crawler y creaci\'on de la base de datos de Neo4j}
 
 La base de datos de Neo4j derivada a 
-partir de los datos recopilados por el Crawler se muestra en la figura \ref{fig:catalogexp1}.
+partir de los datos recopilados por el crawler se muestra en la figura \ref{fig:catalogexp1}.
 
 \begin{figure}[H]
   \centering
@@ -268,7 +268,7 @@ la fase previa.
 \end{lstlisting}
 
 El ejemplo de c\'odigo \ref{quercreateexp1} muestra como efectivamente, los nombres de los atributos 
-de las consultas generadas, as\'i como sus tipos y restricciones co\'inciden con lo declarado en la definición 
+de las consultas generadas, as\'i como sus tipos y restricciones coinciden con lo declarado en la definición 
 del esquema estrella para el escenario de ventas minoristas. Asimismo, las consultas para la creación y 
 población de la tabla de metadatos \textbf{level\_metadata} fueron generadas exitosamente.
 
@@ -397,7 +397,7 @@ datos de la base de datos \textbf{TPCH}.
 \subsubsection{Fase 1: Exploraci\'on del Crawler y creaci\'on de la base de datos de Neo4j}
 
 La base de datos de Neo4j derivada a 
-partir de los datos recopilados por el Crawler para el esquema de la base d datos de la figura 
+partir de los datos recopilados por el crawler para el esquema de la base d datos de la figura 
 \ref{fig:transactionaltpch} se muestra en la figura \ref{fig:catalogexp2}.
 
 \begin{figure}[H]
@@ -411,7 +411,7 @@ N\'otese como efectivamente se ha creado un nodo por cada tabla del esquema y un
 
 \subsubsection{Fase 2: Creaci\'on del grafo de join y \'arboles de join}
 
-A partir de la base de datos de Neo4j obtenida en la fase 1 se computan el grafo de join y los \'arboles de 
+A partir de la base de datos de Neo4j obtenida en la fase 1 se computan el grafo de joins y los \'arboles de 
 join que se muestran en la figura \ref{fig:graphjoin2} y en la figura \ref{fig:jointree2} respectivamente. 
 
 \begin{figure}[H]
@@ -561,7 +561,7 @@ mostradas en el ejemplo de c\'odigo \ref{selectexp2}:
 \end{lstlisting}
 
 El ejemplo de c\'odigo \ref{genquery2} muestra como efectivamente, los nombres de los atributos 
-de las consultas generadas, as\'i como sus tipos y restricciones co\'inciden con lo declarado en la definición 
+de las consultas generadas, as\'i como sus tipos y restricciones coinciden con lo declarado en la definición 
 del esquema estrella para el escenario de ventas minoristas. Además, las consultas para la creación y 
 población de la tabla de metadatos \textbf{level\_metadata} fueron generadas exitosamente.
 

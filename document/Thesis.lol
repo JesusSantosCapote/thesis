@@ -17,7 +17,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {4.6}Clase VisitorCodeGen}{65}{lstlisting.4.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {lstlisting}{\numberline {4.7}Algoritmo para la generación de \'arboles de expansión}{66}{lstlisting.4.7}%
+\contentsline {lstlisting}{\numberline {4.7}Algoritmo para la generación de \'arboles de expansión}{67}{lstlisting.4.7}%
 \defcounter {refsection}{0}\relax 
 \contentsline {lstlisting}{\numberline {4.8}C\'odigo del m\'etodo \textbf {compute\_joins}}{67}{lstlisting.4.8}%
 \defcounter {refsection}{0}\relax 

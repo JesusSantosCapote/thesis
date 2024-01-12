@@ -8,7 +8,7 @@ del generador de consultas.
 
 Por cuestiones de tiempo no se pudo concretar una implementación del generador de pipelines. 
 La implementación de este componente plantea desafíos considerables. Primeramente, 
-este debe ser independiente de los sistemas gestores de bases de datos de la fuente y almacén de datos. 
+este debe ser independiente de los sistemas gestores de bases de datos de la fuente y del almacén de datos. 
 Además, su implementación implica la implementación de la lógica para los tipos de extracción y carga de datos. 
 Por otro lado, el generador de pipelines también es el encargado de ejecutar los pipelines de forma autónoma, 
 por tanto se debe implementar un mecanismo de captura de eventos que dictamine en que momento ejecutar el pipeline.
@@ -36,7 +36,7 @@ la implementación del generador de pipelines como trabajo futuro.
 \subsection{Organización de los archivos}
 
 La lógica de cada uno de los componentes de la aplicación se encuentra separada por carpetas. Cada componente 
-posee su propia carpeta identificada con el nombre del componente en inglés, a excepción de la Interfaz de Usuario 
+posee su propia carpeta identificada con el nombre del componente en inglés, a excepción de la interfaz de usuario 
 cuya carpeta es nombrada \textbf{pages} y su script principal se encuentra en la raíz del proyecto con el nombre de 
 \textbf{MainPage.py}. Todos los datos derivados de la ejecución de la lógica de cada uno de los componentes 
 se almacena dentro de la carpeta \textbf{data}. La carpeta \textbf{utils} guarda scripts de algoritmos usados 
@@ -61,7 +61,7 @@ Con el objetivo de lograr una
 mayor extensibilidad, se plantea la creación de una clase abstracta llamada \textbf{crawler}, la cual establecerá 
 el comportamiento general de este componente. De este modo, se delega a las implementaciones específicas para cada 
 SGBD la definición de la forma en que se llevan a cabo las operaciones, como se muestra en la figura \ref{fig:crawler}. 
-El listado de código \ref{code:crawler} muestra la definición de la clase abstracta \textbf{crawler}.
+El ejemplo de código \ref{code:crawler} muestra la definición de la clase abstracta \textbf{crawler}.
 
 \begin{figure}[H]
     \centering
@@ -109,7 +109,7 @@ de datos y como valores otros diccionarios que poseen dos llaves: \textbf{attrib
 El valor de \textbf{attributes} es una lista de tuplas de dos o tres elementos, una por cada atributo de la tabla. 
 Las tuplas de dos elementos almacenan el nombre del atributo y el tipo, las de tres almacenan además un indicador 
 que expresa si el atributo es llave primaria, for\'anea o ambas. El valor de \textbf{relations} es una lista de 
-tuplas de tres elementos, una por cada atributo atributo que es una llave foránea de la tabla. El primer elemento es el nombre 
+tuplas de tres elementos, una por cada atributo que es una llave foránea de la tabla. El primer elemento es el nombre 
 de la llave for\'anea en la tabla, el segundo el nombre de la tabla referenciada y el tercero el atributo referenciado. 
 El ejemplo de c\'odigo \ref{dbdict} muestra la estructura del diccionario \textbf{\_db\_dict}. 
 
@@ -134,7 +134,7 @@ en la ruta \textbf{data/schemas}. La carpeta \textbf{schemas} contiene una carpe
 por el nombre de la base de datos, en la cual se almacena \textbf{\_db\_dict} en formato json y 
 \textbf{\_metadata\_str} en formato txt.
 
-En esta primera entrega del prototipo solo se implement\'o a un crawler para PostgreSQL. Su l\'ogica 
+En esta primera entrega del prototipo solo se implement\'o un crawler para PostgreSQL. Su l\'ogica 
 se encuentra en el archivo \textbf{postgreSQL\_crawler.py}. Los metadatos son recopilados mediante consultas 
 realizadas
 a la tabla \textbf{information\_schema} de la base de datos fuente, utilizando para la ejecución de las consultas 
@@ -145,8 +145,8 @@ el adaptador de PostgreSQL para python \textbf{psycopg2}.
 
 \subsection{Catálogo de Datos}
 
-El Catálogo de Datos es un servidor de bases de datos de Neo4j que contiene un grafo por cada base de datos 
-fuente que haya sido explorada por la aplicación. Cada vez que el Crawler explora una base de datos fuente nueva se crea 
+El catálogo de datos es un servidor de bases de datos de Neo4j que contiene un grafo por cada base de datos 
+fuente que haya sido explorada por la aplicación. Cada vez que el crawler explora una base de datos fuente nueva se crea 
 un grafo de base de datos de Neo4j para almacenar sus metadatos.
 
 La comunicación de la aplicación con el Catálogo de Datos es mediada por la clase \textbf{DataCatalogHandler} 
@@ -176,12 +176,12 @@ presente en el script \textbf{handler.py} de la carpeta \textbf{data\_catalog}. 
 
 El campo \textbf{db\_dict} hace referencia al diccionario de la base de datos confeccionado por el crawler, ver ejemplo de c\'odigo \ref{dbdict}, 
 \textbf{db\_name} almacena el  
-nombre de la base de datos fuente, \textbf{join\_graph} almacena una referencia en memoria del grafo de join construido 
+nombre de la base de datos fuente, \textbf{join\_graph} almacena una referencia en memoria del grafo de joins construido 
 durante la ejecución de \textbf{export\_join\_graph}. El resto de atributos 
 son los necesarios para establecer una conexión con una base de datos de Neo4j; en especial, el campo \textbf{\_uri} 
 es una cadena de texto que contiene el protocolo de comunicación con el servidor de Neo4j, su ip y su puerto. 
 
-El método \textbf{create\_database} crea una base de datos de Neo4j en el Catálogo de Datos dedicada a la 
+El método \textbf{create\_database} crea una base de datos de Neo4j en el catálogo de datos dedicada a la 
 fuente de datos con nombre \textbf{db\_name} y con diccionario de metadatos \textbf{db\_dict}. 
 
 El método \textbf{populate\_graph\_database} se encarga de poblar la base de datos de Neo4j con los metadatos
@@ -198,9 +198,9 @@ for\'anea, tal y como se expuso en el capitulo \ref{chapter:proposal} en la secc
 datos.
 
 El método \textbf{export\_join\_graph} es el encargado de construir, a partir de la base de datos Neo4j del esquema 
-de la fuente de turno, el grafo de join. Mediante el lenguaje de consulta Cypher y el adaptador de Neo4j para Python 
+de la fuente de turno, el grafo de joins. Mediante el lenguaje de consulta Cypher y el adaptador de Neo4j para Python 
 se extraen todos los nodos y relaciones y se crea un digrafo de NetworkX equivalente, que además conserva las 
-propiedades definidas para nodos y relaciones. Este digrafo es el grafo de join. Se le añaden arcos 
+propiedades definidas para nodos y relaciones. Este digrafo es el grafo de joins. Se le añaden arcos 
 adicionales siguiendo la teoría expuesta para el grafo de join en el capitulo \ref{chapter:proposal} en la 
 sección del generador de consultas, específicamente en el ac\'apite referido a la inferencia de joins. 
 Luego 
@@ -258,7 +258,7 @@ estructura gramatical del lenguaje est\'a representada por una clase, como se mu
     \label{fig:ast}
 \end{figure}
 
-La clase \textbf{Dimensional\_Schema} representa un modelo dimensional el cual est\'a formado por una lista de tablas 
+La clase \textbf{Dimensional\_Schema} representa un esquema dimensional en forma de estrella, el cual est\'a formado por una lista de tablas 
 dimensionales \textbf{Dimensional\_Table}. Las clases \textbf{Dimension} y \textbf{Fact} heredan de \textbf{Dimensional\_Table} 
 y representan a las dimensiones y a las tablas de hechos respectivamente. La clase \textbf{Attribute\_Expression} expresa 
 la definición de un atributo, ya sea simple o una expresión aritmética donde participen varios atributos y n\'umeros. 
@@ -268,8 +268,8 @@ la clase \textbf{Attribute}, en caso de tener alg\'un valor almacenado, es una t
 de \textbf{Attribute} es una llave for\'anea y en la primera posición de la tupla se almacena el nombre de la tabla referenciada y 
 en la segunda posición, el nombre del atributo referenciado.
 
-Una instancia de \textbf{Dimensional\_Model} contiene una lista de instancias de \textbf{Dimensional\_Table}, las que a su vez pueden ser de tipo 
-\textbf{Dimension} o \textbf{Fact}. Además, posee una lista de instancias de \textbf{Attribute\_Expression}, cada 
+Una instancia de \textbf{Dimensional\_Schema} contiene una lista de instancias de \textbf{Dimensional\_Table}, las que a su vez pueden ser de tipo 
+\textbf{Dimension} o \textbf{Fact}. Las instancias de \textbf{Dimension} o \textbf{Fact} poseen una lista de instancias de \textbf{Attribute\_Expression}, cada 
 una de ellas presenta 
 una lista llamada \textbf{elements} que puede contener uno o varios elementos; en caso de tener uno solo, el elemento 
 es una instancia de \textbf{Attribute}, \textbf{AggAttribute} o \textbf{AttributeFunction}. En caso de tener 
@@ -377,7 +377,7 @@ las siguientes verificaciones:
 \end{itemize}
 
 Las instancias de \textbf{VisitorGetSelects} se encargan de recorrer el AST y por cada tabla dimensión o tabla 
-de hechos recolectan los atributos que hay que seleccionar de la fuente de datos 
+de hechos recolectan las tablas y los atributos que hay que seleccionar de la fuente de datos 
 para poblar las tablas respectivas. A partir de esta información se confeccionan las consultas 
 que se realizan a los \'arboles de join para obtener el join necesario para el proceso de población.
 
@@ -390,7 +390,7 @@ en la jerarquía de la tabla con nombre \textbf{table\_name}.
 
 La clase \textbf{VisitorCodeGen} es una clase abstracta de la que heredar\'an todos los visitors que 
 se encarguen de generar código. Hereda de la clase \textbf{Visitor} y la extiende pues incorpora un 
-método para exportar las consultas generadas.
+método para exportar las consultas generadas, como se muestra en el ejemplo de c\'odigo \ref{code:vcodegen}.
 
 \begin{lstlisting}[label={code:vcodegen}, caption={Clase VisitorCodeGen}, language={python}]
     class VisitorCodeGen(Visitor):
@@ -441,7 +441,7 @@ en los scripts de Python \textbf{maximal\_join\_trees.py}, \textbf{join\_computa
 \textbf{all\_spanning\_trees.py}. 
 
 A modo de recordatorio, en el cap\'itulo de concepción y diseño se expuso que los \'arboles de expansión 
-de los grafos alcanzables originados desde nodos del grafo de join con indegree cero o pertenecientes 
+de los grafos alcanzables originados desde nodos del grafo de join con indegree cero, o pertenecientes 
 a una componente fuertemente conexa sin arcos incidentes exteriores, constituyen el conjunto de \'arboles 
 de join a partir de los cuales se realizar\'a la inferencia de joins.
 
@@ -471,7 +471,7 @@ un grafo de joins y devuelve una lista de \'arboles de join. Los \'arboles de jo
 NetworkX con las mismas propiedades definidas para los nodos y arcos que presenta el grafo de joins, 
 ilustradas en la figura \ref{fig:catalog-jgraph}.
 
-En la generación de los \'arboles de join \textbf{maximal\_join\_trees\_generator} se apoya en 
+Para la generación de los \'arboles de join, \textbf{maximal\_join\_trees\_generator} se apoya en 
 el m\'etodo \textbf{\_find\_reachable} para calcular el grafo alcanzable desde un nodo ra\'iz en el grafo 
 de joins y del m\'etodo \textbf{\_in\_edge\_from\_outside} para verificar si una componente fuertemente 
 conexa posee arcos incidentes desde el exterior. Las componentes fuertemente conexas son calculadas 
@@ -482,7 +482,7 @@ del ancestro com\'un m\'as bajo de un conjunto de nodos. Por \'ultimo,
 los árboles de join son almacenados en la ruta \textbf{data/join\_trees}.
 
 
-El script \textbf{join\_computation.py} alberga el m\'etodo \textbf{compute\_joins} el cual es la implementación 
+El script \textbf{join\_computation.py} alberga el m\'etodo \textbf{compute\_joins}, el cual es la implementación 
 en Python del algoritmo \textbf{get\_joins} cuyo pseudoc\'odigo fue expuesto en el capítulo \ref{chapter:proposal} 
 en el ejemplo de c\'odigo \ref{querytime}. El ejemplo de c\'odigo \ref{computejoins} muestra el c\'odigo del 
 m\'etodo \textbf{compute\_joins}.
@@ -492,7 +492,7 @@ m\'etodo \textbf{compute\_joins}.
         valid_join_trees = _get_answer_trees(join_trees, tables_list)
         all_joins = []
         for tree in valid_join_trees:
-            lca = _lower_common_ancestor(tree, tables_list)
+            lca = _lowest_common_ancestor(tree, tables_list)
             join = _get_join(tree, lca, tables_list)
             if join not in all_joins:
                 all_joins.append(join)
@@ -503,12 +503,12 @@ m\'etodo \textbf{compute\_joins}.
 Este algoritmo recibe la lista de \'arboles de joins generados y una 
 lista de tablas a concatenar y devuelve una lista de joins. La lista de tablas a concatenar es provista por el 
 visitor \textbf{VisitorGetSelects}. El m\'etodo \textbf{\_get\_answer\_trees} dado una lista de 
-\'arboles de join y una lista de tablas a concatenar devuelve los \'arboles que contienen todas las tablas de 
+\'arboles de join y una lista de tablas a concatenar devuelve los \'arboles de join que contienen todas las tablas de 
 la consulta, representada en la lista \textbf{tables\_list}, y por tanto pueden proporcionar interpretaciones 
-para la consulta. El m\'etodo \textbf{\_lower\_common\_acestor} calcula el ancestro com\'un m\'as bajo, LCA, para el 
-conjunto de tablas \textbf{tables\_list}. El m\'etodo \textbf{\_get\_join} construye el subárbol del grafo 
-de join \textbf{tree} que constituye una interpretaci\'on de la consulta para dicho \'arbol de join y lo 
-convierte en una lista que facilita el proceso de generación de c\'odigo del join computado. 
+para la consulta. El m\'etodo \textbf{\_lowest\_common\_acestor} calcula el ancestro com\'un m\'as bajo, LCA, para el 
+conjunto de tablas en \textbf{tables\_list}. El m\'etodo \textbf{\_get\_join} construye el subárbol del \'arbol 
+de join \textbf{tree}, que constituye una interpretaci\'on de la consulta para dicho \'arbol de join, y lo 
+convierte en una lista que representa una secuencia de joins para facilitar el proceso de generación del c\'odigo del join computado. 
 Los componentes de la lista que representa una secuencia de joins se alternan entre el nombre de las tablas 
 y una lista con tuplas que representan las condiciones del join entre las tablas. El ejemplo de c\'odigo \ref{joinlist}
 ilustra la estructura de la lista que representa una secuencia de joins.
@@ -518,11 +518,11 @@ ilustra la estructura de la lista que representa una secuencia de joins.
 \end{lstlisting}
 
 La lista del ejemplo de c\'odigo \ref{joinlist} representa el join entre las tablas \textbf{tabla1} y \textbf{tabla2} 
-bajo la condición \textbf{tabla1.atr1 = tabla2.atr2 and ...}. Por supuesto, la secuencia de joins 
+bajo la condición (\textbf{tabla1.atr1 = tabla2.atr2 and ...}). Por supuesto, la secuencia de joins 
 que representa una lista con esta estructura no est\'a limitada a un join entre solo dos tablas.
 
 N\'otese que como los \'arboles de join comparten las propiedades del grafo de joins, mediante un recorrido 
-DFS sobre el subárbol que representa una interpretaci\'on de una consulta sobre un \'arbol de join se puede 
+DFS sobre el subárbol que representa una interpretaci\'on de una consulta sobre un \'arbol de join determinado, se puede 
 obtener una lista con la estructura que se muestra en el ejemplo de c\'odigo \ref{joinlist}. 
 
 La figura \ref{fig:allpro} muestra como interactúan los componentes anteriormente explicados 
@@ -549,20 +549,20 @@ páginas dentro de una carpeta llamada \textbf{pages}.
 
 Esta es la página principal de la aplicación, cuya imagen se muestra en la figura \ref{fig:mainpage} como anexo. 
 En el script \textbf{Main\_Page.py} se definen 
-los componentes de la página, para lo cual el desarrollador deber\'a establecer la conexión con un servidor de 
+los componentes de la página. En Main Page el desarrollador deber\'a establecer la conexión con un servidor de 
 bases de datos fuente y escoger si desea realizar un proceso de recomputaci\'on de la conexión. El 
 proceso de recomputaci\'on consiste en crear una instancia de crawler para explorar la base de datos 
-fuente, crear la base de datos de Neo4j correspondiente al esquema de la fuente de datos en el Catálogo 
-de Datos, exportar el grafo de join y los \'arboles de join derivados. Como se expuso en el capítulo 
+fuente, crear la base de datos de Neo4j correspondiente al esquema de la fuente de datos en el catálogo 
+de datos y exportar el grafo de join y los \'arboles de join derivados. Como se expuso en el capítulo 
 \ref{chapter:proposal} este cómputo es costoso, por tanto solo est\'a pensado para realizarse la primera 
 vez que se descubre la base de datos fuente o cuando el esquema de la misma sufra cambios. En este \'ultimo caso, 
-el Catálogo de Datos, el grafo de join y los \'arboles de join serían inválidos y necesitan ser recalculados. 
+el catálogo de datos, el grafo de join y los \'arboles de join serían inválidos y necesitan ser recalculados. 
 Además, la página cuenta con un formulario para registrar nuevos servidores de bases de datos. La información 
 de los servidores es almacenada en la ruta \textbf{data/connections} en formato json.
 
 \subsubsection{Metadata}
 
-En esta página se muestran los metadatos recopilados por el Crawler, as\'i como las imágenes del 
+En esta página se muestran los metadatos recopilados por el crawler, as\'i como las imágenes del 
 grafo de join y los \'arboles de join derivados. El script de esta página es \textbf{Metadata.py} y 
 la imagen se muestra en la figura \ref{fig:meta} como anexo.
 
