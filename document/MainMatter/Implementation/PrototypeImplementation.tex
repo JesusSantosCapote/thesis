@@ -98,39 +98,60 @@ La implementación de esta clase se encuentra en el archivo \textbf{crawler.py} 
 campos de la clase se corresponden con la información necesaria para establecer una conexión con una base de 
 datos. 
 
-El método \textbf{explore\_db} se encarga de recopilar los metadatos mencionados en el capítulo \ref{chapter:proposal}
-y almacenarlos en el diccionario \textbf{\_db\_dict} el cual tiene como llaves los nombres de las tablas de la base 
+El método \textbf{explore\_db} se encarga de recopilar los metadatos de la fuente de datos con nombre \textbf{dbname}. 
+Los metadatos recopilados son, como ya se mencion\'o en el cap\'itulo de concepción y diseño, los nombres de las 
+tablas de la base de datos fuente, por cada tabla se obtienen sus
+atributos, por cada atributo su tipo y si son llaves primarias. Además, por cada tabla
+se obtienen los atributos que son llaves foráneas y, por cada una, se extrae el nombre
+de la tabla a la que referencian y el atributo referenciado. Los metadatos recopilados se almacenan en el diccionario 
+\textbf{\_db\_dict}, el cual tiene como llaves los nombres de las tablas de la base 
 de datos y como valores otros diccionarios que poseen dos llaves: \textbf{attributes} y \textbf{relations}. 
 El valor de \textbf{attributes} es una lista de tuplas de dos o tres elementos, una por cada atributo de la tabla. 
 Las tuplas de dos elementos almacenan el nombre del atributo y el tipo, las de tres almacenan además un indicador 
 que expresa si el atributo es llave primaria, for\'anea o ambas. El valor de \textbf{relations} es una lista de 
-tuplas de tres elementos, una por cada atributo llave for\'anea de la tabla. El primer elemento es el nombre 
+tuplas de tres elementos, una por cada atributo atributo que es una llave foránea de la tabla. El primer elemento es el nombre 
 de la llave for\'anea en la tabla, el segundo el nombre de la tabla referenciada y el tercero el atributo referenciado. 
+El ejemplo de c\'odigo \ref{dbdict} muestra la estructura del diccionario \textbf{\_db\_dict}. 
+
+\begin{lstlisting}[label={dbdict}, caption={Estructura del diccionario \textbf{\_db\_dict}}]
+_db_dict: {
+    'tabla_1' : {
+        attributes: [(atr_1, tipo, PK FK), ..., (atr_n, type)]
+        relations: [(atr_1, tabla_ref, atr_ref), ...]
+    }
+    .
+    .
+    .
+    'tabla_n': { ... }
+}
+\end{lstlisting}
+
 Además, el método \textbf{explore\_db} tiene la responsabilidad de llenar la cadena de texto \textbf{\_metadata\_str} 
-que almacena los metadatos recopilados en un formato m\'as expresivo para luego ser mostrado al usuario.
+que almacena los metadatos recopilados en un formato m\'as expresivo para luego ser mostrado al desarrollador.
 
-El método \textbf{export\_metadata\_to\_file} se encarga guardar \textbf{\_db\_dict} y \textbf{\_metadata\_str} en el disco, 
+El método \textbf{export\_metadata\_to\_file} se encarga de guardar \textbf{\_db\_dict} y \textbf{\_metadata\_str} en el disco, 
 en la ruta \textbf{data/schemas}. La carpeta \textbf{schemas} contiene una carpeta por cada base de datos, identificada 
-por el nombre de dicha base de datos, en la cual se almacena en formato json \textbf{\_db\_dict} y en formato txt 
-\textbf{\_metadata\_str}.
+por el nombre de la base de datos, en la cual se almacena \textbf{\_db\_dict} en formato json y 
+\textbf{\_metadata\_str} en formato txt.
 
-En esta primera entrega del prototipo solo se le di\'o implementación a un crawler para PostgreSQL. Su l\'ogica 
-se encuentra en el archivo \textbf{postgreSQL\_crawler.py}. Los metadatos son recopilados mediante consultas realizadas
-a la tabla \textbf{information\_schema} de base de datos fuente ejecutadas 
-utilizando el adaptador de PostgreSQL para python \textbf{psycopg2}.
+En esta primera entrega del prototipo solo se implement\'o a un crawler para PostgreSQL. Su l\'ogica 
+se encuentra en el archivo \textbf{postgreSQL\_crawler.py}. Los metadatos son recopilados mediante consultas 
+realizadas
+a la tabla \textbf{information\_schema} de la base de datos fuente, utilizando para la ejecución de las consultas 
+el adaptador de PostgreSQL para python \textbf{psycopg2}.
 
 
 
 
 \subsection{Catálogo de Datos}
 
-El Catálogo de Datos es un servidor de base de datos de Neo4j que contiene un grafo de base de datos por cada base de datos 
+El Catálogo de Datos es un servidor de bases de datos de Neo4j que contiene un grafo por cada base de datos 
 fuente que haya sido explorada por la aplicación. Cada vez que el Crawler explora una base de datos fuente nueva se crea 
 un grafo de base de datos de Neo4j para almacenar sus metadatos.
 
 La comunicación de la aplicación con el Catálogo de Datos es mediada por la clase \textbf{DataCatalogHandler} 
-presente en el script \textbf{handler.py} de la carpeta \textbf{data\_catalog}. A continuación se muestra parte 
-del código de dicha clase.
+presente en el script \textbf{handler.py} de la carpeta \textbf{data\_catalog}. En el ejemplo de c\'odigo 
+\ref{code:catalog} se muestra parte del código de dicha clase.
 
 \begin{lstlisting}[label={code:catalog}, caption={Clase DataCatalogHandler}, language={python}]
     class DataCatalogHandler():
@@ -153,9 +174,11 @@ del código de dicha clase.
 
 \end{lstlisting}
 
-El campo \textbf{db\_dict} es el diccionario de la base de datos confeccionado por el Crawler, \textbf{db\_name} es 
-nombre de la base de datos fuente, \textbf{join\_graph} almacena el grafo de join derivado y el resto de atributos 
-son los necesarios para establecer una conexión con una base de datos de Neo4j, en especial, el campo \textbf{\_uri} 
+El campo \textbf{db\_dict} hace referencia al diccionario de la base de datos confeccionado por el crawler, ver ejemplo de c\'odigo \ref{dbdict}, 
+\textbf{db\_name} almacena el  
+nombre de la base de datos fuente, \textbf{join\_graph} almacena una referencia en memoria del grafo de join construido 
+durante la ejecución de \textbf{export\_join\_graph}. El resto de atributos 
+son los necesarios para establecer una conexión con una base de datos de Neo4j; en especial, el campo \textbf{\_uri} 
 es una cadena de texto que contiene el protocolo de comunicación con el servidor de Neo4j, su ip y su puerto. 
 
 El método \textbf{create\_database} crea una base de datos de Neo4j en el Catálogo de Datos dedicada a la 
@@ -163,55 +186,69 @@ fuente de datos con nombre \textbf{db\_name} y con diccionario de metadatos \tex
 
 El método \textbf{populate\_graph\_database} se encarga de poblar la base de datos de Neo4j con los metadatos
 recopilados. Se crea 
-un nodo por cada llave (tabla) 
-en \textbf{db\_dict} con las propiedades \textbf{name} que almacena el nombre de la tabla, \textbf{pks} que es una 
-lista con los nombres de los atributos que son llaves primarias y por \'ultimo \textbf{attributes} que 
-es la lista tuplas correspondiente a la llave attributes del diccionario que contiene \textbf{db\_dict} 
-indexado en el nombre de la tabla en cuestión. Además, se crea una relación direccionada por cada por cada llave for\'anea 
-presente en la lista correspondiente a la llave relations del diccionario que contiene \textbf{db\_dict} 
-indexado en el nombre de la tabla en cuestión. La dirección de la relación la dictamina la dirección de la llave 
-for\'anea, tal y como se expuso en el capitulo \ref{chapter:proposal}.
+un nodo por cada llave 
+de \textbf{db\_dict} con las propiedades \textbf{name} que almacena el nombre de la tabla, \textbf{pks} que es una 
+lista con los nombres de los atributos que son llaves primarias y, por \'ultimo, \textbf{attributes} que 
+es la lista de tuplas correspondiente a la llave attributes del diccionario que devuelve \textbf{db\_dict} como valor
+al ser indexado  en el nombre de la tabla en cuestión (\textbf{db\_dict[table\_name]}). Además, se crea una relación direccionada por cada llave for\'anea 
+presente en la lista correspondiente a la llave relations del diccionario que devuelve \textbf{db\_dict} 
+como valor al ser indexado en el nombre de la tabla en cuestión. La dirección de la relación lo dictamina 
+el sentido de la referencia de la llave 
+for\'anea, tal y como se expuso en el capitulo \ref{chapter:proposal} en la sección referente al catálogo de 
+datos.
 
 El método \textbf{export\_join\_graph} es el encargado de construir, a partir de la base de datos Neo4j del esquema 
-de la fuente de turno, el grafo de join. Mediante el lenguaje de consulta Cypher y el adaptador de Neo4j para python 
+de la fuente de turno, el grafo de join. Mediante el lenguaje de consulta Cypher y el adaptador de Neo4j para Python 
 se extraen todos los nodos y relaciones y se crea un digrafo de NetworkX equivalente, que además conserva las 
-propiedades definidas para nodos y relaciones, este digrafo es el grafo de join. Se le añaden además arcos 
-adicionales siguiendo la teoría expuesta para el grafo de join en el capitulo \ref{chapter:proposal}. Luego 
+propiedades definidas para nodos y relaciones. Este digrafo es el grafo de join. Se le añaden arcos 
+adicionales siguiendo la teoría expuesta para el grafo de join en el capitulo \ref{chapter:proposal} en la 
+sección del generador de consultas, específicamente en el ac\'apite referido a la inferencia de joins. 
+Luego 
 de creado el grafo de join se almacena en la ruta \textbf{data/join\_graphs} con el nombre de la base de datos fuente 
-que representa.
+a que corresponde. La figura \ref{fig:schema-catalog} y la figura \ref{fig:catalog-jgraph} muestran, seg\'un lo 
+explicado con anterioridad, la 
+transici\'on de un esquema de bases de datos a un grafo del cat\'alogo de datos y la 
+transición de un grafo del cat\'alogo de datos a un grafo de joins respectivamente. 
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Graphics/schema-catalog.drawio.png}
+    \caption{Transición del esquema de bases de datos al cat\'alogo de datos}
+    \label{fig:schema-catalog}
+\end{figure}
+
+La propiedad \textbf{attributes} en un nodo de un grafo del catálogo es una lista aplanada de los metadatos 
+pues Neo4j no admite estructuras complejas 
+como las listas de tuplas. Las siglas \textbf{CNE} significan \emph{constraint not specified} 
+e indica que el atributo cuyo nombre se encuentra dos posiciones antes no es llave primaria o 
+llave for\'anea. Cuando se construye el grafo de joins a partir del grafo del catálogo se retoma 
+la estructura de lista de tuplas para la propiedad \textbf{attributes} como muestra la figura 
+\ref{fig:catalog-jgraph}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Graphics/catalog-jgraph.drawio.png}
+    \caption{Transición del catálogo de datos al grafo de joins}
+    \label{fig:catalog-jgraph}
+\end{figure}
 
 \subsection{Generador de Consultas}
 
-El generador de consultas est\'a compuesto por la lógica para el tratamiento de los scripts del lenguaje de 
-dominio específico y generación de consultas, y por la lógica del computo relacionado a los \'arboles de join. 
-Esta \'ultima se encuentra en los scripts \textbf{maximal\_join\_trees.py}, \textbf{join\_computation.py} y 
-\textbf{all\_spanning\_trees.py}. En el primero yace, con el nombre de \textbf{maximal\_join\_trees\_generator}, 
-la implementación en python del pseudoc\'odigo propuesto para la generación de los \'arboles de join en el 
-capítulo \ref{chapter:proposal}. Luego de generados los árboles de join son almacenados en la ruta 
-\textbf{data/join\_trees}.
+La implementación concebida para el generador de consultas est\'a compuesta por las implementaciones para el tratamiento de los scripts del lenguaje de 
+dominio específico y generación de consultas, y por las implementaciones referentes a la construcci\'on 
+y consulta de los \'arboles de join para la inferencia de joins.
 
-Por simplicidad, se utiliza para la obtención de los \'arboles en expansión de los grafos alcanzables el algoritmo 
-provisto por NetworkX para este fin. Los \'arboles de join son digrafos de NetworkX. Además, se les añade las propiedades 
-\textbf{root} que identifica a la raíz del \'arbol y a cada nodo se le añade la propiedad \textbf{height} que almacena 
-la altura del nodo con respecto a la raíz del \'arbol.
 
-En script \textbf{all\_spanning\_trees.py} yacen los algoritmo para la obtención de los \'arboles de expansión 
-de un grafo alcanzable. En esta primera entrega solo se le di\'o implementación a una variante que se apoya de la 
-clase ArborescenceIterator de NetworkX la cual constituye un iterador de los \'arboles de expansión de un digrafo 
-pasado como argumento.
-
-El script \textbf{join\_computation.py} alberga el algoritmo \textbf{compute\_joins} el cual es la implementación 
-en python del algoritmo \textbf{get\_joins} cuyo pseudoc\'odigo fue expuesto en el capítulo \ref{chapter:proposal}. 
-Este algoritmo recibe la lista de \'arboles de joins y una lista de tablas a unir y devuelve una lista de joins.
 
 \subsubsection{Lenguaje de Dominio Espec\'ifico}
 
-La lógica del DSL se encuentra en la ruta \textbf{query\_generator/dsl}. La biblioteca 
+La lógica del DSL se encuentra en la ruta \textbf{query\_generator/dsl}. El uso de la biblioteca 
 PLY demanda la creación de dos scripts, uno donde se especifiquen los terminales de la gramática y las reglas 
-para el análisis léxico, y otro donde se especifiquen las producciones de la gramática mediante funciones. Estos 
+para el análisis léxico y, otro, donde se especifiquen las producciones de la gramática mediante funciones. Estos 
 scripts son \textbf{lexer.py} y \textbf{parser\_rules.py} respectivamente. En el script \textbf{ast\_nodes.py} se define  
-la jerarquía de clases de los nodos del \'arbol de sintaxis abstracta (AST) del lenguaje de dominio específico. Cada 
+la jerarquía de clases de los nodos del \'arbol de sintaxis abstracta (AST) del lenguaje de dominio específico expuesto 
+en el capítulo \ref{chapter:proposal} y cuya gramática libre del contexto puede encontrarse en el ejemplo de 
+c\'odigo \ref{code:CFG}. Cada 
 estructura gramatical del lenguaje est\'a representada por una clase, como se muestra en la figura \ref{fig:ast}.
 
 \begin{figure}[htb]
@@ -221,23 +258,23 @@ estructura gramatical del lenguaje est\'a representada por una clase, como se mu
     \label{fig:ast}
 \end{figure}
 
-La clase \textbf{Dimensional\_Model} representa un modelo dimensional el cual est\'a formado por una lista de tablas 
+La clase \textbf{Dimensional\_Schema} representa un modelo dimensional el cual est\'a formado por una lista de tablas 
 dimensionales \textbf{Dimensional\_Table}. Las clases \textbf{Dimension} y \textbf{Fact} heredan de \textbf{Dimensional\_Table} 
-y representan a las dimensiones y a las tablas de hecho respectivamente. La clase \textbf{Attribute\_Expression} expresa 
+y representan a las dimensiones y a las tablas de hechos respectivamente. La clase \textbf{Attribute\_Expression} expresa 
 la definición de un atributo, ya sea simple o una expresión aritmética donde participen varios atributos y n\'umeros. 
 Las clases \textbf{Attribute}, \textbf{AggAttribute} y \textbf{AttributeFunction} representan atributos simples, atributos 
 agregados y atributos resultado de la aplicación de alguna función respectivamente. El campo \textbf{foreign\_key} de 
-la clase \textbf{Attribute}, en caso de tener alg\'un valor almacenado, es una tupla que indica que la la instancia 
-de \textbf{Attribute} es una llave for\'anea y en la primera posición almacena el nombre de la tabla referenciada y 
-en la segunda posición el nombre del atributo referenciado.
+la clase \textbf{Attribute}, en caso de tener alg\'un valor almacenado, es una tupla que indica que la instancia 
+de \textbf{Attribute} es una llave for\'anea y en la primera posición de la tupla se almacena el nombre de la tabla referenciada y 
+en la segunda posición, el nombre del atributo referenciado.
 
-Una instancia de \textbf{Dimensional\_Model} contiene una lista de instancias de \textbf{Dimensional\_Table}, que a su vez pueden ser de tipo 
+Una instancia de \textbf{Dimensional\_Model} contiene una lista de instancias de \textbf{Dimensional\_Table}, las que a su vez pueden ser de tipo 
 \textbf{Dimension} o \textbf{Fact}. Además, posee una lista de instancias de \textbf{Attribute\_Expression}, cada 
 una de ellas presenta 
-una lista llamada \textbf{elements} que puede contener uno o varios elementos, en caso de tener solo un elemento 
-este es una instancia de \textbf{Attribute}, \textbf{AggAttribute} o \textbf{AttributeFunction}; en caso de tener 
-m\'as de un elemento, es decir, la instancia de \textbf{Attribute\_Expression} representa un atributo compuesto entonces 
-elements contiene tanto las instancias de \textbf{Attribute}, \textbf{AggAttribute} o \textbf{AttributeFunction} como 
+una lista llamada \textbf{elements} que puede contener uno o varios elementos; en caso de tener uno solo, el elemento 
+es una instancia de \textbf{Attribute}, \textbf{AggAttribute} o \textbf{AttributeFunction}. En caso de tener 
+m\'as de un elemento, es decir, la instancia de \textbf{Attribute\_Expression} representa un atributo compuesto, entonces 
+\textbf{elements} contiene tanto las instancias de \textbf{Attribute}, \textbf{AggAttribute} o \textbf{AttributeFunction} como 
 los signos de agrupación y operadores que participan en la definición del atributo.
 
 Los scripts del DSL son tokenizados con la instancia de lexer declarada en \textbf{lexer.py}. La lista de tokens 
@@ -247,13 +284,15 @@ del análisis sintáctico del parser es el \'arbol de sintaxis abstracta del scr
 
 \subsubsection{Generaci\'on de c\'odigo}
 
-Luego de tener construido el AST del script se pasa a realizar un análisis sobre esta estructura con 
+Luego de tener construido el árbol de sintaxis abstracta, AST, del script específico se pasa a realizar un análisis sobre 
+esta estructura con 
 el objetivo de detectar errores semánticos en el código del script. Si no se encuentran errores, 
 a partir del AST se comienza a generar el código de las consultas de creación y selección.
 
 Siguiendo las mejores prácticas de la industria, todos los análisis sobre el AST se realizan 
 utilizando el patrón visitor\cite{buttner2004digging}. Cada nodo del AST implementa la clase abstracta 
-\textbf{Visitable} presente en \textbf{visitable.py}. 
+\textbf{Visitable} presente en \textbf{visitable.py}. El ejemplo de c\'odigo \ref{code:visitable} 
+muestra el c\'odigo de la clase \textbf{Visitable}.
 
 \begin{lstlisting}[label={code:visitable}, caption={Clase abstracta Visitable}, language={python}]
     import abc
@@ -264,8 +303,8 @@ utilizando el patrón visitor\cite{buttner2004digging}. Cada nodo del AST implem
             pass
 \end{lstlisting}
 
-Por tanto todo nodo del AST posee un método \textbf{accept} que recibe un visitor específico. La implementación 
-puntual de \textbf{accept} para cada tipo de nodo del AST es llamar al método \textbf{visit}, del visitor pasado como argumento, 
+Por tanto, todo nodo del AST posee un método \textbf{accept} que recibe un visitor específico. La implementación 
+puntual de \textbf{accept} para cada tipo de nodo del AST consiste en llamar al método \textbf{visit}, del visitor pasado como argumento, 
 que le corresponde a su tipo. Los visitors implementados pueden encontrarse en el script \textbf{visitors.py} y la 
 figura \ref{fig:visitors} muestra la jerarquía de clases de los visitors implementados.
 
@@ -278,12 +317,12 @@ figura \ref{fig:visitors} muestra la jerarquía de clases de los visitors implem
 
 La clase \textbf{Visitor} es la raíz de la jerarquía. Es una clase abstracta en la que se definen los métodos 
 \textbf{visit} que deben tener todas las clases herederas. En particular, hay un \textbf{visit} por cada tipo de 
-nodo del AST. 
+nodo del AST, lo que se detalla en el ejemplo de c\'odigo \ref{code:visitors}
 
 \begin{lstlisting}[label={code:visitors}, caption={Clase Visitor}, language={python}]
     class Visitor(metaclass = abc.ABCMeta):
         @abc.abstractmethod
-        def visit_dimensional_model(self, dimensional_model): pass 
+        def visit_dimensional_schema(self, dimensional_model): pass 
 
         @abc.abstractmethod
         def visit_attribute(self, attribute): pass
@@ -313,22 +352,22 @@ chequeos:
     \item Verifican que no existan llaves for\'aneas declaradas en atributos compuestos.
     \item Verifican que tanto los atributos referenciados como las tablas referenciadas est\'en definidos en el 
         script.
-    \item Revisan si las tablas y atributos fuente utilizados en el script existen en la base de datos fuente.
+    \item Revisan si las tablas y los atributos fuente utilizados en el script existen en la base de datos fuente.
     \item Verifican el correcto uso de la palabra reservada \textbf{self}.
 \end{itemize}
 
 Las instancias de \textbf{VisitorNamingCheck} se encargan de recorrer el AST y verificar que: 
 
 \begin{itemize}
-    \item En las dimensiones o tablas de hecho no existan dos atributos definidos con el mismo nombre.
-    \item Que no existan dos tablas del esquema estrella con el mismo nombre.
+    \item En las dimensiones o tablas de hechos no existan dos atributos definidos con el mismo nombre.
+    \item No existan dos tablas del esquema estrella con el mismo nombre.
     \item Los atributos compuestos definidos tengan asignados un alias para su correcta identificación.
 \end{itemize}
 
 Las instancias de \textbf{VisitorGetTypes} son las responsables de verificar el buen uso de los tipos en el 
 código del DSL además de recolectar el tipo de cada atributo declarado en cada dimensión y 
-tabla de hechos, 
-información necesaria para el proceso de generación de código. En particular realizan 
+en la tabla de hechos, 
+información necesaria para el proceso de generación de código. En particular, realizan 
 las siguientes verificaciones: 
 
 \begin{itemize}
@@ -337,9 +376,9 @@ las siguientes verificaciones:
         coincidan en tipo.
 \end{itemize}
 
-Las instancias de \textbf{VisitorGetSelects} se encargan de recorrer el AST y por cada dimensión o tabla 
+Las instancias de \textbf{VisitorGetSelects} se encargan de recorrer el AST y por cada tabla dimensión o tabla 
 de hechos recolectan los atributos que hay que seleccionar de la fuente de datos 
-para poblar dicha dimensión o tabla de hechos y las tablas que los contienen. A partir de esta información se confeccionan las consultas 
+para poblar las tablas respectivas. A partir de esta información se confeccionan las consultas 
 que se realizan a los \'arboles de join para obtener el join necesario para el proceso de población.
 
 Las instancias de \textbf{VisitorGetLevel} son las encargadas de recopilar los niveles de cada uno de los 
@@ -387,55 +426,161 @@ Las instancias de la clase \textbf{VisitorPostgreSQLCreate} son las encargadas d
 consultas de creación de las tablas del esquema estrella para el sistema gestor PostgreSQL. En la 
 declaración de los atributos 
 dentro de la consulta se utiliza la información recolectada por \textbf{VisitorGetTypes} para 
-especificar los tipos de los atributos que se van a crear. Pero las instancias de \textbf{VisitorGetTypes} 
-recolectan los tipos que maneja el DSL, por tanto cada instancia de \textbf{VisitorPostgreSQLCreate} 
+especificar los tipos de los atributos que se crear\'an. Pero las instancias de \textbf{VisitorGetTypes} 
+recolectan los tipos que maneja el DSL, por tanto, cada instancia de \textbf{VisitorPostgreSQLCreate} 
 tiene un diccionario que mapea los tipos del DSL a los tipos de PostgreSQL.
 
 Las instancias de la clase \textbf{VisitorPostgreSQLSelect} generan las consultas de selección para 
-el sistema gestor PostgreSQL. Reciben los joins seleccionados por el usuario para cada tabla del esquema 
+el sistema gestor PostgreSQL. Reciben los joins seleccionados por el desarrollador para cada tabla del esquema 
 estrella y conforman las consultas de selección.
+
+\subsubsection{Inferencia de joins}
+
+La implemetaci\'on de la l\'ogica para la inferencia de joins se encuentra repartida 
+en los scripts de Python \textbf{maximal\_join\_trees.py}, \textbf{join\_computation.py} y 
+\textbf{all\_spanning\_trees.py}. 
+
+A modo de recordatorio, en el cap\'itulo de concepción y diseño se expuso que los \'arboles de expansión 
+de los grafos alcanzables originados desde nodos del grafo de join con indegree cero o pertenecientes 
+a una componente fuertemente conexa sin arcos incidentes exteriores, constituyen el conjunto de \'arboles 
+de join a partir de los cuales se realizar\'a la inferencia de joins.
+
+En script \textbf{all\_spanning\_trees.py} yacen los algoritmos para la obtención de los \'arboles de expansión 
+de un grafo alcanzable, como se muestra en el ejemplo de c\'odigo \ref{code:stgen}.
+
+\begin{lstlisting}[label={code:stgen}, caption={Algoritmo para la generación de \'arboles de expansión}, language={python}]
+    def networkX_all_spanning_trees(graph:DiGraph) -> list[DiGraph]:
+        result = []
+        for tree in ArborescenceIterator(graph):
+            result.append(tree)
+
+        return result
+\end{lstlisting}
+
+En esta primera entrega solo se implement\'o una variante que se apoya en la 
+clase ArborescenceIterator de NetworkX, la cual constituye un iterador de los \'arboles de expansión de un digrafo 
+pasado como argumento.
+
+
+En el script \textbf{maximal\_join\_trees.py} yace
+la implementación en Python del pseudoc\'odigo propuesto para la fase de precomputaci\'on, en el 
+capítulo \ref{chapter:proposal} en la sección del generador de consultas, específicamente en el ac\'apite referido 
+a la inferencia de joins, ver ejemplo de c\'odigo \ref{precom}. El m\'etodo \textbf{maximal\_join\_trees\_generator} 
+constituye la implementación del pseudoc\'odigo de la fase de precomputaci\'on y toma como argumentos 
+un grafo de joins y devuelve una lista de \'arboles de join. Los \'arboles de join también son digrafos de 
+NetworkX con las mismas propiedades definidas para los nodos y arcos que presenta el grafo de joins, 
+ilustradas en la figura \ref{fig:catalog-jgraph}.
+
+En la generación de los \'arboles de join \textbf{maximal\_join\_trees\_generator} se apoya en 
+el m\'etodo \textbf{\_find\_reachable} para calcular el grafo alcanzable desde un nodo ra\'iz en el grafo 
+de joins y del m\'etodo \textbf{\_in\_edge\_from\_outside} para verificar si una componente fuertemente 
+conexa posee arcos incidentes desde el exterior. Las componentes fuertemente conexas son calculadas 
+utilizando el m\'etodo \textbf{strongly\_connected\_components} de la biblioteca NetworkX. A los nodos 
+de los \'arboles generados se les añade, mediante el método \textbf{\_set\_height}, la propiedad \textbf{height} que almacena 
+la altura del nodo con respecto a la raíz del \'arbol, con el objetivo de facilitar el c\'omputo 
+del ancestro com\'un m\'as bajo de un conjunto de nodos. Por \'ultimo, 
+los árboles de join son almacenados en la ruta \textbf{data/join\_trees}.
+
+
+El script \textbf{join\_computation.py} alberga el m\'etodo \textbf{compute\_joins} el cual es la implementación 
+en Python del algoritmo \textbf{get\_joins} cuyo pseudoc\'odigo fue expuesto en el capítulo \ref{chapter:proposal} 
+en el ejemplo de c\'odigo \ref{querytime}. El ejemplo de c\'odigo \ref{computejoins} muestra el c\'odigo del 
+m\'etodo \textbf{compute\_joins}.
+
+\begin{lstlisting}[label={computejoins}, caption={C\'odigo del m\'etodo \textbf{compute\_joins}}, language={python}]
+    def compute_joins(join_trees: list[DiGraph], tables_list) -> str:
+        valid_join_trees = _get_answer_trees(join_trees, tables_list)
+        all_joins = []
+        for tree in valid_join_trees:
+            lca = _lower_common_ancestor(tree, tables_list)
+            join = _get_join(tree, lca, tables_list)
+            if join not in all_joins:
+                all_joins.append(join)
+
+        return all_joins
+\end{lstlisting}
+
+Este algoritmo recibe la lista de \'arboles de joins generados y una 
+lista de tablas a concatenar y devuelve una lista de joins. La lista de tablas a concatenar es provista por el 
+visitor \textbf{VisitorGetSelects}. El m\'etodo \textbf{\_get\_answer\_trees} dado una lista de 
+\'arboles de join y una lista de tablas a concatenar devuelve los \'arboles que contienen todas las tablas de 
+la consulta, representada en la lista \textbf{tables\_list}, y por tanto pueden proporcionar interpretaciones 
+para la consulta. El m\'etodo \textbf{\_lower\_common\_acestor} calcula el ancestro com\'un m\'as bajo, LCA, para el 
+conjunto de tablas \textbf{tables\_list}. El m\'etodo \textbf{\_get\_join} construye el subárbol del grafo 
+de join \textbf{tree} que constituye una interpretaci\'on de la consulta para dicho \'arbol de join y lo 
+convierte en una lista que facilita el proceso de generación de c\'odigo del join computado. 
+Los componentes de la lista que representa una secuencia de joins se alternan entre el nombre de las tablas 
+y una lista con tuplas que representan las condiciones del join entre las tablas. El ejemplo de c\'odigo \ref{joinlist}
+ilustra la estructura de la lista que representa una secuencia de joins.
+
+\begin{lstlisting}[label={joinlist}, caption={Estructura de una lista que representa una secuencia de joins}, language=python]
+    ['tabla1', [('tabla1.atr1', 'tabla2.atr2'), ...], 'tabla2', ...]
+\end{lstlisting}
+
+La lista del ejemplo de c\'odigo \ref{joinlist} representa el join entre las tablas \textbf{tabla1} y \textbf{tabla2} 
+bajo la condición \textbf{tabla1.atr1 = tabla2.atr2 and ...}. Por supuesto, la secuencia de joins 
+que representa una lista con esta estructura no est\'a limitada a un join entre solo dos tablas.
+
+N\'otese que como los \'arboles de join comparten las propiedades del grafo de joins, mediante un recorrido 
+DFS sobre el subárbol que representa una interpretaci\'on de una consulta sobre un \'arbol de join se puede 
+obtener una lista con la estructura que se muestra en el ejemplo de c\'odigo \ref{joinlist}. 
+
+La figura \ref{fig:allpro} muestra como interactúan los componentes anteriormente explicados 
+para obtener, a partir de la definición de un escenario anal\'itico, las consultas de creación y las consultas de  
+selección.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Graphics/all_procces.drawio.png}
+    \caption{Proceso de generación de consultas desde el inicio.}
+    \label{fig:allpro}
+\end{figure}
 
 \subsection{Interfaz de Usuario}
 
-Para la implementación de la interfaz de usuario se utilizó la biblioteca Streamlit de python. Esta biblioteca 
-permite la implementación de aplicaciones web mediante la definición de scripts de python en donde se 
+Para la implementación de la interfaz de usuario se utilizó la biblioteca Streamlit de Python. Esta biblioteca 
+permite la implementación de aplicaciones web mediante la definición de scripts de Python donde se 
 definan los componentes de las páginas de la aplicación mediante la API de Streamlit. Además, proporciona un 
 servidor para alojar la aplicación e interactuar con ella. La interfaz de usuario de la aplicación cuenta 
-con cuatro páginas. En las secciones siguientes se explicar\'a el contenido y responsabilidad de cada página. 
-La página principal se define en el directorio raíz de la aplicación y el resto de las páginas dentro 
-de una carpeta llamada \textbf{pages}.
+con cuatro páginas. La página principal se define en el directorio raíz de la aplicación y el resto de las 
+páginas dentro de una carpeta llamada \textbf{pages}. 
 
 \subsubsection{Main Page}
 
-Esta es la página principal de la aplicación. El script \textbf{Main\_Page.py} le da definición 
-a los componentes de la página. Aquí el usuario deber\'a establecer conexión con un servidor de 
-base de datos fuente y escoger si desea realizar un proceso de recomputaci\'on de la conexión. El 
+Esta es la página principal de la aplicación, cuya imagen se muestra en la figura \ref{fig:mainpage} como anexo. 
+En el script \textbf{Main\_Page.py} se definen 
+los componentes de la página, para lo cual el desarrollador deber\'a establecer la conexión con un servidor de 
+bases de datos fuente y escoger si desea realizar un proceso de recomputaci\'on de la conexión. El 
 proceso de recomputaci\'on consiste en crear una instancia de crawler para explorar la base de datos 
 fuente, crear la base de datos de Neo4j correspondiente al esquema de la fuente de datos en el Catálogo 
 de Datos, exportar el grafo de join y los \'arboles de join derivados. Como se expuso en el capítulo 
 \ref{chapter:proposal} este cómputo es costoso, por tanto solo est\'a pensado para realizarse la primera 
-vez que se descubre la base de datos fuente o cuando el esquema de la misma sufra cambios y por tanto 
-el Catálogo de Datos, el grafo de join y los \'arboles de join son inválidos y necesitan ser recalculados. 
-Además, la pagina cuenta con un formulario para registrar nuevos servidores de base de datos. La información 
-de los servidores el almacenada en la ruta \textbf{data/connections} en formato json.
+vez que se descubre la base de datos fuente o cuando el esquema de la misma sufra cambios. En este \'ultimo caso, 
+el Catálogo de Datos, el grafo de join y los \'arboles de join serían inválidos y necesitan ser recalculados. 
+Además, la página cuenta con un formulario para registrar nuevos servidores de bases de datos. La información 
+de los servidores es almacenada en la ruta \textbf{data/connections} en formato json.
 
 \subsubsection{Metadata}
 
-En esta página se muestran los metadatos recopilados por el Crawler e imágenes del 
-grafo de join y los \'arboles de join derivados. El script de esta página es \textbf{Metadata.py}.
+En esta página se muestran los metadatos recopilados por el Crawler, as\'i como las imágenes del 
+grafo de join y los \'arboles de join derivados. El script de esta página es \textbf{Metadata.py} y 
+la imagen se muestra en la figura \ref{fig:meta} como anexo.
 
 \subsubsection{Query Generator}
 
-En esta página se mostraran las consultas generadas. Primero se selecciona un script del DSL que 
+En esta página se muestran las consultas generadas. Como anexos se incluyen la imagen de la página 
+Query Generator en la figura \ref{fig:generator}, así como fragmentos de consultas generadas en 
+la figura \ref{fig:qfragment}.
+Primero se selecciona un script del DSL que 
 define un esquema estrella a poblar. Luego se debe escoger, por cada tabla del esquema estrella, el 
 join que mejor se ajuste para la extracción de los valores. La selección se realiza a través 
-de componentes en la interfaz de usuario. Una vez seleccionado los joins aparecer\'a un bot\'on 
-para comenzar el proceso de generación de consultas y al tocarlo se mostraran las consultas 
+de componentes en la interfaz de usuario. Una vez seleccionados los joins, aparecer\'a un bot\'on 
+para comenzar el proceso de generación de las consultas  
 de creación y de selección para cada tabla del esquema estrella, as\'i como la consulta 
 para crear y poblar la tabla de metadatos \textbf{level\_metadata}. Las consultas generadas 
-son almacenadas en la ruta \textbf{data/querys} haciendo posible su recuperación y descarga por parte del usuario. 
-Todo el proceso de generación y análisis del script del DSL es mediado por la clase \textbf{Orchestrator} 
-presente en \textbf{orchestrator.py}. 
+son almacenadas en la ruta \textbf{data/querys}, lo que posibilita su recuperación y descarga por parte del desarrollador. 
+Todo el proceso de generación y análisis del script del DSL es mediado por la clase \textbf{Orchestrator}, 
+presente en \textbf{orchestrator.py}, como se muestra en el ejemplo de c\'odigo \ref{code:orchestrator}.
 
 \begin{lstlisting}[label={code:orchestrator}, caption={Clase Orchestrator}, language={python}]
     class Orchestrator:
@@ -454,31 +599,33 @@ presente en \textbf{orchestrator.py}.
 
 Los campos de la clase son \textbf{dbname} que es el nombre de la base de datos fuente, 
 \textbf{dwname} que es el nombre del almacén de datos de destino, \textbf{source\_sgbd} y 
-\textbf{target\_sgbd} son los sistemas gestores de bases de datos de la fuente de datos y 
-del almacén de datos de destino, y \textbf{script} es una cadena de texto con el código 
+\textbf{target\_sgbd} que son respectivamente los sistemas gestores de bases de datos de la fuente de datos y 
+del almacén de datos de destino, y \textbf{script} que es una cadena de texto con el código 
 de definición del esquema estrella a poblar.
 
 El método \textbf{parse\_code} se encarga de tomar el código en \textbf{script}, parsearlo 
-con la instancia de parser de \textbf{PLY} y as\'i obtener el AST del código de \textbf{script}. 
-Luego dicho AST se somete a los recorridos de todos los visitors explicados anteriormente. Si dichos 
-recorridos encuentran anomalías en el código estas son escritas en el archivo \textbf{dsl\_log.log} 
-para luego mostrarlas al usuario. Si no se detectan anomalías entonces se pasa a computar los joins. 
+con la instancia de parser de \textbf{PLY} para obtener el árbol de sintaxis abstracta AST correspondiente. 
+Luego dicho AST se somete a los recorridos de todos los visitors requeridos para la detección de errores semánticos. Si se 
+encuentran anomalías en el código, se añaden los mensajes respectivos al archivo \textbf{dsl\_log.log} 
+que se mostrarán al desarrollador convenientemente. Si no se detectan anomalías, entonces se pasa a computar los joins. 
 
 El método \textbf{compute\_joins} recupera los \'arboles de joins almacenados para la base de datos 
-fuente en cuestión. Luego con la información recopilada por la instancia de visitor \textbf{VisitorGetSelect}, 
-por cada tabla del esquema estrella se computan un conjunto de posibles joins para conformar la consulta 
-de selección, utilizando el algoritmo propuesto en el capitulo \ref{chapter:proposal} para la fase 
-de consulta a los \'arboles de join. Luego de este proceso, el usuario mediante la interfaz debe seleccionar 
+fuente en cuestión. A partir de la información recopilada por la instancia de visitor \textbf{VisitorGetSelect}, 
+por cada tabla del esquema estrella se computa un conjunto de posibles joins para conformar la consulta 
+de selección, utilizando el algoritmo de inferencia de joins expuesto en el ejemplo de código \ref{querytime}. 
+Despu\'es de este proceso, el desarrollador debe seleccionar 
 los joins de su conveniencia para la conformación de las consultas de selección. 
 
-El método \textbf{generate\_querys} se encarga de tomar los joins seleccionados por el usuario para 
-cada tabla del esquema estrella y conformar las consultas de creación y de selección. El visitor 
-correspondiente para la generación de ambas consultas se selecciona utilizando los campos 
-\textbf{source\_sgbd} y \textbf{target\_sgbd}. Las consultas generadas son mostradas en la interfaz y es 
-posible su descarga para que el usuario disponga de ellas para construir manualmente un pipeline válido. 
+Por \'ultimo, el método \textbf{generate\_querys} se encarga de tomar los joins, seleccionados por el desarrollador para 
+cada tabla del esquema estrella, y conformar las consultas de creación y de selección. Los visitors 
+correspondiente para la generación de ambas consultas se seleccionan utilizando los campos 
+\textbf{source\_sgbd} y \textbf{target\_sgbd}. Las consultas generadas son mostradas en la interfaz y pueden ser descargadas 
+por el desarrollador para construir manualmente un pipeline válido. 
 Las consultas son descargadas en archivos separados con extensión .sql.
 
 \subsubsection{Logs}
 
-Finalmente, en esta página se muestran los errores en la escritura del script de definición del esquema
-estrella encontrados por los visitors e información respecto a la ejecución de la aplicación.
+En esta página se muestran los errores en la definición del esquema
+estrella encontrados por los visitors, así como información de interés
+respecto a la ejecución de la aplicación. En la figura \ref{fig:logs} se muestra una imagen de la 
+página como anexo.

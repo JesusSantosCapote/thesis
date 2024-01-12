@@ -1,39 +1,40 @@
 \section{Experimentación} \label{section:Experimentation}
 
-Con el objetivo de comprobar la viabilidad y funcionamiento del prototipo implementado se propone la evaluación 
-de su comportamiento ante dos escenarios de prueba. Los experimentos se dividen en fases. La primera fase verifica 
-la correctitud del proceso de exploración efectuado por el Crawler y creación de la base de datos de Neo4j en el  
+Con el objetivo de comprobar la validez de la solución concebida y el diseño detallado, así como 
+la viabilidad y funcionamiento del prototipo implementado, se propone la evaluación 
+de su comportamiento ante dos escenarios de prueba: escenario de ventas minoristas y escenario TPCH. En aras de 
+la claridad, la exposición de cada experimento se ha dividido en cuatro fases. La primera fase verifica 
+la correctitud del proceso de exploración efectuado por el Crawler y la creación de la base de datos de Neo4j en el  
 Catálogo de Datos para la fuente de datos de turno. La segunda fase consiste en la creación 
-del grafo de join y \'arboles de join. La tercera fase consiste en la generación de las consultas dado una 
+del grafo de joins y los \'arboles de join. La tercera fase consiste en la generación de las consultas dada una 
 definición de esquema 
-estrella mediante un script del DSL y la selección de los joins efectuada por el usuario. La cuarta fase y \'ultima 
+estrella mediante un script del DSL y la selección de los joins efectuada por el desarrollador. La cuarta fase y \'ultima 
 es la validación de las consultas generadas 
-mediante la creación manual de un pipeline de población a partir de las mismas y su ejecución. Todos los archivos que intervienen 
+mediante la creación manual del pipeline de población respectivo y su ejecución. 
+
+Todos los archivos que intervienen 
 en el proceso de experimentación se encuentran en la carpeta \textbf{experiments} en el directorio raíz del proyecto. 
-Cada experimento posee su propia carpeta en las cuales existen tres scripts de python y un scripts del DSL que constituye 
-la definición del esquema estrella a poblar. Los scripts de python tienen el mismo nombre en ambas carpetas de experimentación, 
+Cada experimento posee su propia carpeta en la cual existen tres scripts de Python y un script del DSL que constituye 
+la definición del esquema estrella a poblar. Los scripts de Python tienen el mismo nombre en ambas carpetas de experimentación, 
 \textbf{create.py}, \textbf{populate.py}, \textbf{pipeline.py}. El primero se encarga de 
-crear las bases de datos de prueba. El segundo se 
-encarga de poblar dichas base de datos. El tercero es la implementación de un pipeline de población utilizando 
-las consultas generadas. Los scripts utilizan las librerías de python SQLAlchemy, Psycopg2 y Faker para llevar a 
-cabo sus tareas. En particular, la biblioteca de python Faker proporciona facilidades para la generación de información, 
+crear la base de datos de prueba. El segundo se 
+encarga de poblar dicha base de datos. El tercero es la implementación de un pipeline de población del almacén de 
+datos propiamente dicho utilizando 
+las consultas generadas. Los scripts se apoyan en las librerías de Python SQLAlchemy, Psycopg2 y Faker para llevar a 
+cabo sus tareas. En particular, la biblioteca de Python Faker proporciona facilidades para la generación de información, 
 la cual es utilizada para poblar las bases de datos de prueba. A continuación se describen 
 los detalles de los experimentos.
 
 \subsection{Ambiente de experimentación}
 
-\subsubsection{Equipo}
-
 Se utilizó una computadora portátil con un procesador Intel(R) Core(TM) i7-11370H 11th Gen @ 3.30GHz, 16GB de 
 memoria RAM y sistema operativo Windows 11 Home 23H2.
 
-\subsubsection{Docker}
-
 Se utilizó Docker para simular el traspaso de datos por red entre la aplicación, el Catálogo de Datos y 
-los servidores de bases de datos fuente y destino. Se crea una imagen de la aplicación basada en python:3.10, con el 
+los servidores de las bases de datos fuente y destino. Se crea una imagen de la aplicación basada en Python:3.10 con el 
 nombre \textbf{autoetl}. 
 Con el archivo \textbf{docker-compose.yml} se inicializan todos los contenedores que intervienen en el proceso 
-de experimentación. Los servidores de bases de datos fuente y destino son contenedores de PostgreSQL llamados 
+de experimentación. Los servidores de las bases de datos fuente y destino son contenedores de PostgreSQL llamados 
 \textbf{db} y \textbf{target} respectivamente. El Catálogo de Datos es un contenedor de Neo4j con nombre 
 \textbf{data\_catalog}. La aplicación implementada yace en un contenedor de la imagen creada \textbf{autoetl}. 
 Por \'ultimo, con el objetivo de visualizar los resultados del proceso de población se añade al ambiente un 
@@ -42,16 +43,16 @@ de PostgreSQL.
 
 \subsection{Experimento 1: Escenario de ventas minoristas}
 
-Este escenario se basa en \textbf{Retail Sales} expuesto en el capítulo 2
+Este escenario se basa en \textbf{Retail Sales}, expuesto en el capítulo 2
 de \cite{kimball2011data}. 
 
 Una red de tiendas cuenta con sucursales distribuidas en varias provincias del país. Estas tiendas se encuentran ubicadas 
 en diferentes barrios de los municipios de cada provincia. Las tiendas se dividen en departamentos y cada uno vende 
 una serie de productos. Se almacenan los detalles de las transacciones realizadas, es decir, las ventas. Para cada venta, se guarda 
 el producto vendido, la tienda en la que se realizó, la fecha de la transacción, la cantidad vendida y el monto pagado.
-La figura \ref{fig:retail-transactional} muestra las tablas del sistema transaccional y la relación entre ellas.
+La figura \ref{fig:retail-transactional} muestra las tablas del sistema transaccional y los vínculos entre ellas.
 
-\begin{figure}[ht]
+\begin{figure}[H]
     \centering
     \includegraphics[scale=0.5]{Graphics/retailSales-Transactional.drawio.png}
     \caption{Sistema Transaccional: Ventas Minoristas}
@@ -60,16 +61,23 @@ La figura \ref{fig:retail-transactional} muestra las tablas del sistema transacc
 
 Los archivos que intervienen en este experimento se encuentran en la carpeta \textbf{retail\_sales} del 
 directorio \textbf{experiments}. La definición del esquema estrella a poblar se encuentra en el archivo 
-\textbf{retailsales.txt}, el listado de código \ref{retailsalesstar} muestra su contenido. La figura \ref{fig:retail-Warehouse} muestra la composición de las 
+\textbf{retailsales.txt}, el ejemplo de código \ref{retailsalesstar} muestra su contenido. La figura \ref{fig:retail-Warehouse} muestra la composición de las 
 tablas de dimensión y de hechos del esquema estrella propuesto. 
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.5]{Graphics/retailSales-Data Warehouse.drawio.png}
+  \caption{Almacén de Datos: Ventas Minoristas}
+  \label{fig:retail-Warehouse}
+\end{figure}
 
 \begin{lstlisting}[label={retailsalesstar}, caption={Definici\'on del esquema estrella del almacén de datos asociado al escenario ventas minoristas}]
   dimension tienda {
-  tienda: idtienda PK
-  tienda:nombre
-  reparto:nombre as reparto
+  tienda: idtienda PK 2
+  tienda:nombre 2
+  reparto:nombre as reparto 2
   municipio:nombre as municipio 1
-  provincia:nombre as provincia 2
+  provincia:nombre as provincia 
   }
 
   dimension producto {
@@ -85,9 +93,9 @@ tablas de dimensión y de hechos del esquema estrella propuesto.
   }
 
   dimension fecha {
-  venta:fecha PK
-  venta:week_day(fecha) str as Dia
-  venta:month_str(fecha) str as Mes 1
+  venta:fecha PK 2
+  venta:week_day(fecha) str as Dia 1
+  venta:month_str(fecha) str as Mes 
   }
 
   fact venta {
@@ -97,24 +105,28 @@ tablas de dimensión y de hechos del esquema estrella propuesto.
   venta:fecha FK to fecha.fecha
   venta:sum(cantidad_vendida) as cantidad_vendida_total
   venta:sum(pago) as importe_total
-  producto:Costo * venta:sum(cantidad_vendida) int as coste_total
-  venta:sum(pago) - producto:Costo * venta:sum(cantidad_vendida) int as ganancia 
+  producto:costo * venta:sum(cantidad_vendida) int as coste_total
+  venta:sum(pago) - producto:costo * venta:sum(cantidad_vendida) int as ganancia 
   }
 \end{lstlisting}
 
-\begin{figure}
-    \centering
-    \includegraphics[scale=0.5]{Graphics/retailSales-Data Warehouse.drawio.png}
-    \caption{Almacén de Datos: Ventas Minoristas}
-    \label{fig:retail-Warehouse}
-\end{figure}
+En el ejemplo de c\'odigo \ref{retailsalesstar} se puede apreciar un ejemplo pr\'actico de utilización 
+del lenguaje de dominio espec\'ifico concebido. Tal y como expresa la gramática en la figura \ref{code:CFG}, 
+por cada atributo de una tabla del esquema estrella definido, se especifica el nombre de la tabla 
+fuente, dos puntos, el nombre del atributo de la fuente cuyos valores poblar\'an el atributo definido. 
+Además, se pueden definir atributos cuyos valores son el resultado de la aplicación de una funci\'on de agregación 
+o el resultado de operaciones aritméticas. Nótese que a cada definición de atributo de las tablas de 
+dimensi\'on le acompaña un n\'umero el 
+cu\'al representa el nivel del atributo en la jerarquía presente en la tabla de dimensi\'on. Este n\'umero 
+se utiliza en la generación de las consultas para crear la tabla de metadatos \textbf{level\_metadata}. 
+El nivel que no est\'e especificado en el script es tomado como cero. 
 
 \subsubsection{Fase 1: Exploraci\'on del Crawler y creaci\'on de la base de datos de Neo4j}
 
-Para el esquema de base de datos de la figura \ref{fig:retail-transactional} la base de datos de Neo4j derivada a 
+La base de datos de Neo4j derivada a 
 partir de los datos recopilados por el Crawler se muestra en la figura \ref{fig:catalogexp1}.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{Graphics/graph (1).png}
   \caption{Grafo de Neo4j para el esquema de ventas minoristas}
@@ -123,19 +135,19 @@ partir de los datos recopilados por el Crawler se muestra en la figura \ref{fig:
 
 \subsubsection{Fase 2: Creaci\'on del grafo de join y \'arboles de join}
 
-A partir de la base de datos de Neo4j obtenido en la fase 1 se computan el grafo de join y el \'arbol de 
+A partir de la base de datos de Neo4j obtenida en la fase 1 se computan el grafo de joins y el \'arbol de 
 join que se muestran en la figura \ref{fig:graphjoin1} y en la figura \ref{fig:jointree1} respectivamente. Para este caso, 
-el \'arbol de join es \'unico y coincide  con el grafo de join debido a que el esquema de bases de datos de 
+el \'arbol de join es \'unico y coincide  con el grafo de join debido a que el esquema de la bases de datos de 
 las ventas minoristas no presenta ambigüedades.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{Graphics/joingraph1.png}
   \caption{Grafo de join para el esquema de ventas minoristas}
   \label{fig:graphjoin1}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{Graphics/jointree1.png}
   \caption{\'Arbol de join para el esquema de ventas minoristas}
@@ -144,10 +156,10 @@ las ventas minoristas no presenta ambigüedades.
 
 \subsubsection{Fase 3: Generaci\'on de las consultas}
 
-La selección de los joins por parte del usuario se efectúa a través de la interfaz de usuario. 
-Como solo hay un \'arbol de join hay una \'unica opción de join para 
-cada tabla del esquema estrella. El listado de código \ref{joinselectexp1} muestra los joins 
-computados a partir del \'arbol de join mostrado en la fase 2 y de la definición del esquema estrella 
+La selección de los joins por parte del desarrollador se efectúa a través de la interfaz de usuario. 
+Como solo hay un \'arbol de join, existe una \'unica opción de join para 
+cada tabla del esquema estrella. El ejemplo de código \ref{joinselectexp1} muestra los joins 
+computados a partir del \'arbol de join obtenido en la fase 2 y de la definición del esquema estrella 
 presente en \textbf{retailsales.txt}.
 
 \begin{lstlisting}[label={joinselectexp1}, caption={Joins computados para el experimento 1}, language={sql}]
@@ -228,11 +240,11 @@ la fase previa.
                                   level INT,
                                   PRIMARY KEY (table_name, attribute_name, level));
 
-  INSERT INTO level_metadata VALUES('tienda', 'idtienda', 0);
-  INSERT INTO level_metadata VALUES('tienda', 'nombre', 0);
-  INSERT INTO level_metadata VALUES('tienda', 'reparto', 0);
+  INSERT INTO level_metadata VALUES('tienda', 'idtienda', 2);
+  INSERT INTO level_metadata VALUES('tienda', 'nombre', 2);
+  INSERT INTO level_metadata VALUES('tienda', 'reparto', 2);
   INSERT INTO level_metadata VALUES('tienda', 'municipio', 1);
-  INSERT INTO level_metadata VALUES('tienda', 'provincia', 2);
+  INSERT INTO level_metadata VALUES('tienda', 'provincia', 0);
   INSERT INTO level_metadata VALUES('producto', 'idproducto', 0);
   INSERT INTO level_metadata VALUES('producto', 'marca', 0);
   INSERT INTO level_metadata VALUES('producto', 'categoria', 0);
@@ -242,9 +254,9 @@ la fase previa.
   INSERT INTO level_metadata VALUES('producto', 'producto', 0);
   INSERT INTO level_metadata VALUES('producto', 'precio', 0);
   INSERT INTO level_metadata VALUES('producto', 'costo', 0);
-  INSERT INTO level_metadata VALUES('fecha', 'fecha', 0);
-  INSERT INTO level_metadata VALUES('fecha', 'Dia', 0);
-  INSERT INTO level_metadata VALUES('fecha', 'Mes', 1);
+  INSERT INTO level_metadata VALUES('fecha', 'fecha', 2);
+  INSERT INTO level_metadata VALUES('fecha', 'Dia', 1);
+  INSERT INTO level_metadata VALUES('fecha', 'Mes', 0);
   INSERT INTO level_metadata VALUES('venta', 'idventa', 0);
   INSERT INTO level_metadata VALUES('venta', 'idproducto', 0);
   INSERT INTO level_metadata VALUES('venta', 'idtienda', 0);
@@ -254,6 +266,11 @@ la fase previa.
   INSERT INTO level_metadata VALUES('venta', 'coste_total', 0);
   INSERT INTO level_metadata VALUES('venta', 'ganancia', 0);
 \end{lstlisting}
+
+El ejemplo de c\'odigo \ref{quercreateexp1} muestra como efectivamente, los nombres de los atributos 
+de las consultas generadas, as\'i como sus tipos y restricciones co\'inciden con lo declarado en la definición 
+del esquema estrella para el escenario de ventas minoristas. Asimismo, las consultas para la creación y 
+población de la tabla de metadatos \textbf{level\_metadata} fueron generadas exitosamente.
 
 \begin{lstlisting}[label={selectexp1}, caption={Consultas de selecci\'on generadas para el experimento 1}, language={sql}]
   -- Selection for fecha
@@ -282,40 +299,52 @@ la fase previa.
   GROUP BY venta.idproducto,venta.idtienda,venta.fecha,producto.Costo;
 \end{lstlisting}
 
+El ejemplo de c\'odigo \ref{selectexp1} muestra como efectivamente en la cl\'ausula \textbf{SELECT} 
+de cada una de las consultas se encuentran todos los atributos fuente declaradas en la definición 
+del esquema estrella para las tablas respectivas. Asimismo, la cl\'ausula \textbf{FROM} de cada 
+una de las consultas exhibe correctamente  el join seleccionado.
+
 \subsubsection{Fase 4: Creaci\'on manual del pipeline y poblaci\'on del almac\'en de datos}
 
 El pipeline creado se encuentra en la ruta \textbf{experiments/retail\_sales} con el nombre de 
-\textbf{pipeline.py}. Este script utiliza las consultas generadas ejecutando su código utilizando 
+\textbf{pipeline.py}. Este script utiliza las consultas generadas, cuyo código se ejecuta usando 
 Psycopg2.
 
 La figura \ref{fig:fullpg1} muestra el estado del servidor de bases de datos \textbf{target} luego de la ejecución 
-del pipeline. La figura muestra como efectivamente 
-se han creado y poblado todas la tablas del esquema estrella definido.
+del pipeline. 
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{Graphics/fullpgadmin1.png}
   \caption{Almacén de datos poblado asociado al escenario de ventas minoristas}
   \label{fig:fullpg1}
 \end{figure}
 
+La figura \ref{fig:fullpg1} muestra como efectivamente 
+se han creado y poblado todas la tablas del esquema estrella definido, que corresponde al almacén de datos de ventas minoristas.
+En la barra de navegaci\'on 
+a la izquierda se puede ver que las cuatro tablas definidas y la tabla de metadatos fueron creadas. Además, en 
+el centro de la im\'agen se visualiza el contenido de la tabla de hechos \textbf{venta}. 
+
+
+
 
 \subsection{Experimento 2: Escenario TPCH}
 
 Este escenario est\'a inspirado en el escenario de prueba TPCH\footnote{https://www.tpc.org/tpch/}, ampliamente 
-utilizada para probar soluciones de bases de datos e Inteligencia de Negocios. Los scripts que participan 
+utilizado para probar soluciones de bases de datos e Inteligencia de Negocios. Los scripts que participan 
 en el proceso de creación y población de la base de datos de prueba TPCH se encuentran en la ruta 
 \textbf{experiments/tpch}. La especificación del esquema estrella del almacén de datos a poblar se encuentra 
-en el script del DSL \textbf{tpch.txt}, el listado de código \ref{tpchstar} muestra su contenido.  A continuación se describe el escenario que modela la base de datos.
+en el script del DSL \textbf{tpch.txt}, el ejemplo de código \ref{tpchstar} muestra su contenido.  A continuación se describe el escenario que modela la base de datos.
 
 \begin{lstlisting}[label={tpchstar}, caption={Definici\'on del esquema estrella del almacén de datos asociado al escenario TPCH}]
   dimension supplier {
-    supplier: s_suppkey PK as suppkey
-    supplier: s_name as name
-    supplier: s_phone as phone
-    supplier: s_address as address
-    nation: n_name as nation
-    region: r_name as region 1
+    supplier: s_suppkey PK as suppkey 2
+    supplier: s_name as name 2
+    supplier: s_phone as phone 2
+    supplier: s_address as address 2
+    nation: n_name as nation 1
+    region: r_name as region 
   }
 
   dimension part {
@@ -327,9 +356,9 @@ en el script del DSL \textbf{tpch.txt}, el listado de código \ref{tpchstar} mue
   }
 
   dimension order_date {
-      orders: o_orderdate PK as o_date
-      orders:week_day(o_orderdate) str as day
-      orders:month_str(o_orderdate) str as month 1
+      orders: o_orderdate PK as o_date 2
+      orders:week_day(o_orderdate) str as day 1
+      orders:month_str(o_orderdate) str as month 
   }
 
   fact lineitem {
@@ -344,11 +373,11 @@ en el script del DSL \textbf{tpch.txt}, el listado de código \ref{tpchstar} mue
 \end{lstlisting}
 
 Una distribuidora vende piezas de varios suministradores. Distintos suministradores pueden 
-producir la misma pieza. Los clientes de la distribuidora realizan \'ordenes de compra 
-de piezas de determinados suministradores. La figura \ref{fig:transactionaltpch} muestra el esquema de base de datos 
+producir el mismo tipo de pieza. Los clientes de la distribuidora realizan \'ordenes de compra 
+de piezas que producen determinados suministradores. La figura \ref{fig:transactionaltpch} muestra el esquema de la base de datos 
 del escenario descrito.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.5]{Graphics/tpch-tpch-transactional.drawio (5).png}
   \caption{Esquema de la base de datos TPCH}
@@ -358,7 +387,7 @@ del escenario descrito.
 La figura \ref{fig:warehousetpch} muestra el almacén de datos \textbf{tpch\_dw} que se poblar\'a a partir de los 
 datos de la base de datos \textbf{TPCH}.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.5]{Graphics/tpch-tpch-warehouse.drawio.png}
   \caption{Almacén de datos tpch\_dw}
@@ -367,42 +396,55 @@ datos de la base de datos \textbf{TPCH}.
 
 \subsubsection{Fase 1: Exploraci\'on del Crawler y creaci\'on de la base de datos de Neo4j}
 
-Para el esquema de base de datos de la figura \ref{fig:transactionaltpch} la base de datos de Neo4j derivada a 
-partir de los datos recopilados por el Crawler se muestra en la figura \ref{fig:catalogexp2}.
+La base de datos de Neo4j derivada a 
+partir de los datos recopilados por el Crawler para el esquema de la base d datos de la figura 
+\ref{fig:transactionaltpch} se muestra en la figura \ref{fig:catalogexp2}.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{Graphics/graph (2).png}
   \caption{Grafo de Neo4j para el esquema de TPCH}
   \label{fig:catalogexp2}
 \end{figure}
 
+N\'otese como efectivamente se ha creado un nodo por cada tabla del esquema y un arco por cada llave for\'anea.
+
 \subsubsection{Fase 2: Creaci\'on del grafo de join y \'arboles de join}
 
 A partir de la base de datos de Neo4j obtenida en la fase 1 se computan el grafo de join y los \'arboles de 
 join que se muestran en la figura \ref{fig:graphjoin2} y en la figura \ref{fig:jointree2} respectivamente. 
-N\'otese como en TPCH no existe una relaci\'on directa entre las tablas \textbf{Lineitem} y \textbf{PartSupplier}, 
-sin embargo en el grafo de join se incluye un arco entre ellos dado que cumplen con el criterio expuesto 
-en el cap\'itulo \ref{chapter:proposal} para la formaci\'on de arcos entre dos nodos del grafo de join.
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{Graphics/joingraph2.png}
   \caption{Grafo de join para el esquema de TPCH}
   \label{fig:graphjoin2}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{Graphics/jointreesexp2.png}
   \caption{\'Arboles de join para el esquema de TPCH}
   \label{fig:jointree2}
 \end{figure}
 
+N\'otese c\'omo en TPCH no existe una relaci\'on directa entre las tablas \textbf{lineitem} y \textbf{partsupp}, 
+sin embargo, en el grafo de join se incluye un arco entre ellos dado que cumplen con el criterio expuesto 
+en el cap\'itulo \ref{chapter:proposal} en el ac\'apite de inferencia de joins de la sección referida al 
+generador de consultas para la formaci\'on de arcos no existentes en el cat\'alogo. Dicho criterio 
+plantea que al grafo de joins se le añade adicionalmente un arco $<v, w>$ si el nodo $v$ contiene un subconjunto 
+de atributos contenidos en $w$ tal que todos los miembros de dicho subconjunto sean llaves for\'aneas en $v$
+y sean llaves primarias en $w$. La tabla \textbf{lineitem} posee llaves for\'aneas a \textbf{part} y a 
+\textbf{supplier} y la tabla \textbf{partsupp} tiene como llaves primarias a sus llaves for\'aneas a \textbf{part} 
+y a \textbf{supplier}. Por tanto, \textbf{lineitem} contiene un subconjunto 
+de atributos contenidos en \textbf{partsupp} tal que todos los miembros de dicho subconjunto son llaves for\'aneas en \textbf{lineitem}
+y son llaves primarias en \textbf{partsupp}. Luego, se añade al grafo de joins el arco entre \textbf{lineitem} y 
+\textbf{partsupp}.
+
 \subsubsection{Fase 3: Generaci\'on de las consultas}
 
 Los joins computados para la poblaci\'on de cada una de las tablas del esquema estrella del almacén de datos 
-\textbf{tpch\_dw} presente en el script del DSL \textbf{tpch.tex} son los siguientes: 
+\textbf{tpch\_dw}, presente en el script del DSL \textbf{tpch.tex}, se muestran en el ejemplo de código \ref{tpchstar}. 
 
 \begin{lstlisting}[label={joinsexp2}, caption={Joins computados para el experimento 2}, language={sql}]
   -- Joins for supplier
@@ -438,12 +480,12 @@ Los joins computados para la poblaci\'on de cada una de las tablas del esquema e
      JOIN partsupp ON lineitem.l_suppkey = partsupp.ps_suppkey AND lineitem.l_partkey = partsupp.ps_partkey
 \end{lstlisting}
 
-Para el caso de \textbf{part} y \textbf{orders} no es necesario un join por tanto todos los datos se obtienen de 
-una sola tabla. 
+Para los casos de \textbf{part} y \textbf{orders} no es necesario generar joins puesto que todos los datos se obtienen de 
+una misma tabla. 
 
-Seleccionando en todos los casos el primer join mostrado en el listado de c\'odigo \ref{joinsexp2} se generan 
-las consultas de creaci\'on mostradas en el listado c\'odigo \ref{genquery2} y las consultas de selecci\'on 
-mostradas en el listado de c\'odigo \ref{selectexp2}: 
+Seleccionando para todas las tablas del esquema estrella el primer join mostrado en el ejemplo de c\'odigo \ref{joinsexp2} se generan 
+las consultas de creaci\'on mostradas en el ejemplo c\'odigo \ref{genquery2} y las consultas de selecci\'on 
+mostradas en el ejemplo de c\'odigo \ref{selectexp2}: 
 
 \begin{lstlisting}[label={genquery2}, caption={Consultas de creaci\'on generadas para el experimento 2}, language={sql}]
   -- Creation query's
@@ -495,20 +537,20 @@ mostradas en el listado de c\'odigo \ref{selectexp2}:
                                   level INT,
                                   PRIMARY KEY (table_name, attribute_name, level));
 
-  INSERT INTO level_metadata VALUES('supplier', 'suppkey', 0);
-  INSERT INTO level_metadata VALUES('supplier', 'name', 0);
-  INSERT INTO level_metadata VALUES('supplier', 'phone', 0);
-  INSERT INTO level_metadata VALUES('supplier', 'address', 0);
-  INSERT INTO level_metadata VALUES('supplier', 'nation', 0);
-  INSERT INTO level_metadata VALUES('supplier', 'region', 1);
+  INSERT INTO level_metadata VALUES('supplier', 'suppkey', 2);
+  INSERT INTO level_metadata VALUES('supplier', 'name', 2);
+  INSERT INTO level_metadata VALUES('supplier', 'phone', 2);
+  INSERT INTO level_metadata VALUES('supplier', 'address', 2);
+  INSERT INTO level_metadata VALUES('supplier', 'nation', 1);
+  INSERT INTO level_metadata VALUES('supplier', 'region', 0);
   INSERT INTO level_metadata VALUES('part', 'p_partkey', 0);
   INSERT INTO level_metadata VALUES('part', 'name', 0);
   INSERT INTO level_metadata VALUES('part', 'brand', 0);
   INSERT INTO level_metadata VALUES('part', 'p_size', 0);
   INSERT INTO level_metadata VALUES('part', 'p_retailprice', 0);
-  INSERT INTO level_metadata VALUES('order_date', 'o_date', 0);
-  INSERT INTO level_metadata VALUES('order_date', 'day', 0);
-  INSERT INTO level_metadata VALUES('order_date', 'month', 1);
+  INSERT INTO level_metadata VALUES('order_date', 'o_date', 2);
+  INSERT INTO level_metadata VALUES('order_date', 'day', 1);
+  INSERT INTO level_metadata VALUES('order_date', 'month', 0);
   INSERT INTO level_metadata VALUES('lineitem', 'lnumber', 0);
   INSERT INTO level_metadata VALUES('lineitem', 'partkey', 0);
   INSERT INTO level_metadata VALUES('lineitem', 'supplierkey', 0);
@@ -517,6 +559,11 @@ mostradas en el listado de c\'odigo \ref{selectexp2}:
   INSERT INTO level_metadata VALUES('lineitem', 'totalquantity', 0);
   INSERT INTO level_metadata VALUES('lineitem', 'earnings', 0);
 \end{lstlisting}
+
+El ejemplo de c\'odigo \ref{genquery2} muestra como efectivamente, los nombres de los atributos 
+de las consultas generadas, as\'i como sus tipos y restricciones co\'inciden con lo declarado en la definición 
+del esquema estrella para el escenario de ventas minoristas. Además, las consultas para la creación y 
+población de la tabla de metadatos \textbf{level\_metadata} fueron generadas exitosamente.
 
 \begin{lstlisting}[label={selectexp2}, caption={Consultas de selecci\'on generadas para el experimento 2}, language={sql}]
   -- Selection for lineitem
@@ -542,19 +589,41 @@ mostradas en el listado de c\'odigo \ref{selectexp2}:
   JOIN region ON nation.n_regionkey = region.r_regionkey;
 \end{lstlisting}
 
+El ejemplo de c\'odigo \ref{selectexp2} muestra como efectivamente en la cl\'ausula \textbf{SELECT} 
+de cada una de las consultas se encuentran todos los atributos fuente declaradas en la definición 
+del esquema estrella para las tablas respectivas. Asimismo, la cl\'ausula \textbf{FROM} de cada 
+una de las consultas exhibe correctamente  el join seleccionado.
+
 \subsubsection{Fase 4: Creaci\'on manual del pipeline y poblaci\'on del almac\'en de datos}
 
 El pipeline creado se encuentra en la ruta \textbf{experiments/tpch} con el nombre de 
 \textbf{pipeline.py}. 
 
-La figura \ref{fig:fullpg2} muestra el estado del servidor de bases de datos \textbf{target} luego de la ejecuci\'on 
-del pipeline, y nuevamente se puede constatar la correcta poblaci\'on del almac\'en de datos \textbf{tpch\_dw}.
-
-\begin{figure}
+\begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{Graphics/fullpgadmin2.png}
   \caption{Almacén de datos poblado asociado al escenario de TPCH}
   \label{fig:fullpg2}
 \end{figure}
 
+La figura \ref{fig:fullpg2} muestra el estado del servidor de bases de datos \textbf{target} luego de la ejecuci\'on 
+del pipeline, a partir de lo cual se puede constatar el correcto funcionamiento del proceso de población 
+del almac\'en de datos \textbf{tpch\_dw}.
 
+\section{Consideraciones finales}\label{section:finalconsiderations}
+
+A través de una serie de experimentos, se ha confirmado que cada componente del prototipo 
+opera correctamente, validando la premisa de que, partiendo de la definición de un escenario analítico, 
+es posible inferir los joins necesarios para la generación de código SQL que pueble 
+el escenario analítico diseñado.
+
+Los resultados experimentales reafirman la robustez del lenguaje de dominio específico desarrollado 
+específicamente para este propósito. Este lenguaje facilita la modelación precisa de escenarios analíticos y 
+garantiza la generación de código SQL que no solo es sintácticamente correcto, sino también semánticamente v\'alido.
+
+Por consiguiente, esta investigación demuestra la viabilidad y el rendimiento del marco de trabajo propuesto. 
+Más aun, se demostr\'o las capacidades intrínsecas de la combinación entre la teoría de grafos y los lenguajes de 
+dominio específico como herramientas poderosas para resolver la compleja problemática inherente a la generación 
+automática de procesos de integración de datos. Como resultado, no solo se abre un camino para futuras 
+investigaciones sino que se establece un modelo aplicable que puede ser extendido para abarcar otros 
+aspectos de la integración de datos. 

@@ -30,10 +30,10 @@ analítico integral. Por lo general, puede dividirse en cuatro componentes funda
 \subsubsection{Fuentes de Datos:}
 El primer componente de un sistema OLAP son las fuentes de datos. Estas pueden ser cualquier cantidad de diferentes 
 tipos de fuentes de datos, como bases de datos relacionales o archivos planos. Los datos provenientes de las fuentes 
-son sometidos a procesos de integración, llamados ETL (Extraci\'on, Transformaci\'on, Carga), definidos por los desarrolladores, 
+son sometidos a procesos de integración, llamados ETL (Extracción, Transformación, Carga), definidos por los desarrolladores, 
 con el objetivo de conciliarlos en un formato unificado para luego ser cargados, bien dentro del repositorio central del sistema OLAP o 
 dentro de un almacén de datos operacionales
-(Operational Data Store, ODS) que le sirva de proveedor. La presente investigación se sitúa en el ámbito de los 
+(\emph{Operational Data Store}, ODS) que le sirva de proveedor. La presente investigación se sitúa en el ámbito de los 
 procesos de integración de datos y uno de sus centros de atención son los procesos ETL.
 
 \subsubsection{Almacén de datos y Data Marts:}
@@ -83,7 +83,7 @@ El trabajo con el modelo dimensional persigue analizar los datos desde diferente
 global del caso de estudio que permita fundamentar las decisiones estratégicas en diferentes circunstancias, con énfasis 
 en la temporalidad. Sin embargo, la eficiencia de los análisis est\'a fuertemente ligada a la forma en que los datos 
 se representan y se almacenan. El modelo conceptual entidad relacionalidad, por su alto grado de difusión y familiarización que generalmente 
-poseen los especialistas, ha servido para representar modelo dimensional, aunque su enfoque f\'isico 
+poseen los especialistas, ha servido para representar el modelo dimensional, aunque su enfoque f\'isico 
 no exige el almacenamiento en tablas. De esta forma, los valores que representan el funcionamiento del negocio se almacenan 
 en tablas de hechos y los valores que describen el entorno donde ocurren los hechos se almacenan en tablas de dimensiones.
 Las tablas de hechos se relacionan con las tablas de dimensiones formando diferentes esquemas.
@@ -115,7 +115,7 @@ funcionan como coordenadas dentro del cubo.
 
 Una dimensión constituye una colección lógica de atributos que comparten un significado concreto y proporcionan 
 perspectivas analíticas sobre un hecho particular. Dentro de esta colección, se articula una jerarquía que clarifica y da contexto a los 
-datos. Tomando como ilustración una dimensión que caracteriza la ubicación geográfica de un hecho, ésta podría incorporar categorías 
+datos. Tomando como ilustración una dimensión que caracteriza la ubicación geográfica de un hecho, esta podría incorporar categorías 
 como País, Provincia, Municipio y Barrio. Cada una de estas categorías detalla la localización del evento con distinto grado de 
 exactitud, estableciendo a su vez una jerarquía definida que organiza los datos de lo más amplio a lo más específico. En el 
 caso mencionado, la jerarquía estaría secuenciada desde el concepto más abarcador al más detallado: País, Provincia, 
@@ -170,7 +170,7 @@ relacional cuyas tablas se encuentran altamente normalizadas, es decir, llevadas
 Adem\'as, concibe a los Data Marts fisicamente separados del almacén de datos y la forma de acceder a los datos del almacén es a 
 través de los Data Marts.
 
-La principal ventaja que brinda este enfoque para construcci\'on y explotaci\'on de un almacén de datos es la facilidad del proceso 
+La principal ventaja que brinda este enfoque para la construcci\'on y explotaci\'on de un almacén de datos es la facilidad del proceso 
 de derivaci\'on de los datos para el análisis dado que, previamente, est\'an reconciliados e integrados en una estructura relacional.
 
 Con la adopci\'on del modelo relacional, el cual garantiza la inserci\'on y la actualización de los datos de forma consistente, se 
@@ -214,8 +214,8 @@ bondades de los enfoques relacional y dimensional.
 Las tres capas de Devlin son las fuentes de datos, el Data Warehouse Empresarial y el Warehouse Informacional. La segunda capa 
 es una estructura relacional que contiene los datos reconciliados provenientes de las fuentes, como propone Inmon. El Warehouse 
 Informacional es una estructura dimensional que contiene los datos derivados para el an\'alisis provenientes del Data Warehouse 
-Empresarial, como propone Kimball. Con esta arquitectura se aprovecha consistencia y la integridad que brinda el modelo relacional 
-en la capa de datos reconciliados y tambi\'en se gana en rendimiento a la hora de responder a consultas informacionales y en expresividad 
+Empresarial, como propone Kimball. Con esta arquitectura se aprovecha la consistencia y la integridad que brinda el modelo relacional 
+en la capa de datos reconciliados, se gana en rendimiento a la hora de responder a consultas informacionales y en expresividad 
 del modelo en la capa de datos derivados. No obstante, la sugerencia de una arquitectura de tres capas también ha recibido críticas 
 debido a la gran cantidad de trabajo necesario para implementar un almacén de datos utilizando este enfoque. 
 
