@@ -1,0 +1,43 @@
+\section{Componentes Principales} \label{section:PrincipalComp}
+
+A partir del estudio de las herramientas expuestas con anterioridad, el autor considera que, 
+una solución de ETL automático debe incorporar varios elementos clave. Primero, debe brindar 
+un mecanismo que permita al desarrollador construir escenarios ETL al establecer las reglas del negocio y definir las 
+transformaciones necesarias para los datos, el tipo de extracción de datos y el tipo de carga. 
+También debe especificar las fuentes de datos y las bases de datos destino, 
+la información requerida para conectarse a estas bases de datos y finalmente el orden en el que se ejecutan las actividades 
+que conforman el escenario. Este mecanismo puede manifestarse como una interfaz de usuario que clarifica todos los puntos 
+antes mencionados o a través de programación mediante un SDK o un lenguaje de dominio específico.
+
+Si se emplea una interfaz gráfica para diseñar el escenario, debe existir un componente capaz de traducir el diseño 
+conceptual en código ejecutable. Si no es objetivo de la aplicación que el desarrollador incluya en el diseño las características 
+estructurales de las fuentes de datos, la solución deberá incluir componentes para explorar 
+las fuentes de datos con el fin de obtener los metadatos necesarios. Esta información es crucial para realizar las acciones 
+de extracción, transformación y carga. También es fundamental adoptar un repositorio para almacenar y consultar estos 
+metadatos.
+
+Además, es fundamental contar con un componente que funcione como motor de integración, que procese el escenario diseñado y 
+los metadatos y que ejecute las tareas de integración. Este componente debe permitir que el desarrollador programe la ejecución 
+automática de los escenarios basada en horarios o en la captura de eventos o mensajes. De esta manera, la actualización 
+del contenido de la base de datos de destino puede realizarse de forma autónoma, sin la intervención de un usuario, que es 
+el propósito principal de una solución de ETL automático.
+
+Finalmente, debe haber un componente para monitorear los escenarios creados y en ejecución. Esto con el fin de permitir 
+la detección de errores durante la ejecución de las actividades y la extracción de estadísticas de rendimiento de los 
+escenarios. Este seguimiento será crucial para identificar y corregir cualquier anomalía o ineficiencia en los escenarios 
+diseñados.  
+
+Ahora, los grafos son estructuras idóneas para representar relaciones entre elementos, además son f\'aciles 
+de visualizar y consultar. Los esquemas de bases de 
+datos representan a un conjunto de entidades interrelacionadas. Por tanto, resulta conveniente que el repositorio 
+que almacena los metadatos del esquema de las fuentes de datos sea un grafo.
+
+Por otro lado, algunas de las herramientas estudiadas se apoyan en lenguajes de dominio específico para la definición 
+de los escenarios de integración y la definición de reglas del negocio, lo cual demuestra su viabilidad para modelar 
+procesos de trabajo con datos. Los lenguajes de dominio específico son flexibles y fácilmente extensibles, además 
+cuentan con varias décadas de utilización para la modelación de diferentes escenarios y procesos, con técnicas y 
+buenas prácticas para su desarrollo bien marcadas y conocidas. Por estas razones, la definición de escenarios 
+analíticos a poblar es posible utilizando un lenguaje de dominio específico. Luego, las gramáticas libres de 
+contexto han jugado un rol central en la definición de lenguajes y construcción de sus parsers desde la década 
+de 1960\cite{hopcroft_introduction_2007}, por tanto constituyen el marco teórico que sustenta la creación 
+del DSL propuesto en la presente investigación.

@@ -14,7 +14,6 @@
 \usepackage{xcolor}
 \usepackage{multicol}
 \usepackage{graphicx}
-\usepackage{newclude}
 \floatstyle{plaintop}
 \restylefloat{table}
 \addbibresource{Bibliography.bib}
@@ -45,17 +44,17 @@
     showspaces=false,                
     showstringspaces=false,
     showtabs=false,                  
-    tabsize=4
+    tabsize=6
 }
 
 \lstset{style=mystyle}
 
-\title{Título de la tesis}
-\author{\\\vspace{0.25cm}Nombre del autor}
-\advisor{\\\vspace{0.25cm}Nombre del primer tutor\\\vspace{0.2cm}Nombre del segundo tutor}
-\degree{Licenciado en (Matemática o Ciencia de la Computación)}
+\title{Generación automática de procesos de integración de datos. Inferencia de Joins}
+\author{\\\vspace{0.25cm}Jes\'us Santos Capote}
+\advisor{\\\vspace{0.25cm}Lic. Víctor Manuel Cardentey Fundora\\\vspace{0.2cm}Dra. C. Lucina García Hernández}
+\degree{Licenciado en Ciencia de la Computación}
 \faculty{Facultad de Matemática y Computación}
-\date{Fecha\\\vspace{0.25cm}\href{https://github.com/username/repo}{github.com/username/repo}}
+\date{Enero del 2024\\\vspace{0.25cm}\href{https://github.com/username/repo}{https://github.com/JesusSantosCapote/autoETL.git}}
 \logo{Graphics/uhlogo}
 \makenomenclature
 
@@ -92,15 +91,32 @@
 \include{MainMatter/Introduction}
 
 % Business Intelligence section
-\include{MainMatter/BusinessIntelligence/BusinessIntelligence}
-\include{MainMatter/AutomaticETL/AutomaticETL}
-\include{MainMatter/Proposal/Proposal}
-\include{MainMatter/Implementation/Implementation}
+\include{MainMatter/TheoreticalFramework/TheoreticalFramework}
+% \include{MainMatter/TheoreticalFramework/BusinessIntelligence}
+% \include{MainMatter/TheoreticalFramework/AnalyticalSystems}
+% \include{MainMatter/TheoreticalFramework/ETL}
 
+
+\include{MainMatter/AutomaticETL/AutomaticETL}
+% \include{MainMatter/AutomaticETL/ActualTools}
+% \include{MainMatter/AutomaticETL/ToolsComparison}
+% \include{MainMatter/AutomaticETL/PrincipalComponents}
+% \include{MainMatter/TheoreticalFramework/GraphTheory}
+% \include{MainMatter/TheoreticalFramework/FreeContextGrammars}
+
+\include{MainMatter/Proposal/Proposal}
+% \include{MainMatter/Proposal/Design}
+
+\include{MainMatter/Implementation/Implementation}
+% \include{MainMatter/Implementation/TechnologyAndTools}
+% \include{MainMatter/Implementation/PrototypeImplementation}
+% \include{MainMatter/Implementation/Experimentation}
+\nocite{*}
 \backmatter
 
 \include{BackMatter/Conclusions}
 \include{BackMatter/Recomendations}
 \include{BackMatter/Bibliography}
+\include{BackMatter/Annexes}
 
 \end{document}

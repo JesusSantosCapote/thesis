@@ -1,0 +1,28 @@
+\section{Comparaci\'on de las herramientas actuales} \label{section:ToolsComparison}
+
+Con respecto a las arquitecturas, estas herramientas se dividen en dos grupos principales: aquellas basadas en un modelo 
+cliente-servidor y las que constituyen servicios alojados en la nube. Al primer grupo pertenecen Informatica Power Center, 
+Talend Open Studio y Oracle Data Integrator. Google Dataflow, Amazon Glue y Azure Data Factory pertenecen al segundo 
+grupo.
+
+En el grupo cliente-servidor, las aplicaciones clientes permiten el diseño y monitoreo de escenarios, así como la 
+consulta de metadatos y estadísticas. Los servidores se encuentran en las nubes propietarias de las empresas, donde se 
+ejecutan los escenarios y se almacenan los datos o se envían a otros servicios en diferentes nubes. Es importante 
+destacar que Informatica Power Center se destaca por tener una arquitectura basada en servicios, siendo única entre las 
+herramientas analizadas.
+
+Por otro lado, Google Dataflow, Amazon Glue y Azure Data Factory son servicios alojados en las nubes de sus respectivos 
+propietarios. Aunque no poseen aplicaciones clientes, estas herramientas proveen funcionalidades similares a través de sus 
+servicios en la nube.
+
+En cuanto a los métodos para construir escenarios ETL, se identificaron tres enfoques entre las herramientas analizadas. 
+Algunas herramientas, como Azure Data Factory, Amazon Glue, Talend Open Studio e Informatica Power Center, ofrecen 
+interfaces de usuario que permiten definir escenarios de forma gráfica. Google Dataflow, por otro lado, utiliza Apache 
+Beam SDK y permite definir escenarios mediante código utilizando Java o Python. Por último, Oracle Data Integrator 
+utiliza un enfoque híbrido, donde el flujo de datos y las actividades del escenario se definen gráficamente, mientras 
+que las reglas de negocio se definen utilizando un lenguaje de dominio específico.
+
+En cuanto a la naturaleza de estas herramientas, todas excepto la versión gratuita de Talend Open Studio son \emph{serverless}. 
+Esto significa que los usuarios no necesitan administrar ni aprovisionar servidores para la ejecución de los escenarios 
+ni para alojar las bases de datos utilizadas en los sistemas de inteligencia de negocios. Estas cuestiones son manejadas 
+por los proveedores de servicios en la nube, quienes se encargan de la infraestructura necesaria.  

@@ -1,0 +1,290 @@
+\section{Herramientas Actuales} \label{section:actual_tools}
+
+El estudio de las herramientas de ETL automático ha tenido el objetivo de proporcionar al autor ideas y buenas 
+prácticas seguidas por los exponentes de la industria para la concepción de un prototipo de marco de 
+trabajo que permita la integración automática de datos, haciendo énfasis en la inferencia de joins, pero lo 
+suficientemente extensible para poder incorporar otras partes del proceso de integración. Con este fin, se 
+profundiza en los principales componentes de la arquitectura y funcionamiento de las herramientas seleccionadas 
+para el estudio. Los criterios de selección fueron su posición en el Cuadrante Mágico 2023 de Herramientas para 
+la Integración de Datos de Gartner (\emph{2023 Gartner® Magic Quadrant™ for Data Integration Tools})\cite{magic_q}, y la 
+trayectoria y prestigio de las compañías responsables de su desarrollo.
+
+\subsection{Amazon Glue}
+
+AWS(\emph{Amazon Web Services}) Glue\footnote{https://aws.amazon.com/es/glue/} es un servicio de ETL automático \emph{serverless} 
+disponible en AWS Cloud. Este servicio simplifica el proceso de 
+extracción, transformación y carga de los datos al eliminar la necesidad de configurar y administrar infraestructura de 
+servidor. A continuación, se describen los pasos claves que conforman el funcionamiento de AWS Glue\cite{noauthor_aws_nodate}:
+
+\subsubsection{Exploración de fuentes de datos:}
+AWS Glue utiliza un componente, llamado buscador o \emph{crawler}, para explorar las fuentes de datos 
+especificadas por el usuario. El \emph{crawler} analiza los datos y extrae los metadatos relevantes, tales como la estructura, el 
+formato y la ubicación de los datos.
+
+\subsubsection{Catálogo de Datos:}
+Los metadatos del esquema de la base de datos fuente extraídos por el crawler se almacenan en un repositorio central llamado Catálogo de 
+Datos (\emph{Data Catalog}). Este catálogo actúa como una base de conocimientos sobre los datos disponibles y puede ser 
+consultado por los usuarios para obtener información sobre las fuentes de datos. Además, almacena información 
+sobre la localizaci\'on de las bases de datos fuente y m\'etricas sobre la ejecución de los procesos 
+de integración\cite{noauthor_aws_nodate}.
+
+\subsubsection{Motor ETL:}
+El Motor ETL (\emph{ETL Engine}) utiliza los metadatos almacenados en el catálogo de datos para generar el código 
+necesario para los procesos de ETL. Cuando el usuario especifica una base de datos de destino, el motor ETL genera el 
+código que integra los datos de las fuentes y los transforma en un formato compatible con el destino especificado.
+
+\subsubsection{Schedulers:}
+Los procesos de ETL generados por AWS Glue pueden ser activados manualmente o programados para ejecutarse en 
+una frecuencia específica o cuando se lance un determinado evento utilizando los programadores de tareas, 
+planificadores o \emph{schedulers}. Esto permite automatizar el 
+flujo de trabajo de ETL y realizar actualizaciones periódicas de los datos.
+
+
+\subsection{Oracle Data Integrator}
+
+Oracle Data Integrator\footnote{https://www.oracle.com/es/middleware/technologies/data-integrator.html} (ODI) 
+es una herramienta de ELT automático, aunque también permite el desarrollo de escenarios 
+ETL mediante su integración con Oracle Warehouse Builder, otro software del entorno de Oracle. Esto hace que sea una 
+herramienta flexible y poderosa para el manejo, solución y despliegue de almacenes de datos. Posee una arquitectura 
+cliente-servidor, con una aplicación de escritorio que se comunica con los servidores de Oracle. Sus principales 
+componentes son\cite{corporation_overview_nodate}: 
+
+\subsubsection{Repositorios:} 
+Almacenan información de configuración sobre la infraestructura de IT (\emph{Information Technology}), metadatos de todas las aplicaciones, proyectos, 
+escenarios y registros de ejecución. ODI cuenta con dos tipos de repositorios: un repositorio maestro (\emph{master repository}) 
+y varios repositorios de trabajo (\emph{work repositories}). Los objetos creados mediante las interfaces de usuario son almacenados 
+en ellos. El repositorio maestro almacena:
+
+\begin{itemize}
+    \item Información de seguridad, como usuarios y perfiles.
+    \item Información topológica de los escenarios diseñados por los usuarios como esquemas, definición de servidores, 
+        contextos y lenguajes.
+    \item Información sobre las versiones desarrolladas de los escenarios.
+\end{itemize}
+
+Por otro lado, los repositorios de trabajo son los que realmente 
+contienen los escenarios, incluido: 
+
+\begin{itemize}
+    \item La definición de esquemas, estructuras de las bases de datos involucradas y metadatos, 
+        definiciones de campos y columnas, restricciones de calidad de los datos, referencias cruzadas y linaje de datos.
+    \item Los proyectos con sus reglas comerciales definidas, paquetes instalados, procedimientos, 
+        sistema de archivos, módulos de conocimiento, variables de entorno, etc.
+    \item Registros de ejecución de escenarios e información de programación de tareas.
+\end{itemize}
+
+\subsubsection{Interfaces de Usuario:}
+
+ODI Studio es la interfaz de usuario de Oracle Data Integrator que proporciona un entorno completo para trabajar con la 
+herramienta. A través de ODI Studio, los desarrolladores pueden realizar diversas tareas, como consultar repositorios, desarrollar 
+proyectos, programar tareas, operar y monitorear ejecuciones. La interfaz incluye navegadores que permiten visualizar y 
+modificar los escenarios creados, así como el código generado automáticamente para su ejecución. Con ODI Studio, los 
+desarrolladores tienen acceso a todas las funcionalidades necesarias para administrar y gestionar eficientemente los procesos de 
+integración de datos. 
+
+\subsubsection{Agente de Ejecución}
+
+El agente de ejecución actúa como motor de ejecución para ODI. Es responsable de ejecutar interfaces de integración, 
+transformaciones y otras tareas definidas en los proyectos ODI. Se puede configurar para ejecutar las tareas al capturar 
+cierto evento o programar para que ejecute sus tareas en determinados intervalos de tiempo. Soporta ejecución paralela
+y distribuida, as\'i como capacidades para el manejo y reporte de errores.
+
+En el momento de diseño, los desarrolladores generan escenarios a partir de modelos gráficos y reglas de negocio 
+definidas mediante un lenguaje declarativo. Luego, el agente de ejecución recupera el código de estos escenarios 
+del repositorio y lo ejecuta de forma autónoma. 
+
+
+
+
+
+\subsection{Google Dataflow}
+
+Google Dataflow\footnote{cloud.google.com/dataflow} es un servicio \emph{serverless} proporcionado por Google Cloud Platform para ejecutar \emph{pipelines} de Apache Beam. 
+Es capaz de capturar, procesar y analizar datos, en tiempo real o en bloques, provenientes de m\'ultiples fuentes.
+Dataflow elimina la sobrecarga operativa de los equipos de ingeniería de datos al automatizar el aprovisionamiento de la
+infraestructura destino, ya sea un almacén de datos o un modelo de Machine Learning. Estas características hacen de 
+Dataflow una excelente opción para la ejecución automática de ETL. Una solución de Google Dataflow consta de los 
+siguientes elementos:
+
+\subsubsection{Pipeline:}
+
+Un pipeline es el mecanismo que asegura la realización correcta de los flujos de trabajo (\emph{data flows}), los cuales responden a 
+tareas o funciones concretas o específicas. Representa el flujo de trabajo de procesamiento de datos y est\'a 
+compuesto por una serie de transformaciones aplicadas a los datos de entrada. Es definido por el usuario utilizando el 
+Apache Beam SDK en Java o Python. Cada vez que una transformación, definida en el pipeline, es aplicada a los datos se crea 
+un PCollection, un conjunto de datos inmutable, para guardar los datos transformados. PCollection es el acrónimo de 
+\emph{Parallel Collection} (Colección 
+Paralela). El motivo detrás de este nombre es que las PCollection están diseñadas para ser distribuidas en múltiples 
+computadoras. La \'ultima PCollection es cargada en el almacenamiento de destino, pues los datos que contiene ya han pasado 
+por todos los procesos de transformación. 
+
+\subsubsection{Dataflow Workers:}
+
+Una vez que el usuario ha creado un pipeline, Dataflow se encarga de su ejecución y despliegue, refiriéndose a esta 
+acción como un \emph{Dataflow job} (trabajo de Dataflow). Luego Dataflow asigna unas máquinas virtuales llamadas \emph{workers} 
+(trabajadores) para ejecutar las transformaciones. La cantidad de trabajadores se maneja din\'amicamente por Dataflow 
+y depender\'a de la complejidad del trabajo. Los Trabajadores realizan todo el procesamiento computacional en la nube 
+de Google.
+
+\subsubsection{Paneles de Visualizaci\'on}
+
+Dataflow provee al usuario de paneles con información en tiempo real sobre distintas métricas de los trabajos, as\'i 
+como de alertas para la detección de fallos.
+
+
+
+
+
+\subsection{Talend Open Studio}
+
+Talend Open Studio(TOS)\footnote{https://www.talend.com/products/talend-open-studio/} es otra herramienta de 
+integración de datos perteneciente a la compañía Talend. A diferencia de las 
+anteriores herramientas, TOS tiene un componente libre y \emph{open source} con el que se puede ejecutar y diseñar tareas de 
+integración locales, aunque para migrar al procesamiento en la nube de Talend es necesario pagar el servicio. 
+
+Su funcionamiento puede separarse en 
+tres bloques\cite{noauthor_what_nodate}: 
+
+\subsubsection{Bloque Studio:}
+
+Aquí es donde los escenarios ETL son diseñados. Este bloque tiene tres subcomponentes: Interfaz de Usuario, Almacenamiento
+y Generación de Código. Mediante la Interfaz de Usuario se pueden definir los modelos de negocios con sus escenarios ETL 
+sin tener que escribir código, basta con arrastrar y soltar componentes y luego conectarlos para definir una tarea de 
+integración. Los modelos y las tareas creadas son guardadas en formato XML en el Almacenamiento junto con metadatos 
+de las fuentes de datos. El subcomponente de Generaci\'on de C\'odigo se encarga de convertir las tareas en c\'odigo de 
+Java. 
+
+\subsubsection{Bloque de Ejecución:}
+
+El servidor de la aplicación, llamado Centro de Aplicaci\'on de Talend (\emph{Talend Aplication Center}), 
+se encarga de desplegar y ejecutar, dentro de s\'i en caso de pagar el 
+servicio de la nube, los escenarios creados 
+en el Bloque Studio, que es la aplicación cliente. El usuario puede desplegar uno o m\'as servidores de trabajo  
+(\emph{jobs servers}) dentro de su proyecto de sistema de información para ejecutar las tareas del escenario diseñado 
+siguiendo una programación basada en tiempos o en eventos. Si se usa la version libre de costo, los escenarios son 
+ejecutados de manera local o en un servidor manejado por el usuario.
+
+\subsubsection{Bloque de Repositorios:}
+
+Dentro del \emph{Talend Aplication Center} existen tres repositorios compartidos. Uno de ellos se encarga de almacenar metadatos 
+de los proyectos, como los escenarios, los modelos de negocios, las rutas, etc. 
+El segundo es un servidor de bases de datos y almacena metadatos de administraci\'on como cuentas de usuario y derechos de 
+acceso. Los metadatos pueden ser compartidos por múltiples usuarios y tareas. El tercer repositorio almacena informaci\'on 
+sobre las versiones de los escenarios diseñados.
+
+
+
+
+
+\subsection{Informatica PowerCenter}
+
+Informatica PowerCenter\footnote{https://www.informatica.com/es/products/data-integration/powercenter.html} es una herramienta de integración de datos versátil que ha ganado una popularidad significativa 
+en los últimos años en el mundo empresarial. Esta herramienta se destaca por su arquitectura orientada a servicios, 
+la cual se compone de varias aplicaciones cliente que se comunican, mediante TCP/IP, con uno o con varios componentes 
+centrales llamados dominio (\emph{domain}), alojados en los servidores de Informatica. El Dominio actúa como proveedor de los 
+servicios ofrecidos por la aplicación. Los componentes principales del Dominio son\cite{malewar2017learning}: 
+
+\subsubsection{Nodos:} 
+
+Es una representación lógica de una computadora dentro de un Dominio. En un dominio pueden haber m\'as de un nodo y 
+los diferentes servicios y procesos de Informatica son ejecutados dentro de ellos. Existe un tipo de nodo especial 
+llamado puerta (\emph{gateway}), el cual se encarga de recibir las solicitudes de las aplicaciones clientes y enrutarlas a sus 
+respectivos servicios y nodos.
+
+\subsubsection{Administrador de Servicios:} 
+
+Es responsable de gestionar operaciones como autorización, autenticación e inicio de sesión. También se encarga de 
+ejecutar los Servicios de Aplicaci\'on en diferentes nodos, además de gestionar usuarios y grupos.
+
+\subsubsection{Servicios de Aplicaci\'on:}
+
+Estos son los tipos específicos de servicios bajo un dominio, que incluyen el servicio de repositorio, el servicio de 
+integración y el servicio de informes.
+
+El servicio de repositorios es el encargado del mantenimiento de los metadatos de Informatica. Los metadatos incluyen 
+definiciones de fuentes, destinos, transformaciones y escenarios ETL creados. Son almacenados en una base de datos 
+relacional llamada Repositorio, a la cual solo se tiene acceso a través del dominio.
+
+El servicio de integración se utiliza como motor de ejecución de ETL. Mueve los datos desde el origen hasta el 
+destino según el flujo de trabajo definido por el usuario y los metadatos almacenados en el repositorio.
+
+El servicio de informes se encarga de generar informes sobre las tareas de integración ejecutadas.
+
+
+PowerCenter consta de cuatro aplicaciones clientes, cada una especializada en un \'area determinada del 
+desarrollo de procesos de integración ETL:
+
+\subsubsection{PowerCenter Designer:}
+
+Cliente encargado de proveer al usuario de una interfaz gráfica para el diseño de los distintos componentes 
+que conforman un escenario ETL. El usuario debe encargarse de crear o importar las definiciones de las fuentes y el 
+destino, definir los mapeos entre atributos y las transformaciones que deben sufrir los datos.
+
+\subsubsection{Workflow Manager:}
+
+Con este cliente el usuario puede definir y ejecutar escenarios ETL juntando y conectando los componentes creados en el 
+PowerCenter Designer. Adem\'as, puede programar la ejecución de los escenarios cuando se capture un evento o cada 
+cierto tiempo, lo cual permite que las bases de datos de destino tengan datos actualizados en todo momento.
+
+\subsubsection{Workflow Monitor:} 
+
+Este cliente provee al usuario de una interfaz para monitorear las tareas y los flujos de trabajo. Permite ver 
+los registros de las sesiones y los flujos de trabajo, además de monitorear las estadísticas.
+
+\subsubsection{Repository Manager:}
+
+Cliente que le permite al usuario manejar los objetos guardados en el repositorio, administrar permisos e 
+importar y exportar objetos.
+
+
+
+
+\subsection{Azure Data Factory}
+
+Azure Data Factory\footnote{https://azure.microsoft.com/en-us/products/data-factory/} (ADF) es un servicio basado
+en la nube y desarrollado por Microsoft para proyectos de 
+automatización tanto de ETL como de ELT. Tiene soporte para copia de datos \emph{on-premise}, además de contar con  
+m\'as de 90 conectores nativos hacia las principales fuentes de datos usadas en la industria\cite{azure_intro}. ADF cuenta con una 
+serie de componentes integrales, cada uno con un papel fundamental en el proceso de integración de datos: 
+
+\subsubsection{Data Flows:}
+
+Los flujos de datos (\emph{data flows}) representan la lógica de transformación de los datos. Son diseñados por el usuario 
+mediante una interfaz gráfica, en este caso sin escribir código o mediante un kit de desarrollo de software o SDK (\emph{Software Development Kit}). 
+Permite que los ingenieros de 
+datos puedan definir, visualmente, como los datos son transformados. Dichas transformaciones pueden ser filtros, 
+agregaciones, joins y/o aplicar transformaciones a columnas. ADF modela los flujos de datos como grafos y permite crear 
+librerías de rutinas de transformaci\'on de datos para que puedan ser rehusadas en otros proyectos. Los flujos de datos 
+son ejecutados como actividades dentro los \emph{pipelines} y aprovechan los \emph{clusters} de Apache Spark para el procesamiento 
+eficiente de grandes volúmenes de datos. 
+
+
+\subsubsection{Pipelines:}
+
+Los \emph{pipelines} son el mecanismo de orquestación para los procesos de integración de datos. Representa una secuencia 
+lógica que define el flujo y el orden de ejecución de las actividades que conforman un escenario de integración de datos, 
+incluidos los flujos de datos. Un \emph{pipeline} puede contener múltiples actividades, como movimiento de datos, 
+transformación de datos, procesamiento de datos y actividades de control como son los ciclos y los 
+disparadores (\emph{triggers}), basados en eventos o en tiempos. En Azure Data Factory un \emph{pipeline} puede ser diseñado 
+mediante una interfaz gr\'afica o mediante c\'odigo, usando un SDK.
+
+\subsubsection{Datasets:}
+
+Los conjuntos de datos (\emph{datasets}) son representaciones de la estructura de las fuentes de datos disponibles para 
+alimentar las actividades de un \emph{pipeline}. No contienen los datos en sí, sino que hacen referencia a los datos que se 
+desean utilizar como entrada o salida de las actividades, y proporcionan información sobre su estructura.
+
+\subsubsection{Linked Services:}
+
+Los servicios vinculados (\emph{linked services}) son cadenas de texto, que definen la información necesaria 
+para que Data Factory establezca conexiones con recursos externos, ya sea una fuente de datos o recursos computacionales 
+que puedan ejecutar actividades de forma remota. De este modo, un servicio vinculado define la conexión a una fuente de 
+datos, y un \emph{dataset} representa su estructura.
+
+\subsubsection{Integration Runtime:}
+
+Como se expuso anteriormente, en Azure Data Factory una actividad define una acci\'on a realizar. Un \emph{linked service} define 
+un almacenamiento de datos o un servicio de cómputo. El tiempo de ejecución de la integración (\emph{integration runtime}) es el 
+puente entre la actividad y los Linked Services. 
+Es referenciado por el Linked Service o la actividad, y funciona como entorno de cómputo donde la actividad es ejecutada 
+o es enviada a quien la ejecutar\'a. 

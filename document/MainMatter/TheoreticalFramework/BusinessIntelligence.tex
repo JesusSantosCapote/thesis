@@ -1,0 +1,40 @@
+\section{Inteligencia de Negocios}\label{section:bi}
+
+La Inteligencia de Negocios (Business Intelligence, BI) es un \'area del conocimiento que comprende un conjunto de metodologías, 
+tecnologías, procesos y arquitecturas que convierten datos 
+en bruto en información útil para tomar decisiones comerciales y descubrir conocimientos estratégicos para los negocios. 
+Las herramientas de BI analizan tanto datos históricos como actuales para dar una panor\'amica completa del comportamiento 
+de un negocio a lo largo del tiempo y adem\'as, presentan sus hallazgos en formatos visuales atractivos e intuitivos. 
+Con el uso de las herramientas de BI, las empresas son capaces de reducir las ineficiencias, detectar problemas potenciales, 
+encontrar nuevas fuentes de ingresos e identificar áreas de crecimiento futuro.
+
+Los componentes principales de una solución de BI son los mecanismos de integración de datos, el almacenamiento de datos y 
+las herramientas de análisis y generaci\'on de informes\cite{lloyd2011identifying}. Los mecanismos de integración recopilan datos de múltiples fuentes, 
+los someten a transformaciones para reconciliarlos y finalmente los cargan en el repositorio de datos de destino. Estos mecanismos se 
+conocen como procesos ETL (Extracción, Transformación y Carga). En el caso de que el proceso de carga se realice antes que las transformaciones, 
+se denominan procesos ELT (Extracción, Carga y Transformación). 
+El almacenamiento de datos, como su nombre lo indica, es un depósito centralizado de los datos que utiliza la solución
+de BI, como una base de datos, un almac\'en de datos, data marts u otras estructuras. Las herramientas de análisis tienen la función de extraer 
+información de los datos almacenados a través de la aplicación de estadísticas y análisis, adem\'as de generar 
+informes que presenten de forma clara y entendible los resultados obtenidos.
+
+La integridad y precisión de los datos son vitales para la toma de decisiones informadas y estratégicas. 
+OLTP, o Procesamiento de Transacciones en Línea, desempeña un papel fundamental en la garantía de la existencia de 
+datos precisos para análisis ulteriores. 
+
+El Procesamiento de Transacciones en Línea (OLTP) es un 
+tipo de procesamiento de datos que consiste en ejecutar una serie de transacciones que ocurren simultáneamente y en 
+tiempo real en un entorno de múltiples usuarios\cite{harizopoulos2018oltp}.
+
+Los datos de transacciones constituyen información que registra las interacciones relacionadas con las actividades de una empresa. Estas 
+interacciones pueden incluir transacciones comerciales, como pagos de clientes, pagos a proveedores, cambios en el inventario de la empresa, 
+pedidos recibidos o servicios prestados. Por lo general, los eventos de transacciones incluyen una dimensión de tiempo, valores numéricos y 
+referencias a otros datos\cite{oltpAzure}. Aunque, con el paso de los años, especialmente desde la llegada de 
+Internet, la definición de transacción 
+se ha expandido para poder abarcar todas las posibles formas de interacción digital entre un usuario y un negocio a través 
+de cualquier sensor conectado a Internet. Además, incluye cualquier tipo de acción, como descargar pdfs en una 
+página web, ver un video específico, entre otros\cite{oltpOracle}.
+
+Los sistemas OLTP se centran principalmente en respaldar las operaciones diarias, por esta raz\'on son ampliamente 
+utilizados como fuentes de datos para los sistemas analíticos. Las transacciones que procesan son breves y 
+sencillas, que normalmente implican la inserción, modificación o recuperación de cantidades pequeñas de datos.

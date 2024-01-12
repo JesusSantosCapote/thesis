@@ -22,7 +22,7 @@
 \RequirePackage{footmisc}
 \RequirePackage{csquotes}
 \RequirePackage[
-	style=apa,
+	style=ieee,
 	citestyle=numeric,
   hyperref=true,
 	backref=true
@@ -74,17 +74,17 @@
 \renewcommand{\textfraction}{0.07}
 
 % Whole biblatex hyperref to bibliography
-\DeclareCiteCommand{\cite}
+\DeclareCiteCommand{\cite}[\mkbibparens]
   {\usebibmacro{prenote}}
   {\usebibmacro{citeindex}%
-   \printtext[bibhyperref]{[\usebibmacro{cite}]}}
+   \printtext[bibhyperref]{\usebibmacro{cite}}}
   {\multicitedelim}
   {\usebibmacro{postnote}}
 
 \DeclareCiteCommand*{\cite}
   {\usebibmacro{prenote}}
   {\usebibmacro{citeindex}%
-   \printtext[bibhyperref]{\usebibmacro{cite}}}
+   \printtext[bibhyperref]{\usebibmacro{citeyear}}}
   {\multicitedelim}
   {\usebibmacro{postnote}}
 
@@ -160,7 +160,7 @@
 \newcommand{\logo}[1]{\def\@logo{#1}}
 
 \newenvironment{opinion}%
-  {\chapter*{Opinión del tutor}}%
+  {\chapter*{Opinión de los tutores}}%
   {}
 \newenvironment{acknowledgements}%
   {\chapter*{Agradecimientos}}%
@@ -183,6 +183,14 @@
    \addcontentsline{toc}{chapter}{Conclusiones}%
    \chapter*{Conclusiones}}%
   {}
+
+\newenvironment{annexes}%
+  {\cleardoublepage%
+    \phantomsection%
+    \addcontentsline{toc}{chapter}{Anexos}%
+    \chapter*{Anexos}}%
+  {}
+
 \newenvironment{recomendations}%
   {\cleardoublepage%
    \phantomsection%
